@@ -2,8 +2,9 @@
 # Copyright (c) Jeremy P Bentham 2019
 # Please credit iosoft.blog if you use the information or software in it
 
-VERSION = "Cam_display v0.10"
+VERSION = "SPO2 Estimation software"
 
+from attendance import checkName
 import imutils
 import numpy as np
 import time
@@ -24,6 +25,9 @@ try:
 except:
     pyqt5 = False
 if pyqt5:
+    from PyQt5.QtWidgets import *
+    from PyQt5.QtGui import *
+    from PyQt5.QtCore import *
     from PyQt5.QtCore import QTimer, QPoint, pyqtSignal
     from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel
     from PyQt5.QtWidgets import QWidget, QAction, QVBoxLayout, QHBoxLayout
@@ -57,8 +61,15 @@ duration=10
 
 totalFrame = 250
 
+Spo2Flag=0
+
+FaceDetectionFlag=0
+
 final_sig=[]
 
+name=[]
+
+boxes=[(100,250,200,150)]
 
 spo2_set=[]
 
@@ -69,6 +80,7 @@ def face_detect_and_thresh(frame):
     skinM = skin_detector.process(frame)
     skin = cv2.bitwise_and(frame, frame, mask = skinM)
     cv2.imshow("skin2",skin)
+    cv2.waitKey(1)
     return skin,skinM
 
 
@@ -77,7 +89,10 @@ def spartialAverage(thresh,frame):
     # x=[i[0] for i in a]
     # y=[i[1] for i in a]
     # p=[x,y]
-    ind_img=(np.vstack((a)))
+    if a:
+        ind_img=(np.vstack((a)))
+    else:
+        return 0,0,0
     sig_fin=np.zeros([np.shape(ind_img)[0],3])
     test_fin=[]
     for i in range(np.shape(ind_img)[0]):
@@ -105,7 +120,7 @@ def MeanRGB(thresh,frame,last_stage,min_value,max_value):
     # print(thresh)
     # print("==<>>")
     # print(img_rgb)
-    # cv2.waitKey()
+    cv2.waitKey(1)
     # print(img_rgb[0])
     # thresh=thresh.reshape((1,3))
     # img_rgb_mean=np.nanmean(thresh,axis=0)
@@ -190,12 +205,15 @@ def SPooEsitmate(final_sig,video_size,frames,seconds):
 # Grab images from the camera (separate thread)
 def grab_images(cam_num, queue):
     global data
+    global boxes
     global frameCount
     global totalFrame
+    global FaceDetectionFlag
+    global Spo2Flag
     cap = cv2.VideoCapture(cam_num-1 + CAP_API)
     # cap.set(cv2.CAP_PROP_FRAME_WIDTH, IMG_SIZE[0])
     # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, IMG_SIZE[1])
-
+    name_final=''
     if EXPOSURE:
         cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0)
         cap.set(cv2.CAP_PROP_EXPOSURE, EXPOSURE)
@@ -203,19 +221,23 @@ def grab_images(cam_num, queue):
         cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)
     while capturing:
         if cap.grab():
-            boxes=[(100,250,200,150)]
+
             retval, image = cap.retrieve(0)
             image = imutils.resize(image,width=400,height=400)
             boxFrame=image.copy()
-            print(queue.qsize())
+            # print(queue.qsize())
             cv2.rectangle(boxFrame,(150,100),(250,200),(0,0,255),3)
             faceFrame = image[100:200,150:250]
-            if boxFrame is not None  and frameCount<totalFrame:
-                faceFrame = image[100:200,150:250]
+            cv2.imshow("face",faceFrame)
+            cv2.waitKey(1)
+            if boxFrame is not None and (queue.qsize() < 2 or Spo2Flag)  :
+                # faceFrame = image[100:200,150:250]
 
-                if frameCount==0:
+                if frameCount==0 and FaceDetectionFlag:
+
+
                     encodings = face_recognition.face_encodings(image, boxes)
-                    name=[]
+
                     for encoding in encodings:
                         matches = face_recognition.compare_faces(data["encodings"],
                         encoding)
@@ -228,24 +250,42 @@ def grab_images(cam_num, queue):
                             for i in matchedIdxs:
                                 name = data["names"][i]
                                 counts[name]=counts.get(name,0)+1
-
+                            print(counts)
                             name = max(counts,key=counts.get)
+
                         print(name)
+                        name_final=name
+                        FaceDetectionFlag=0
                     thresh,mask=face_detect_and_thresh(faceFrame)
+
                     temp,min_value,max_value=spartialAverage(mask,faceFrame)
+                    # print(temp)
+                    # print(type(temp))
+                    # print(str(type(temp)))
+                    if(type(temp)==type(2)):
+                        print("failed estimation, try again")
+                        frameCount=totalFrame
+                        Spo2Flag=2
+
                     final_sig.append(temp)
 
-                else:
+                elif Spo2Flag==1 and frameCount<totalFrame and frameCount>1:
                     thresh,mask=face_detect_and_thresh(faceFrame)
 
                     final_sig.append(MeanRGB(thresh,faceFrame,final_sig[-1],min_value,max_value))
 
+                if frameCount==totalFrame:
+                    if Spo2Flag==1:
+                        result=SPooEsitmate(final_sig,totalFrame,totalFrame,duration) # the final signal list is sent to SPooEsitmate function with length of the video
+                        print(result)
+                        checkName(name_final,result)
+                        Spo2Flag=0
+                    elif Spo2Flag==2:
+                        print("Try again with face properly aligned")
                 queue.put(boxFrame)
                 frameCount=frameCount+1
                 # print(frameCount)
             else:
-                result=SPooEsitmate(final_sig,totalFrame,totalFrame,duration) # the final signal list is sent to SPooEsitmate function with length of the video
-                print(result)
                 time.sleep(DISP_MSEC / 1000.0)
         else:
             print("Error: can't grab camera image")
@@ -277,7 +317,6 @@ class MyWindow(QMainWindow):
     # Create main window
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
-
         self.central = QWidget(self)
         self.textbox = QTextEdit(self.central)
         self.textbox.setFont(TEXT_FONT)
@@ -299,6 +338,11 @@ class MyWindow(QMainWindow):
         self.vlayout.addWidget(self.textbox)
         self.central.setLayout(self.vlayout)
         self.setCentralWidget(self.central)
+        self.title = 'PyQt5 simple window - pythonspot.com'
+        self.left = 500
+        self.top = 500
+        self.width = 640
+        self.height = 480
 
         self.mainMenu = self.menuBar()      # Menu bar
         exitAction = QAction('&Exit', self)
@@ -306,10 +350,36 @@ class MyWindow(QMainWindow):
         exitAction.triggered.connect(self.close)
         self.fileMenu = self.mainMenu.addMenu('&File')
         self.fileMenu.addAction(exitAction)
+        self.UiComponents()
+    def UiComponents(self):
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
 
+        # creating a push button
+        button = QPushButton("SPO2", self)
+
+        # setting geometry of button
+        button.setGeometry(200, 150, 100, 30)
+        button.move(500,200)
+        # adding action to a button
+        button.clicked.connect(self.clickme)
+        self.show()
+
+    # action method
+    def clickme(self):
+        global Spo2Flag,FaceDetectionFlag,frameCount,final_sig,spo2_set,name
+        final_sig=[]
+        name=[]
+        spo2_set=[]
+        frameCount=0
+        Spo2Flag=1
+        FaceDetectionFlag=1
+        # printing pressed
+        print("pressed")
     # Start image capture & display
     def start(self):
-        self.timer = QTimer(self)           # Timer to trigger display
+        self.timer = QTimer(self)
+        self.timer.setTimerType(Qt.PreciseTimer)        # Timer to trigger display
         self.timer.timeout.connect(lambda:
                     self.show_image(image_queue, self.disp, DISP_SCALE))
         self.timer.start(DISP_MSEC)

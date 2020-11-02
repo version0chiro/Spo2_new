@@ -141,7 +141,7 @@ def SPooEsitmate(final_sig,video_size,frames,seconds):
 
 
 vid = cv2.VideoCapture(0)
-
+time.sleep(2.0)
 frameCount=0
 
 duration=10
@@ -180,7 +180,6 @@ while(True):
             final_sig.append(temp)
         else:
             thresh,mask=face_detect_and_thresh(faceFrame)
-
             final_sig.append(MeanRGB(thresh,faceFrame,final_sig[-1],min_value,max_value))
         frameCount=frameCount+1
         # cv2.rectangle(frame,(150,100),(250,200),(0,0,255),3)
