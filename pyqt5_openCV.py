@@ -79,8 +79,8 @@ data = pickle.loads(open("test.pickle", "rb").read())
 def face_detect_and_thresh(frame):
     skinM = skin_detector.process(frame)
     skin = cv2.bitwise_and(frame, frame, mask = skinM)
-    cv2.imshow("skin2",skin)
-    cv2.waitKey(1)
+    # cv2.imshow("skin2",skin)
+    # cv2.waitKey(1)
     return skin,skinM
 
 
@@ -116,11 +116,11 @@ def spartialAverage(thresh,frame):
     return img_rgb_mean,min_value,max_value
 
 def MeanRGB(thresh,frame,last_stage,min_value,max_value):
-    cv2.imshow("threshh",thresh)
+    # cv2.imshow("threshh",thresh)
     # print(thresh)
     # print("==<>>")
     # print(img_rgb)
-    cv2.waitKey(1)
+    # cv2.waitKey(1)
     # print(img_rgb[0])
     # thresh=thresh.reshape((1,3))
     # img_rgb_mean=np.nanmean(thresh,axis=0)
@@ -228,8 +228,8 @@ def grab_images(cam_num, queue):
             # print(queue.qsize())
             cv2.rectangle(boxFrame,(150,100),(250,200),(0,0,255),3)
             faceFrame = image[100:200,150:250]
-            cv2.imshow("face",faceFrame)
-            cv2.waitKey(1)
+            # cv2.imshow("face",faceFrame)
+            # cv2.waitKey(1)
             if boxFrame is not None and (queue.qsize() < 2 or Spo2Flag)  :
                 # faceFrame = image[100:200,150:250]
 
@@ -339,8 +339,10 @@ class MyWindow(QMainWindow):
         self.central.setLayout(self.vlayout)
         self.setCentralWidget(self.central)
         self.title = 'PyQt5 simple window - pythonspot.com'
-        self.left = 500
-        self.top = 500
+        self.left = 640
+        self.top = 360
+        # self.left = 500
+        # self.top = 500
         self.width = 640
         self.height = 480
 
