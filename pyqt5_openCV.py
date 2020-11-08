@@ -5,6 +5,7 @@
 VERSION = "SPO2 Estimation software"
 
 from attendance import checkName
+from request import getRequest
 import imutils
 import numpy as np
 import time
@@ -221,7 +222,7 @@ def grab_images(cam_num, queue):
         cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)
     while capturing:
         if cap.grab():
-
+            Webspo2Flag = getRequest()
             retval, image = cap.retrieve(0)
             image = imutils.resize(image,width=400,height=400)
             boxFrame=image.copy()
