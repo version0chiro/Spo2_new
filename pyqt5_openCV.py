@@ -5,7 +5,7 @@
 VERSION = "SPO2 Estimation software"
 
 from attendance import checkName
-from request import getRequest
+from request import getRequest,sendRequest
 import imutils
 import numpy as np
 import time
@@ -231,10 +231,10 @@ def grab_images(cam_num, queue):
             faceFrame = image[100:200,150:250]
             # cv2.imshow("face",faceFrame)
             # cv2.waitKey(1)
-            if boxFrame is not None and (queue.qsize() < 2 or Spo2Flag)  :
+            if boxFrame is not None and (queue.qsize() < 2 or (Spo2Flag or Webspo2Flag))  :
                 # faceFrame = image[100:200,150:250]
 
-                if frameCount==0 and FaceDetectionFlag:
+                if frameCount==0 and (FaceDetectionFlag or Webspo2Flag):
 
 
                     encodings = face_recognition.face_encodings(image, boxes)
@@ -270,7 +270,7 @@ def grab_images(cam_num, queue):
 
                     final_sig.append(temp)
 
-                elif Spo2Flag==1 and frameCount<totalFrame and frameCount>1:
+                elif (Spo2Flag==1 or Webspo2Flag) and frameCount<totalFrame and frameCount>1:
                     thresh,mask=face_detect_and_thresh(faceFrame)
 
                     final_sig.append(MeanRGB(thresh,faceFrame,final_sig[-1],min_value,max_value))
