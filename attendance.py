@@ -72,15 +72,15 @@ def checkName(name,spo2):
     	a = d.index[0]
     	return atte.append(d)
 
-    details = pd.read_excel('details.xlsx',index_col=0)
-    atte=pd.read_excel('attendance.xlsx',index_col=0)
+    details = pd.read_excel('excel_sheets/details.xlsx',index_col=0)
+    atte=pd.read_excel('excel_sheets/attendance.xlsx',index_col=0)
 
     if details['Name'].str.contains(name).any():
         atte = add_to_list(name,atte,details,spo2)
-        xl = pd.ExcelFile('attendance.xlsx')
+        xl = pd.ExcelFile('excel_sheets/attendance.xlsx')
         today = date.today()
         if str(today) in xl.sheet_names:
-            append_df_to_excel('attendance.xlsx',atte,sheet_name=str(today))
+            append_df_to_excel('excel_sheets/attendance.xlsx',atte,sheet_name=str(today))
         else:
-            with pd.ExcelWriter('attendance.xlsx',mode='a') as writer:
+            with pd.ExcelWriter('excel_sheets/attendance.xlsx',mode='a') as writer:
                 atte.to_excel(writer,sheet_name=str(today))

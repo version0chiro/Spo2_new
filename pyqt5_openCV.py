@@ -223,6 +223,21 @@ def grab_images(cam_num, queue):
     while capturing:
         if cap.grab():
             Webspo2Flag = getRequest()
+            
+            if Webspo2Flag:
+                print(Webspo2Flag)
+                global Spo2Flag,FaceDetectionFlag,frameCount,final_sig,spo2_set,name
+                final_sig=[]
+                name=[]
+                spo2_set=[]
+                frameCount=0
+                Spo2Flag=1
+                FaceDetectionFlag=1
+                # printing pressed
+                print("pressed")
+                Webspo2Flag = not Webspo2Flag
+                sendRequest()
+
             retval, image = cap.retrieve(0)
             image = imutils.resize(image,width=400,height=400)
             boxFrame=image.copy()
@@ -231,10 +246,10 @@ def grab_images(cam_num, queue):
             faceFrame = image[100:200,150:250]
             # cv2.imshow("face",faceFrame)
             # cv2.waitKey(1)
-            if boxFrame is not None and (queue.qsize() < 2 or (Spo2Flag or Webspo2Flag))  :
+            if boxFrame is not None and (queue.qsize() < 2 or (Spo2Flag))  :
                 # faceFrame = image[100:200,150:250]
 
-                if frameCount==0 and (FaceDetectionFlag or Webspo2Flag):
+                if frameCount==0 and (FaceDetectionFlag):
 
 
                     encodings = face_recognition.face_encodings(image, boxes)
@@ -270,7 +285,7 @@ def grab_images(cam_num, queue):
 
                     final_sig.append(temp)
 
-                elif (Spo2Flag==1 or Webspo2Flag) and frameCount<totalFrame and frameCount>1:
+                elif (Spo2Flag==1) and frameCount<totalFrame and frameCount>1:
                     thresh,mask=face_detect_and_thresh(faceFrame)
 
                     final_sig.append(MeanRGB(thresh,faceFrame,final_sig[-1],min_value,max_value))
@@ -281,6 +296,9 @@ def grab_images(cam_num, queue):
                         print(result)
                         checkName(name_final,result)
                         Spo2Flag=0
+                        # Webspo2Flag= not Webspo2Flag
+                        
+
                     elif Spo2Flag==2:
                         print("Try again with face properly aligned")
                 queue.put(boxFrame)
