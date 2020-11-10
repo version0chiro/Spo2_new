@@ -236,8 +236,7 @@ def grab_images(cam_num, queue,self):
         if cap.grab():
             if url_ok():
                 Webspo2Flag = getRequest()
-            else:
-                Webspo2Flag = Webspo2Flag
+            
                         
             if Webspo2Flag:
                 print(Webspo2Flag)
