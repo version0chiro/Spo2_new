@@ -256,6 +256,7 @@ def grab_images(cam_num, queue,self):
                 
             retval, image = cap.retrieve(0)
             fullScale = image.copy()
+            fullScale = imutils.resize(fullScale,width=400,height=400)
             fullScale = cv2.cvtColor(fullScale,cv2.COLOR_BGR2RGB)
             image = imutils.resize(image,width=400,height=400)
             
