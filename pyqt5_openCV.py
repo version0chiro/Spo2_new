@@ -5,7 +5,7 @@
 VERSION = "SPO2 Estimation software"
 
 from attendance import checkName
-from request import getRequest,sendRequest
+from request import getRequest,sendRequest,url_ok,upload
 import imutils
 import numpy as np
 import time
@@ -305,7 +305,7 @@ def grab_images(cam_num, queue,self):
                     final_sig.append(temp)
 
                 elif (Spo2Flag==1) and frameCount<totalFrame and frameCount>1:
-                    global hr
+                    
                     thresh,mask=face_detect_and_thresh(faceFrame)
                     process.frame_in = fullScale
                     process.run()
@@ -326,6 +326,8 @@ def grab_images(cam_num, queue,self):
                         print(result)
                         self.label_2.setText("SPO2 Level:"+str(int(result)))
                         checkName(name_final,result,hr)
+                        if url_ok():
+                            upload()
                         Spo2Flag=0
                         # Webspo2Flag= not Webspo2Flag
                         
