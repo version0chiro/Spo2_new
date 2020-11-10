@@ -261,8 +261,8 @@ def grab_images(cam_num, queue,self):
             
             boxFrame=image.copy()
             # print(queue.qsize())
-            cv2.rectangle(boxFrame,(150,100),(250,200),(0,0,255),3)
-            faceFrame = image[100:200,150:250]
+            cv2.rectangle(boxFrame,(125,75),(275,225),(0,0,255),3)
+            faceFrame = image[75:225,125:275]
             # cv2.imshow("face",faceFrame)
             # cv2.waitKey(1)
             if boxFrame is not None and (queue.qsize() < 2 or (Spo2Flag))  :
