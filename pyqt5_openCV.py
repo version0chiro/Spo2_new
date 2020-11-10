@@ -20,7 +20,7 @@ import skin_detector
 import face_recognition
 import pickle
 import sys, time, threading, cv2
-from HeartRate import Process
+# from HeartRate import Process
 
 try:
     from PyQt5.QtCore import Qt
@@ -78,7 +78,7 @@ spo2_set=[]
 
 data = pickle.loads(open("test.pickle", "rb").read())
 
-process=Process()
+# process=Process()
 hr=0
 bpm=0
 heartRate=0
@@ -269,7 +269,7 @@ def grab_images(cam_num, queue,self):
                 # faceFrame = image[100:200,150:250]
 
                 if frameCount==0 and (FaceDetectionFlag):
-                    process=Process()
+                    # process=Process()
 
                     encodings = face_recognition.face_encodings(image, boxes)
 
@@ -307,17 +307,17 @@ def grab_images(cam_num, queue,self):
                 elif (Spo2Flag==1) and frameCount<totalFrame and frameCount>1:
                     
                     thresh,mask=face_detect_and_thresh(faceFrame)
-                    process.frame_in = fullScale
-                    process.run()
-                    bpm=process.bpm
-                    if process.bpms.__len__() > 50:
-                        if(max(process.bpms-np.mean(process.bpms))<5):
-                            hr=np.mean(process.bpms)
-                    if bpm>0:
-                        print(bpm)
-                        print(hr)
+                    # process.frame_in = fullScale
+                    # process.run()
+                    # bpm=process.bpm
+                    # if process.bpms.__len__() > 50:
+                    #     if(max(process.bpms-np.mean(process.bpms))<5):
+                    #         hr=np.mean(process.bpms)
+                    # if bpm>0:
+                    #     print(bpm)
+                    #     print(hr)
                     final_sig.append(MeanRGB(thresh,faceFrame,final_sig[-1],min_value,max_value))
-                    self.label_1.setText("HeartRate:"+str(int(hr)))
+                    self.label_1.setText("HeartRate:"+str(int(15)))
                     
 
                 if frameCount==totalFrame:
@@ -325,7 +325,7 @@ def grab_images(cam_num, queue,self):
                         result=SPooEsitmate(final_sig,totalFrame,totalFrame,duration) # the final signal list is sent to SPooEsitmate function with length of the video
                         print(result)
                         self.label_2.setText("SPO2 Level:"+str(int(result)))
-                        checkName(name_final,result,hr)
+                        checkName(name_final,result)
                         if url_ok():
                             upload()
                         Spo2Flag=0
