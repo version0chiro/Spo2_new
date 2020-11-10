@@ -3,7 +3,7 @@ from datetime import date
 import pandas as pd
 from collections import Counter
 import time
-def checkName(name,spo2):
+def checkName(name,spo2,hr):
 
 
 
@@ -61,13 +61,14 @@ def checkName(name,spo2):
         writer.save()
 
 
-    def add_to_list(str_name, atte, details,spo2):
+    def add_to_list(str_name, atte, details,spo2,hr):
     	atte = atte
     	t = time.localtime()
     	current_time = time.strftime("%H:%M:%S", t)
     	d = details[details['Name'] == str_name]
     	d['Time-Stamp'] = current_time
     	d['SpO2_value'] = spo2
+    	d['Heart-rate'] = hr
         # d['SpO2_value']=spo2
     	a = d.index[0]
     	return atte.append(d)
@@ -76,7 +77,7 @@ def checkName(name,spo2):
     atte=pd.read_excel('excel_sheets/attendance.xlsx',index_col=0)
 
     if details['Name'].str.contains(name).any():
-        atte = add_to_list(name,atte,details,spo2)
+        atte = add_to_list(name,atte,details,spo2,hr)
         xl = pd.ExcelFile('excel_sheets/attendance.xlsx')
         today = date.today()
         if str(today) in xl.sheet_names:

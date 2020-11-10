@@ -20,6 +20,8 @@ import skin_detector
 import face_recognition
 import pickle
 import sys, time, threading, cv2
+from HeartRate import Process
+
 try:
     from PyQt5.QtCore import Qt
     pyqt5 = True
@@ -76,6 +78,10 @@ spo2_set=[]
 
 data = pickle.loads(open("test.pickle", "rb").read())
 
+process=Process()
+hr=0
+bpm=0
+heartRate=0
 
 def face_detect_and_thresh(frame):
     skinM = skin_detector.process(frame)
@@ -204,13 +210,19 @@ def SPooEsitmate(final_sig,video_size,frames,seconds):
 
 
 # Grab images from the camera (separate thread)
-def grab_images(cam_num, queue):
+def grab_images(cam_num, queue,self):
     global data
     global boxes
     global frameCount
     global totalFrame
     global FaceDetectionFlag
     global Spo2Flag
+    global bpm
+    global hr
+    
+
+    bpm=0
+    hr=0
     cap = cv2.VideoCapture(cam_num-1 + CAP_API)
     # cap.set(cv2.CAP_PROP_FRAME_WIDTH, IMG_SIZE[0])
     # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, IMG_SIZE[1])
@@ -239,7 +251,10 @@ def grab_images(cam_num, queue):
                 sendRequest()
 
             retval, image = cap.retrieve(0)
+            fullScale = image.copy()
+            fullScale = cv2.cvtColor(fullScale,cv2.COLOR_BGR2RGB)
             image = imutils.resize(image,width=400,height=400)
+            
             boxFrame=image.copy()
             # print(queue.qsize())
             cv2.rectangle(boxFrame,(150,100),(250,200),(0,0,255),3)
@@ -250,7 +265,7 @@ def grab_images(cam_num, queue):
                 # faceFrame = image[100:200,150:250]
 
                 if frameCount==0 and (FaceDetectionFlag):
-
+                    process=Process()
 
                     encodings = face_recognition.face_encodings(image, boxes)
 
@@ -286,15 +301,27 @@ def grab_images(cam_num, queue):
                     final_sig.append(temp)
 
                 elif (Spo2Flag==1) and frameCount<totalFrame and frameCount>1:
+                    global hr
                     thresh,mask=face_detect_and_thresh(faceFrame)
-
+                    process.frame_in = fullScale
+                    process.run()
+                    bpm=process.bpm
+                    if process.bpms.__len__() > 50:
+                        if(max(process.bpms-np.mean(process.bpms))<5):
+                            hr=np.mean(process.bpms)
+                    if bpm>0:
+                        print(bpm)
+                        print(hr)
                     final_sig.append(MeanRGB(thresh,faceFrame,final_sig[-1],min_value,max_value))
+                    self.label_1.setText("HeartRate:"+str(int(hr)))
+                    
 
                 if frameCount==totalFrame:
                     if Spo2Flag==1:
                         result=SPooEsitmate(final_sig,totalFrame,totalFrame,duration) # the final signal list is sent to SPooEsitmate function with length of the video
                         print(result)
-                        checkName(name_final,result)
+                        self.label_2.setText("SPO2 Level:"+str(int(result)))
+                        checkName(name_final,result,hr)
                         Spo2Flag=0
                         # Webspo2Flag= not Webspo2Flag
                         
@@ -303,6 +330,7 @@ def grab_images(cam_num, queue):
                         print("Try again with face properly aligned")
                 queue.put(boxFrame)
                 frameCount=frameCount+1
+                
                 # print(frameCount)
             else:
                 time.sleep(DISP_MSEC / 1000.0)
@@ -373,9 +401,18 @@ class MyWindow(QMainWindow):
         self.fileMenu.addAction(exitAction)
         self.UiComponents()
     def UiComponents(self):
+        global hr
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
 
+        self.label_2 = QLabel('SPO2 Level:',self)
+        self.label_2.move(500,150)
+        self.label_2.setStyleSheet("border: 1px solid black;")
+        
+        self.label_1 = QLabel('heartRate:', self) 
+        self.label_1.move(500, 300) 
+         
+        self.label_1.setStyleSheet("border: 1px solid black;")
         # creating a push button
         button = QPushButton("SPO2", self)
 
@@ -388,13 +425,14 @@ class MyWindow(QMainWindow):
 
     # action method
     def clickme(self):
-        global Spo2Flag,FaceDetectionFlag,frameCount,final_sig,spo2_set,name
+        global hr,Spo2Flag,FaceDetectionFlag,frameCount,final_sig,spo2_set,name
         final_sig=[]
         name=[]
         spo2_set=[]
         frameCount=0
         Spo2Flag=1
         FaceDetectionFlag=1
+        self.label_1.setText("HeartRate:" + str(hr))
         # printing pressed
         print("pressed")
     # Start image capture & display
@@ -405,7 +443,7 @@ class MyWindow(QMainWindow):
                     self.show_image(image_queue, self.disp, DISP_SCALE))
         self.timer.start(DISP_MSEC)
         self.capture_thread = threading.Thread(target=grab_images,
-                    args=(camera_num, image_queue))
+                    args=(camera_num, image_queue,self))
         self.capture_thread.start()         # Thread to grab images
 
     # Fetch camera image from queue, and display it
