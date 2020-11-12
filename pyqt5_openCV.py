@@ -223,7 +223,8 @@ def grab_images(cam_num, queue,self):
 
     bpm=0
     hr=0
-    cap = cv2.VideoCapture(cam_num-1 + CAP_API)
+    # cap = cv2.VideoCapture(cam_num-1 + CAP_API)
+    cap = cv2.VideoCapture(cam_num)
     # cap.set(cv2.CAP_PROP_FRAME_WIDTH, IMG_SIZE[0])
     # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, IMG_SIZE[1])
     name_final=''
@@ -345,6 +346,15 @@ def grab_images(cam_num, queue,self):
             break
     cap.release()
 
+def check_url(url):
+    if url == "0":
+        camera=0
+    elif url == "1":
+        camera =1
+    else:
+        camera == url
+    return camera
+
 # Image widget
 class ImageWidget(QWidget):
     def __init__(self, parent=None):
@@ -366,11 +376,15 @@ class ImageWidget(QWidget):
 # Main window
 class MyWindow(QMainWindow):
     text_update = pyqtSignal(str)
-
     # Create main window
     def __init__(self, parent=None):
+        
         QMainWindow.__init__(self, parent)
+        
         self.central = QWidget(self)
+        Ipaddress,done1 = QInputDialog.getText( 
+             self, 'Input Dialog', 'IP address:')
+        self.IP = Ipaddress
         self.textbox = QTextEdit(self.central)
         self.textbox.setFont(TEXT_FONT)
         self.textbox.setMinimumSize(300, 100)
@@ -398,15 +412,27 @@ class MyWindow(QMainWindow):
         # self.top = 500
         self.width = 640
         self.height = 480
-
+        self.UiComponents()
         self.mainMenu = self.menuBar()      # Menu bar
         exitAction = QAction('&Exit', self)
         exitAction.setShortcut('Ctrl+Q')
         exitAction.triggered.connect(self.close)
         self.fileMenu = self.mainMenu.addMenu('&File')
         self.fileMenu.addAction(exitAction)
-        self.UiComponents()
+        
+       
+
+    def process(self):
+        userInput = self.textboxIP.text()
+        if userInput == "anything":
+            print("Ok i will leave you alone")
+            #self.close()
+        else:
+            print("say what?")
+        self.textboxIP.clear()
+
     def UiComponents(self):
+
         global hr
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
@@ -429,6 +455,10 @@ class MyWindow(QMainWindow):
         button.clicked.connect(self.clickme)
         self.show()
 
+    def on_click(self):
+        textboxValue = self.textboxIP.text()
+        QMessageBox.question(self, 'Message - pythonspot.com', "You typed: " + textboxValue, QMessageBox.Ok, QMessageBox.Ok)
+        self.textboxIP.setText("")
     # action method
     def clickme(self):
         global hr,Spo2Flag,FaceDetectionFlag,frameCount,final_sig,spo2_set,name
@@ -443,13 +473,16 @@ class MyWindow(QMainWindow):
         print("pressed")
     # Start image capture & display
     def start(self):
+        IP = self.IP
+        IP =    check_url(IP)
+        print(IP)
         self.timer = QTimer(self)
         self.timer.setTimerType(Qt.PreciseTimer)        # Timer to trigger display
         self.timer.timeout.connect(lambda:
                     self.show_image(image_queue, self.disp, DISP_SCALE))
         self.timer.start(DISP_MSEC)
         self.capture_thread = threading.Thread(target=grab_images,
-                    args=(camera_num, image_queue,self))
+                    args=(IP, image_queue,self))
         self.capture_thread.start()         # Thread to grab images
 
     # Fetch camera image from queue, and display it
