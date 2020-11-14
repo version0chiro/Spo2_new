@@ -352,7 +352,7 @@ def check_url(url):
     elif url == "1":
         camera =1
     else:
-        camera == url
+        camera = url
     return camera
 
 # Image widget
@@ -421,15 +421,6 @@ class MyWindow(QMainWindow):
         self.fileMenu.addAction(exitAction)
         
        
-
-    def process(self):
-        userInput = self.textboxIP.text()
-        if userInput == "anything":
-            print("Ok i will leave you alone")
-            #self.close()
-        else:
-            print("say what?")
-        self.textboxIP.clear()
 
     def UiComponents(self):
 
