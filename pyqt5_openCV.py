@@ -76,7 +76,7 @@ boxes=[(100,250,200,150)]
 
 spo2_set=[]
 
-data = pickle.loads(open("test.pickle", "rb").read())
+data = pickle.loads(open("updated.pickle", "rb").read())
 
 process=Process()
 hr=0
