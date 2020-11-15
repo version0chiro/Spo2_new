@@ -246,18 +246,18 @@ def grab_images(cam_num, queue,self):
             # if Webspo2Flag:
             # if 1:
             # print(Webspo2Flag)
-            global Spo2Flag,FaceDetectionFlag,frameCount,final_sig,spo2_set,name
-            final_sig=[]
-            name=[]
-            spo2_set=[]
-            frameCount=0
-            Spo2Flag=1
-            FaceDetectionFlag=1
-            # printing pressed
-            print("pressed")
-            # Webspo2Flag = not Webspo2Flag
-            # if url_ok():
-            #     sendRequest()
+            # global Spo2Flag,FaceDetectionFlag,frameCount,final_sig,spo2_set,name
+            # final_sig=[]
+            # name=[]
+            # spo2_set=[]
+            # frameCount=0
+            # Spo2Flag=1
+            # FaceDetectionFlag=1
+            # # printing pressed
+            # print("pressed")
+            # # Webspo2Flag = not Webspo2Flag
+            # # if url_ok():
+            # #     sendRequest()
                 
             retval, image = cap.retrieve(0)
             fullScale = image.copy()
