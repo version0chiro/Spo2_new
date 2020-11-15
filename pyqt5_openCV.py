@@ -342,7 +342,7 @@ def grab_images(cam_num, queue,self):
                         print("Try again with face properly aligned")
                 queue.put(boxFrame)
                 frameCount=frameCount+1
-                sensorValue=get_value(self.IP)
+                sensorValue=get_value(self.AI_CAM_IP)
                 self.label_3.setText("Ambient:"+str(int(sensorValue.Ambient)))
                 self.label_4.setText("Compen.:"+str(int(sensorValue.Compensated)))
                 # print(frameCount)
@@ -393,9 +393,9 @@ class MyWindow(QMainWindow):
         
         # Ipaddress,done1 = QInputDialog.getText( 
         #      self, 'Input Dialog', 'IP address:')
-        self.IP = get_IP(identifier)
+        self.AI_CAM_IP = get_IP(identifier)
         
-        # self.IP = IP
+        self.IP = IP
         self.textbox = QTextEdit(self.central)
         self.textbox.setFont(TEXT_FONT)
         self.textbox.setMinimumSize(300, 100)
