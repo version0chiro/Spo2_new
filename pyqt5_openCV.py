@@ -351,10 +351,11 @@ def grab_images(cam_num, queue,self):
                     sensorValue=get_value(self.AI_CAM_IP)
                     Ambient = stringGetValue(sensorValue,4) 
                     Compensated = stringGetValue(sensorValue,6) 
-                    self.label_3.setText("Ambient:"+str((float(Ambient))))
-                    self.label_4.setText("Compen.:"+str((float(Compensated))))
+                    self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
+                    self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
                     if globalCount>100000:
                         globalCount=0
+                    print(globalCount)
                     if(int(float(Compensated))>37):
                         send_mail()
 
@@ -463,11 +464,11 @@ class MyWindow(QMainWindow):
         self.label_1.move(500, 75) 
 
         self.label_3 = QLabel('Ambient:',self)
-        self.label_3.move(500,250)
+        self.label_3.move(500,225)
         self.label_3.setStyleSheet("border: 1px solid black;")
 
         self.label_4 = QLabel('Compen.:',self)
-        self.label_4.move(500,275)
+        self.label_4.move(500,250)
         self.label_4.setStyleSheet("border: 1px solid black;")
          
         self.label_1.setStyleSheet("border: 1px solid black;")
@@ -476,7 +477,7 @@ class MyWindow(QMainWindow):
 
         # setting geometry of button
         button.setGeometry(200, 150, 100, 30)
-        button.move(500,150)
+        button.move(500,125)
         # adding action to a button
 
         button.clicked.connect(self.clickme)
