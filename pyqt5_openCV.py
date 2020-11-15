@@ -24,7 +24,7 @@ from HeartRate import Process
 from IP_scan import get_IP
 from IP_scan import get_value
 from emailSender import send_mail
-
+from string_manipulation import stringGetValue
 try:
     from PyQt5.QtCore import Qt
     pyqt5 = True
@@ -344,8 +344,10 @@ def grab_images(cam_num, queue,self):
                 queue.put(boxFrame)
                 frameCount=frameCount+1
                 sensorValue=get_value(self.AI_CAM_IP)
-                self.label_3.setText("Ambient:"+str(int(sensorValue.Ambient)))
-                self.label_4.setText("Compen.:"+str(int(sensorValue.Compensated)))
+                Ambient = stringGetValue(sensorValue,4) 
+                Compensated = stringGetValue(sensorValue,6) 
+                self.label_3.setText("Ambient:"+str(int(float(Ambient))))
+                self.label_4.setText("Compen.:"+str(int(float(Compensated))))
                 if(int(sensorValue.Compensated)>37):
                     send_mail()
                 # print(frameCount)
