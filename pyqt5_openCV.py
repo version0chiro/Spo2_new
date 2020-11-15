@@ -577,7 +577,7 @@ class Window(QDialog):
         self.createForm() 
   
         # creating a dialog button for ok and cancel 
-        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel) 
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok.setText("Proceed") | QDialogButtonBox.Cancel) 
   
         # adding action when form is accepted 
         self.buttonBox.accepted.connect(self.getInfo) 
@@ -607,7 +607,8 @@ class Window(QDialog):
         Identifier = self.nameLineEdit.text()
         Email = self.emailLineEdit.text()
         IP=self.iPLineEdit.text()
-        userDetails = {"Identifier":Identifier,"Email":Email,"IP":IP}
+        AI_CAN_IP =  get_IP(Identifier)
+        userDetails = {"Identifier":Identifier,"Email":Email,"IP":IP,"AI_CAN_IP":AI_CAN_IP}
         with open('userData.pickle', 'wb') as f:
             pickle.dump(userDetails, f)
         # closing the window 
@@ -696,7 +697,7 @@ if __name__ == '__main__':
                 
                 Email = userDetails.get('Email')
                 Identifier = userDetails.get("Identifier")
-                AI_CAN_IP =  get_IP(Identifier)
+                AI_CAN_IP =  userDetails.get("AI_CAN_IP")
                 win = MyWindow(IP,AI_CAN_IP,Email,Identifier)
                 win.show()
                 win.setWindowTitle(VERSION)
