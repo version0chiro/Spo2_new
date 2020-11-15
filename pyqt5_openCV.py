@@ -356,7 +356,7 @@ def grab_images(cam_num, queue,self):
                     if globalCount>100000:
                         globalCount=0
                     print(globalCount)
-                    if(int(float(Compensated))>37):
+                    if((float(Compensated))>37.7):
                         send_mail()
 
                 # print(frameCount)
