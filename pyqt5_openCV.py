@@ -613,7 +613,7 @@ class Window(QDialog):
             pickle.dump(userDetails, f)
         # closing the window 
         self.close()
-        win = MyWindow(IP,Email,Identifier)
+        win = MyWindow(IP,AI_CAN_IP,Email,Identifier)
         win.show()
         win.setWindowTitle(VERSION)
         win.start()
