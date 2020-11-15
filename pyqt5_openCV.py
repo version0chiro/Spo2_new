@@ -472,7 +472,7 @@ class MyWindow(QMainWindow):
          
         self.label_5 = QLabel('ID:',self)
         self.label_5.move(500,175)
-        self.label_2.resize(200,50) 
+        # self.label_5.resize(200,20) 
         self.label_5.setStyleSheet("border: 1px solid black;")
         
         # creating a push button
