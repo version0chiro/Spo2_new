@@ -238,13 +238,13 @@ def grab_images(cam_num, queue,self):
         cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)
     while capturing:
         if cap.grab():
-            if url_ok():
-                Webspo2Flag = getRequest()
+            
             
             
                         
-            if Webspo2Flag:
-                print(Webspo2Flag)
+            # if Webspo2Flag:
+            if 1:
+                # print(Webspo2Flag)
                 global Spo2Flag,FaceDetectionFlag,frameCount,final_sig,spo2_set,name
                 final_sig=[]
                 name=[]
@@ -254,9 +254,9 @@ def grab_images(cam_num, queue,self):
                 FaceDetectionFlag=1
                 # printing pressed
                 print("pressed")
-                Webspo2Flag = not Webspo2Flag
-                if url_ok():
-                    sendRequest()
+                # Webspo2Flag = not Webspo2Flag
+                # if url_ok():
+                #     sendRequest()
                 
             retval, image = cap.retrieve(0)
             fullScale = image.copy()
@@ -332,8 +332,8 @@ def grab_images(cam_num, queue,self):
                         print(result)
                         self.label_2.setText("SPO2 Level:"+str(int(result)))
                         checkName(name_final,result,hr)
-                        if url_ok():
-                            upload()
+                        # if url_ok():
+                        #     upload()
                         Spo2Flag=0
                         # Webspo2Flag= not Webspo2Flag
                         
