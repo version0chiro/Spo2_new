@@ -673,7 +673,7 @@ if __name__ == '__main__':
     screen = SetupWindow()
     screen.show()
     state.exec()
-    global setupFlag
+    
     if len(sys.argv) > 1:
         try:
             camera_num = int(sys.argv[1])
