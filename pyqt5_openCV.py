@@ -390,7 +390,7 @@ class MyWindow(QMainWindow):
 
     text_update = pyqtSignal(str)
     # Create main window
-    def __init__(self,IP,email,identifier, parent=None):
+    def __init__(self,IP,AI_CAN_IP,email,identifier, parent=None):
         
         QMainWindow.__init__(self, parent)
         
@@ -398,7 +398,7 @@ class MyWindow(QMainWindow):
         
         # Ipaddress,done1 = QInputDialog.getText( 
         #      self, 'Input Dialog', 'IP address:')
-        self.AI_CAM_IP = get_IP(identifier)
+        self.AI_CAM_IP =AI_CAN_IP
         
         self.IP = IP
         self.textbox = QTextEdit(self.central)
@@ -690,11 +690,13 @@ if __name__ == '__main__':
         app = QApplication(sys.argv)
         if (path.exists("userData.pickle") and (not setupFlag)):
             with open('userData.pickle','rb') as f:
+
                 userDetails = pickle.load(f)
                 IP = userDetails.get('IP')
+                AI_CAN_IP =  get_IP(identifier)
                 Email = userDetails.get('Email')
                 Identifier = userDetails.get("Identifier")
-                win = MyWindow(IP,Email,Identifier)
+                win = MyWindow(IP,AI_CAN_IP,Email,Identifier)
                 win.show()
                 win.setWindowTitle(VERSION)
                 win.start()
