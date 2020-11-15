@@ -21,6 +21,8 @@ import face_recognition
 import pickle
 import sys, time, threading, cv2
 from HeartRate import Process
+from IP_scan import get_IP
+from IP_scan import get_value
 
 try:
     from PyQt5.QtCore import Qt
@@ -57,6 +59,7 @@ camera_num  = 1                 # Default camera (first in list)
 image_queue = Queue.Queue()     # Queue to hold images
 capturing   = True              # Flag to indicate capturing
 
+setupFlag = True
 
 frameCount=0
 
@@ -321,6 +324,7 @@ def grab_images(cam_num, queue,self):
                     final_sig.append(MeanRGB(thresh,faceFrame,final_sig[-1],min_value,max_value))
                     self.label_1.setText("HeartRate:"+str(int(hr)))
                     
+                    
 
                 if frameCount==totalFrame:
                     if Spo2Flag==1:
@@ -338,7 +342,9 @@ def grab_images(cam_num, queue,self):
                         print("Try again with face properly aligned")
                 queue.put(boxFrame)
                 frameCount=frameCount+1
-                
+                sensorValue=get_value(self.IP)
+                self.label_3.setText("Ambient:"+str(int(sensorValue.Ambient)))
+                self.label_4.setText("Compen.:"+str(int(sensorValue.Compensated)))
                 # print(frameCount)
             else:
                 time.sleep(DISP_MSEC / 1000.0)
@@ -387,7 +393,9 @@ class MyWindow(QMainWindow):
         
         # Ipaddress,done1 = QInputDialog.getText( 
         #      self, 'Input Dialog', 'IP address:')
-        self.IP = IP
+        self.IP = get_IP(identifier)
+        
+        # self.IP = IP
         self.textbox = QTextEdit(self.central)
         self.textbox.setFont(TEXT_FONT)
         self.textbox.setMinimumSize(300, 100)
@@ -435,11 +443,19 @@ class MyWindow(QMainWindow):
         self.setGeometry(self.left, self.top, self.width, self.height)
 
         self.label_2 = QLabel('SPO2 Level:',self)
-        self.label_2.move(500,150)
+        self.label_2.move(500,100)
         self.label_2.setStyleSheet("border: 1px solid black;")
         
         self.label_1 = QLabel('heartRate:', self) 
-        self.label_1.move(500, 300) 
+        self.label_1.move(500, 150) 
+
+        self.label_3 = QLabel('Ambient:',self)
+        self.label_3.move(500,250)
+        self.label_3.setStyleSheet("border: 1px solid black;")
+
+        self.label_4 = QLabel('Compen.:',self)
+        self.label_4.move(500,275)
+        self.label_4.setStyleSheet("border: 1px solid black;")
          
         self.label_1.setStyleSheet("border: 1px solid black;")
         # creating a push button
@@ -617,7 +633,47 @@ class Window(QDialog):
         # setting layout 
         self.formGroupBox.setLayout(layout) 
 
+class SetupWindow(QWidget):
+    def __init__(self):
+        QWidget.__init__(self)
+        layout = QGridLayout()
+        self.setLayout(layout)
+
+        self.radiobuttonSetup = QRadioButton("Setup")
+        self.radiobuttonSetup.setChecked(True)
+        self.radiobuttonSetup.state = "Setup"
+        
+        layout.addWidget(self.radiobuttonSetup, 0, 0)
+
+        self.radiobuttonRun = QRadioButton("Run")
+        self.radiobuttonRun.state = "Run"
+        
+        layout.addWidget(self.radiobuttonRun, 0, 1)
+
+        button = QPushButton("Proceed", self) 
+  
+        # setting geometry of button 
+        button.setGeometry(200, 150, 100, 30) 
+        layout.addWidget(button, 1, 0)
+        # adding action to a button 
+        button.clicked.connect(self.onClicked) 
+        
+    def onClicked(self):
+        global setupFlag
+        if self.radiobuttonRun.isChecked():
+            setupFlag=False
+        else:
+            setupFlag=True
+        self.close()
+
+
 if __name__ == '__main__':
+    
+    state = QApplication(sys.argv)
+    screen = SetupWindow()
+    screen.show()
+    state.exec()
+    global setupFlag
     if len(sys.argv) > 1:
         try:
             camera_num = int(sys.argv[1])
@@ -627,7 +683,7 @@ if __name__ == '__main__':
         print("Invalid camera number '%s'" % sys.argv[1])
     else:
         app = QApplication(sys.argv)
-        if path.exists("userData.pickle"):
+        if (path.exists("userData.pickle") and (not setupFlag)):
             with open('userData.pickle','rb') as f:
                 userDetails = pickle.load(f)
                 IP = userDetails.get('IP')
