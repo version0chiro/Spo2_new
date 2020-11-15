@@ -3,7 +3,7 @@
 # Please credit iosoft.blog if you use the information or software in it
 
 VERSION = "SPO2 Estimation software"
-
+from os import path
 from attendance import checkName
 from request import getRequest,sendRequest,url_ok,upload
 import imutils
@@ -238,6 +238,7 @@ def grab_images(cam_num, queue,self):
             if url_ok():
                 Webspo2Flag = getRequest()
             
+            
                         
             if Webspo2Flag:
                 print(Webspo2Flag)
@@ -375,21 +376,26 @@ class ImageWidget(QWidget):
 
 # Main window
 class MyWindow(QMainWindow):
+
     text_update = pyqtSignal(str)
     # Create main window
-    def __init__(self, parent=None):
+    def __init__(self,IP,email,identifier, parent=None):
         
         QMainWindow.__init__(self, parent)
         
         self.central = QWidget(self)
-        Ipaddress,done1 = QInputDialog.getText( 
-             self, 'Input Dialog', 'IP address:')
-        self.IP = Ipaddress
+        
+        # Ipaddress,done1 = QInputDialog.getText( 
+        #      self, 'Input Dialog', 'IP address:')
+        self.IP = IP
         self.textbox = QTextEdit(self.central)
         self.textbox.setFont(TEXT_FONT)
         self.textbox.setMinimumSize(300, 100)
         self.text_update.connect(self.append_text)
         sys.stdout = self
+        print(identifier)
+        print(IP)
+        print(email)
         print("Camera number %u" % camera_num)
         print("Image size %u x %u" % IMG_SIZE)
         if DISP_SCALE > 1:
@@ -519,6 +525,98 @@ class MyWindow(QMainWindow):
         capturing = False
         self.capture_thread.join()
 
+class Window(QDialog): 
+  
+    # constructor 
+    def __init__(self): 
+        super(Window, self).__init__() 
+  
+        # setting window title 
+        self.setWindowTitle("Setup") 
+  
+        # setting geometry to the window 
+        self.setGeometry(100, 100, 300, 400) 
+  
+        # creating a group box 
+        self.formGroupBox = QGroupBox("Enter user details") 
+  
+        # creating spin box to select age 
+         
+  
+        # creating a line edit 
+        self.nameLineEdit = QLineEdit() 
+
+        # creating a line edit 
+        self.emailLineEdit = QLineEdit() 
+
+        # creating a line edit 
+        self.iPLineEdit = QLineEdit() 
+
+        # calling the method that create the form 
+        self.createForm() 
+  
+        # creating a dialog button for ok and cancel 
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel) 
+  
+        # adding action when form is accepted 
+        self.buttonBox.accepted.connect(self.getInfo) 
+  
+        # addding action when form is rejected 
+        self.buttonBox.rejected.connect(self.reject) 
+  
+        # creating a vertical layout 
+        mainLayout = QVBoxLayout() 
+  
+        # adding form group box to the layout 
+        mainLayout.addWidget(self.formGroupBox) 
+  
+        # adding button box to the layout 
+        mainLayout.addWidget(self.buttonBox) 
+  
+        # setting lay out 
+        self.setLayout(mainLayout) 
+  
+    # get info method called when form is accepted 
+    def getInfo(self): 
+  
+        # printing the form information 
+        print("Identifier : {0}".format(self.nameLineEdit.text())) 
+        print("Email : {0}".format(self.emailLineEdit.text())) 
+        print("IP : {0}".format(self.iPLineEdit.text())) 
+        Identifier = self.nameLineEdit.text()
+        Email = self.emailLineEdit.text()
+        IP=self.iPLineEdit.text()
+        userDetails = {"Identifier":Identifier,"Email":Email,"IP":IP}
+        with open('userData.pickle', 'wb') as f:
+            pickle.dump(userDetails, f)
+        # closing the window 
+        self.close()
+        win = MyWindow(IP,Email,Identifier)
+        win.show()
+        win.setWindowTitle(VERSION)
+        win.start()
+        
+         
+  
+    # creat form method 
+    def createForm(self): 
+  
+        # creating a form layout 
+        layout = QFormLayout() 
+  
+        # adding rows 
+        # for name and adding input text 
+        layout.addRow(QLabel("Identifier"), self.nameLineEdit) 
+  
+        # for degree and adding combo box 
+        layout.addRow(QLabel("Email"), self.emailLineEdit) 
+  
+        # for age and adding spin box 
+        layout.addRow(QLabel("IP"), self.iPLineEdit) 
+  
+        # setting layout 
+        self.formGroupBox.setLayout(layout) 
+
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         try:
@@ -529,10 +627,20 @@ if __name__ == '__main__':
         print("Invalid camera number '%s'" % sys.argv[1])
     else:
         app = QApplication(sys.argv)
-        win = MyWindow()
-        win.show()
-        win.setWindowTitle(VERSION)
-        win.start()
-        sys.exit(app.exec_())
-
+        if path.exists("userData.pickle"):
+            with open('userData.pickle','rb') as f:
+                userDetails = pickle.load(f)
+                IP = userDetails.get('IP')
+                Email = userDetails.get('Email')
+                Identifier = userDetails.get("Identifier")
+                win = MyWindow(IP,Email,Identifier)
+                win.show()
+                win.setWindowTitle(VERSION)
+                win.start()
+                sys.exit(app.exec())
+        
+        else:
+            window = Window() 
+            window.show()
+            sys.exit(app.exec())
 #EOF
