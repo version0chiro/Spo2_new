@@ -241,11 +241,7 @@ def grab_images(cam_num, queue,self):
     else:
         cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)
     while capturing:
-        if cap.grab():
-            
-            
-            
-                        
+        if cap.grab():                      
             # if Webspo2Flag:
             # if 1:
             # print(Webspo2Flag)
@@ -298,6 +294,7 @@ def grab_images(cam_num, queue,self):
                             name = max(counts,key=counts.get)
 
                         print(name)
+                        self.label_5.setText("ID:"+name)
                         name_final=name
                         FaceDetectionFlag=0
                     thresh,mask=face_detect_and_thresh(faceFrame)
@@ -320,7 +317,7 @@ def grab_images(cam_num, queue,self):
                     process.run()
                     bpm=process.bpm
                     if process.bpms.__len__() > 50:
-                        if(max(process.bpms-np.mean(process.bpms))<10 and bpm<110):
+                        if(max(process.bpms-np.mean(process.bpms))<10 and bpm<100):
                             hr=np.mean(process.bpms)
                     if bpm>0:
                         print(bpm)
@@ -462,6 +459,8 @@ class MyWindow(QMainWindow):
         
         self.label_1 = QLabel('heartRate:', self) 
         self.label_1.move(500, 75) 
+        self.label_1.setStyleSheet("border: 1px solid black;")
+
 
         self.label_3 = QLabel('Ambient:',self)
         self.label_3.move(500,225)
@@ -471,7 +470,11 @@ class MyWindow(QMainWindow):
         self.label_4.move(500,250)
         self.label_4.setStyleSheet("border: 1px solid black;")
          
-        self.label_1.setStyleSheet("border: 1px solid black;")
+        self.label_5 = QLabel('ID:',self)
+        self.label_5.move(500,175)
+        self.label_2.resize(200,50) 
+        self.label_5.setStyleSheet("border: 1px solid black;")
+        
         # creating a push button
         button = QPushButton("SPO2", self)
 
