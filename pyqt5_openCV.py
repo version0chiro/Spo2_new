@@ -693,9 +693,10 @@ if __name__ == '__main__':
 
                 userDetails = pickle.load(f)
                 IP = userDetails.get('IP')
-                AI_CAN_IP =  get_IP(identifier)
+                
                 Email = userDetails.get('Email')
                 Identifier = userDetails.get("Identifier")
+                AI_CAN_IP =  get_IP(Identifier)
                 win = MyWindow(IP,AI_CAN_IP,Email,Identifier)
                 win.show()
                 win.setWindowTitle(VERSION)
