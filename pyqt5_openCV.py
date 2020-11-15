@@ -23,6 +23,7 @@ import sys, time, threading, cv2
 from HeartRate import Process
 from IP_scan import get_IP
 from IP_scan import get_value
+from emailSender import send_mail
 
 try:
     from PyQt5.QtCore import Qt
@@ -345,6 +346,8 @@ def grab_images(cam_num, queue,self):
                 sensorValue=get_value(self.AI_CAM_IP)
                 self.label_3.setText("Ambient:"+str(int(sensorValue.Ambient)))
                 self.label_4.setText("Compen.:"+str(int(sensorValue.Compensated)))
+                if(int(sensorValue.Compensated)>37):
+                    send_mail()
                 # print(frameCount)
             else:
                 time.sleep(DISP_MSEC / 1000.0)
