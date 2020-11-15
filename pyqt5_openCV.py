@@ -348,7 +348,7 @@ def grab_images(cam_num, queue,self):
                 Compensated = stringGetValue(sensorValue,6) 
                 self.label_3.setText("Ambient:"+str(int(float(Ambient))))
                 self.label_4.setText("Compen.:"+str(int(float(Compensated))))
-                if(int(sensorValue.Compensated)>37):
+                if(int(float(Compensated))>37):
                     send_mail()
                 # print(frameCount)
             else:
@@ -577,7 +577,7 @@ class Window(QDialog):
         self.createForm() 
   
         # creating a dialog button for ok and cancel 
-        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok.setText("Proceed") | QDialogButtonBox.Cancel) 
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel) 
   
         # adding action when form is accepted 
         self.buttonBox.accepted.connect(self.getInfo) 
