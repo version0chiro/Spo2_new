@@ -320,7 +320,7 @@ def grab_images(cam_num, queue,self):
                     process.run()
                     bpm=process.bpm
                     if process.bpms.__len__() > 50:
-                        if(max(process.bpms-np.mean(process.bpms))<5):
+                        if(max(process.bpms-np.mean(process.bpms))<10 and bpm<110):
                             hr=np.mean(process.bpms)
                     if bpm>0:
                         print(bpm)
