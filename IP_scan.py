@@ -38,7 +38,7 @@ def get_IP(Identifier):
     for i in range(0, 255):
         res = connect(laptop_ip_address+str(i), 80)
         if res:
-            # print("Device found at: ", laptop_ip_address+str(i) + ":"+str(80))
+            print("Device found at: ", laptop_ip_address+str(i) + ":"+str(80))
             available_devices.append("http://"+laptop_ip_address+str(i))
 
     # identifying our device
