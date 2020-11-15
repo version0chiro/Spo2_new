@@ -64,6 +64,8 @@ setupFlag = True
 
 frameCount=0
 
+globalCount=0
+
 duration=10
 
 totalFrame = 250
@@ -218,6 +220,7 @@ def grab_images(cam_num, queue,self):
     global data
     global boxes
     global frameCount
+    global globalCount
     global totalFrame
     global FaceDetectionFlag
     global Spo2Flag
@@ -343,13 +346,18 @@ def grab_images(cam_num, queue,self):
                         print("Try again with face properly aligned")
                 queue.put(boxFrame)
                 frameCount=frameCount+1
-                sensorValue=get_value(self.AI_CAM_IP)
-                Ambient = stringGetValue(sensorValue,4) 
-                Compensated = stringGetValue(sensorValue,6) 
-                self.label_3.setText("Ambient:"+str(int(float(Ambient))))
-                self.label_4.setText("Compen.:"+str(int(float(Compensated))))
-                if(int(float(Compensated))>37):
-                    send_mail()
+                globalCount=globalCount +1 
+                if globalCount%500==0:
+                    sensorValue=get_value(self.AI_CAM_IP)
+                    Ambient = stringGetValue(sensorValue,4) 
+                    Compensated = stringGetValue(sensorValue,6) 
+                    self.label_3.setText("Ambient:"+str((float(Ambient))))
+                    self.label_4.setText("Compen.:"+str((float(Compensated))))
+                    if globalCount>100000:
+                        globalCount=0
+                    if(int(float(Compensated))>37):
+                        send_mail()
+
                 # print(frameCount)
             else:
                 time.sleep(DISP_MSEC / 1000.0)
@@ -448,11 +456,11 @@ class MyWindow(QMainWindow):
         self.setGeometry(self.left, self.top, self.width, self.height)
 
         self.label_2 = QLabel('SPO2 Level:',self)
-        self.label_2.move(500,100)
+        self.label_2.move(500,50)
         self.label_2.setStyleSheet("border: 1px solid black;")
         
         self.label_1 = QLabel('heartRate:', self) 
-        self.label_1.move(500, 150) 
+        self.label_1.move(500, 75) 
 
         self.label_3 = QLabel('Ambient:',self)
         self.label_3.move(500,250)
@@ -468,9 +476,19 @@ class MyWindow(QMainWindow):
 
         # setting geometry of button
         button.setGeometry(200, 150, 100, 30)
-        button.move(500,200)
+        button.move(500,150)
         # adding action to a button
+
         button.clicked.connect(self.clickme)
+
+        button2 = QPushButton("Update", self)
+
+        # setting geometry of button
+        button2.setGeometry(200, 150, 100, 30)
+        button2.move(500,300)
+        # adding action to a button
+        button2.clicked.connect(self.updateV)
+
         self.show()
 
     def on_click(self):
@@ -478,6 +496,19 @@ class MyWindow(QMainWindow):
         QMessageBox.question(self, 'Message - pythonspot.com', "You typed: " + textboxValue, QMessageBox.Ok, QMessageBox.Ok)
         self.textboxIP.setText("")
     # action method
+
+    def updateV(self):
+        sensorValue=get_value(self.AI_CAM_IP)
+        Ambient = stringGetValue(sensorValue,4) 
+        Compensated = stringGetValue(sensorValue,6) 
+        self.label_3.setText("Ambient:"+str((float(Ambient))))
+        self.label_4.setText("Compen.:"+str((float(Compensated))))
+        # if globalCount>100000:
+        #     globalCount=0
+        if(int(float(Compensated))>37):
+            send_mail()
+
+
     def clickme(self):
         global hr,Spo2Flag,FaceDetectionFlag,frameCount,final_sig,spo2_set,name
         final_sig=[]

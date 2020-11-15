@@ -12,7 +12,7 @@ def get_value(IP):
                 break
         except:
             pass
-    print(type(html))
+    # print(type(html))
     # jsonD = json.dumps(html)
     # jsonL = json.loads(jsonD)
     sensorValues = html.decode()
