@@ -318,7 +318,7 @@ def grab_images(cam_num, queue,self):
                     process.run()
                     bpm=process.bpm
                     if process.bpms.__len__() > 50:
-                        if(max(process.bpms-np.mean(process.bpms))<10 and bpm<100):
+                        if(max(process.bpms-np.mean(process.bpms))<20 and bpm<100):
                             hr=np.mean(process.bpms)
                     if bpm>0:
                         print(bpm)
@@ -332,7 +332,10 @@ def grab_images(cam_num, queue,self):
                     if Spo2Flag==1:
                         result=SPooEsitmate(final_sig,totalFrame,totalFrame,duration) # the final signal list is sent to SPooEsitmate function with length of the video
                         print(result)
-                        self.label_2.setText("SPO2 Level:"+str(int(result)))
+                        try:
+                            self.label_2.setText("SPO2 Level:"+str(int(result)))
+                        else:
+                            self.label_2.setText("SPO2 Level:"+"NA")
                         tempFlag=checkPing(self.AI_CAM_IP)
                         if tempFlag==1:
                             try:
@@ -360,10 +363,10 @@ def grab_images(cam_num, queue,self):
                         
 
                     elif Spo2Flag==2:
-                        queue.Queue.Queue().clear()
+                        
                         print("Try again with face properly aligned")
 
-                print(self.AI_CAM_IP)
+                # print(self.AI_CAM_IP)
                 queue.put(boxFrame)
                 frameCount=frameCount+1
                 globalCount=globalCount +1 
