@@ -334,7 +334,7 @@ def grab_images(cam_num, queue,self):
                         print(result)
                         try:
                             self.label_2.setText("SPO2 Level:"+str(int(result)))
-                        else:
+                        except:
                             self.label_2.setText("SPO2 Level:"+"NA")
                         tempFlag=checkPing(self.AI_CAM_IP)
                         if tempFlag==1:
