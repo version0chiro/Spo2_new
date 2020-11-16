@@ -2,8 +2,9 @@ import requests
 from pythonping import ping
 
 def checkPing(IP):
+    IP=IP.split('//')[-1]
     try:
-        a=(ping(IP))
+        a=(ping(IP,timeout=1,count=1))
     except:
         return 0
     a = list(a)

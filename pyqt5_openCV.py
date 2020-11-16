@@ -363,7 +363,7 @@ def grab_images(cam_num, queue,self):
                         queue.Queue.Queue().clear()
                         print("Try again with face properly aligned")
 
-
+                print(self.AI_CAM_IP)
                 queue.put(boxFrame)
                 frameCount=frameCount+1
                 globalCount=globalCount +1 
@@ -376,13 +376,14 @@ def grab_images(cam_num, queue,self):
                             Compensated = stringGetValue(sensorValue,6) 
                             self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
                             self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
+                            if((float(Compensated))>37.7):
+                                send_mail()
                         except:
                             Ambient = "NA"
                             Compensated = "NA"
                             self.label_3.setText("Ambient:"+Ambient)
                             self.label_4.setText("Compen.:"+Compensated)
-                    if((float(Compensated))>37.7):
-                        send_mail()
+                    
                     else:
                         Ambient = "NA"
                         Compensated = "NA"
