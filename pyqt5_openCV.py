@@ -332,13 +332,17 @@ def grab_images(cam_num, queue,self):
                         result=SPooEsitmate(final_sig,totalFrame,totalFrame,duration) # the final signal list is sent to SPooEsitmate function with length of the video
                         print(result)
                         self.label_2.setText("SPO2 Level:"+str(int(result)))
-                        sensorValue=get_value(self.AI_CAM_IP)
-                        Ambient = stringGetValue(sensorValue,4) 
-                        Compensated = stringGetValue(sensorValue,6) 
-                        self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
-                        self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
-                        Ambient = format(float(Ambient),'.2f')
-                        Compensated = format(float(Compensated),'.2f')
+                        try:
+                            sensorValue=get_value(self.AI_CAM_IP)
+                            Ambient = stringGetValue(sensorValue,4) 
+                            Compensated = stringGetValue(sensorValue,6) 
+                            self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
+                            self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
+                            Ambient = format(float(Ambient),'.2f')
+                            Compensated = format(float(Compensated),'.2f')
+                        except:
+                            Ambient = "NA"
+                            Compensated = "NA"
                         checkName(name_final,result,hr,Compensated,Ambient)
                         # if url_ok():
                         #     upload()
@@ -355,11 +359,18 @@ def grab_images(cam_num, queue,self):
                 frameCount=frameCount+1
                 globalCount=globalCount +1 
                 if globalCount%500==0:
-                    sensorValue=get_value(self.AI_CAM_IP)
-                    Ambient = stringGetValue(sensorValue,4) 
-                    Compensated = stringGetValue(sensorValue,6) 
-                    self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
-                    self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
+                    try:
+                        sensorValue=get_value(self.AI_CAM_IP)
+                        Ambient = stringGetValue(sensorValue,4) 
+                        Compensated = stringGetValue(sensorValue,6) 
+                        self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
+                        self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
+                    except:
+                        Ambient = "NA"
+                        Compensated = "NA"
+                        self.label_3.setText("Ambient:"+Ambient)
+                        self.label_4.setText("Compen.:"+Compensated)
+
                     if globalCount>100000:
                         globalCount=0
                     print(globalCount)
@@ -512,15 +523,22 @@ class MyWindow(QMainWindow):
     # action method
 
     def updateV(self):
-        sensorValue=get_value(self.AI_CAM_IP)
-        Ambient = stringGetValue(sensorValue,4) 
-        Compensated = stringGetValue(sensorValue,6) 
-        self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
-        self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
+        try:
+            sensorValue=get_value(self.AI_CAM_IP)
+            Ambient = stringGetValue(sensorValue,4) 
+            Compensated = stringGetValue(sensorValue,6) 
+            self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
+            self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
         # if globalCount>100000:
         #     globalCount=0
-        if(int(float(Compensated))>37):
-            send_mail()
+        
+            if(int(float(Compensated))>37):
+                send_mail()
+        except:
+            Ambient = "NA"
+            Compensated = "NA"
+            self.label_3.setText("Ambient:"+Ambient)
+            self.label_4.setText("Compen.:"+Compensated)
 
 
     def clickme(self):
