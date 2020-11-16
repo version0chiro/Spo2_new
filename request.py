@@ -1,5 +1,21 @@
 import requests
+from pythonping import ping
 
+def checkPing(IP):
+    try:
+        a=(ping(IP))
+    except:
+        return 0
+    a = list(a)
+    a = map(str,a)
+    # print(list(a))
+    # for i in a:
+    #     print((i))
+
+    if any('Request timed out' in s for s in a):
+        return 0
+    else:
+        return 1
 
 
 def getRequest():

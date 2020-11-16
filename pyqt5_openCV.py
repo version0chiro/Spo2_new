@@ -25,6 +25,7 @@ from IP_scan import get_IP
 from IP_scan import get_value
 from emailSender import send_mail
 from string_manipulation import stringGetValue
+from request import checkPing
 try:
     from PyQt5.QtCore import Qt
     pyqt5 = True
@@ -332,17 +333,25 @@ def grab_images(cam_num, queue,self):
                         result=SPooEsitmate(final_sig,totalFrame,totalFrame,duration) # the final signal list is sent to SPooEsitmate function with length of the video
                         print(result)
                         self.label_2.setText("SPO2 Level:"+str(int(result)))
-                        try:
-                            sensorValue=get_value(self.AI_CAM_IP)
-                            Ambient = stringGetValue(sensorValue,4) 
-                            Compensated = stringGetValue(sensorValue,6) 
-                            self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
-                            self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
-                            Ambient = format(float(Ambient),'.2f')
-                            Compensated = format(float(Compensated),'.2f')
-                        except:
+                        tempFlag=checkPing(self.AI_CAM_IP)
+                        if tempFlag==1:
+                            try:
+                                sensorValue=get_value(self.AI_CAM_IP)
+                                Ambient = stringGetValue(sensorValue,4) 
+                                Compensated = stringGetValue(sensorValue,6) 
+                                self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
+                                self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
+                                Ambient = format(float(Ambient),'.2f')
+                                Compensated = format(float(Compensated),'.2f')
+                            except:
+                                Ambient = "NA"
+                                Compensated = "NA"
+                        else:
                             Ambient = "NA"
                             Compensated = "NA"
+                            self.label_3.setText("Ambient:"+Ambient)
+                            self.label_4.setText("Compen.:"+Compensated)
+                                
                         checkName(name_final,result,hr,Compensated,Ambient)
                         # if url_ok():
                         #     upload()
@@ -359,23 +368,31 @@ def grab_images(cam_num, queue,self):
                 frameCount=frameCount+1
                 globalCount=globalCount +1 
                 if globalCount%500==0:
-                    try:
-                        sensorValue=get_value(self.AI_CAM_IP)
-                        Ambient = stringGetValue(sensorValue,4) 
-                        Compensated = stringGetValue(sensorValue,6) 
-                        self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
-                        self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
-                    except:
+                    tempFlag=checkPing(self.AI_CAM_IP)
+                    if tempFlag==1:
+                        try:
+                            sensorValue=get_value(self.AI_CAM_IP)
+                            Ambient = stringGetValue(sensorValue,4) 
+                            Compensated = stringGetValue(sensorValue,6) 
+                            self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
+                            self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
+                        except:
+                            Ambient = "NA"
+                            Compensated = "NA"
+                            self.label_3.setText("Ambient:"+Ambient)
+                            self.label_4.setText("Compen.:"+Compensated)
+                    if((float(Compensated))>37.7):
+                        send_mail()
+                    else:
                         Ambient = "NA"
                         Compensated = "NA"
                         self.label_3.setText("Ambient:"+Ambient)
                         self.label_4.setText("Compen.:"+Compensated)
-
+                    
                     if globalCount>100000:
                         globalCount=0
                     print(globalCount)
-                    if((float(Compensated))>37.7):
-                        send_mail()
+                    
 
                 # print(frameCount)
             else:
@@ -523,23 +540,30 @@ class MyWindow(QMainWindow):
     # action method
 
     def updateV(self):
-        try:
-            sensorValue=get_value(self.AI_CAM_IP)
-            Ambient = stringGetValue(sensorValue,4) 
-            Compensated = stringGetValue(sensorValue,6) 
-            self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
-            self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
-        # if globalCount>100000:
-        #     globalCount=0
-        
-            if(int(float(Compensated))>37):
-                send_mail()
-        except:
+        tempFlag=checkPing(self.AI_CAM_IP)
+        if tempFlag==1:
+            try:
+                
+                sensorValue=get_value(self.AI_CAM_IP)
+                Ambient = stringGetValue(sensorValue,4) 
+                Compensated = stringGetValue(sensorValue,6) 
+                self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
+                self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
+            # if globalCount>100000:
+            #     globalCount=0
+            
+                if(int(float(Compensated))>37):
+                    send_mail()
+            except:
+                Ambient = "NA"
+                Compensated = "NA"
+                self.label_3.setText("Ambient:"+Ambient)
+                self.label_4.setText("Compen.:"+Compensated)
+        else:
             Ambient = "NA"
             Compensated = "NA"
             self.label_3.setText("Ambient:"+Ambient)
             self.label_4.setText("Compen.:"+Compensated)
-
 
     def clickme(self):
         global hr,Spo2Flag,FaceDetectionFlag,frameCount,final_sig,spo2_set,name
