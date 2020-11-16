@@ -337,7 +337,9 @@ def grab_images(cam_num, queue,self):
                         Compensated = stringGetValue(sensorValue,6) 
                         self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
                         self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
-                        checkName(name_final,result,hr,(format(float(Compensated),'.2f')),format(float(Ambient),'.2f')))
+                        Ambient = format(float(Ambient),'.2f')
+                        Compensated = format(float(Compensated),'.2f')
+                        checkName(name_final,result,hr,Compensated,Ambient)
                         # if url_ok():
                         #     upload()
                         Spo2Flag=0

@@ -69,8 +69,8 @@ def checkName(name,spo2,hr,Compensated,Ambient):
     	d['Time-Stamp'] = current_time
     	d['SpO2_value'] = spo2
     	d['Heart-rate'] = hr
-        d['Compensated'] = Compensated
-        d['Ambient'] = Ambient
+    	d['Compensated'] = Compensated
+    	d['Ambient'] = Ambient
         # d['SpO2_value']=spo2
     	a = d.index[0]
     	return atte.append(d)
