@@ -332,7 +332,12 @@ def grab_images(cam_num, queue,self):
                         result=SPooEsitmate(final_sig,totalFrame,totalFrame,duration) # the final signal list is sent to SPooEsitmate function with length of the video
                         print(result)
                         self.label_2.setText("SPO2 Level:"+str(int(result)))
-                        checkName(name_final,result,hr)
+                        sensorValue=get_value(self.AI_CAM_IP)
+                        Ambient = stringGetValue(sensorValue,4) 
+                        Compensated = stringGetValue(sensorValue,6) 
+                        self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
+                        self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
+                        checkName(name_final,result,hr,(format(float(Compensated),'.2f')),format(float(Ambient),'.2f')))
                         # if url_ok():
                         #     upload()
                         Spo2Flag=0
@@ -340,7 +345,10 @@ def grab_images(cam_num, queue,self):
                         
 
                     elif Spo2Flag==2:
+                        queue.Queue.Queue().clear()
                         print("Try again with face properly aligned")
+
+
                 queue.put(boxFrame)
                 frameCount=frameCount+1
                 globalCount=globalCount +1 
