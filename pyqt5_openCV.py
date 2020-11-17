@@ -707,8 +707,8 @@ class Window(QDialog):
         print("IP : {0}".format(self.iPLineEdit.text())) 
         Identifier = self.nameLineEdit.text()
         Email = self.emailLineEdit.text()
-        IP=self.iPLineEdit.text()
-        AI_CAN_IP =  self.JsonIP
+        IP="http://"+str(self.iPLineEdit.text())+"/mjpeg/1"
+        AI_CAN_IP =  "http://"+self.JsonIP
         userDetails = {"Identifier":Identifier,"Email":Email,"IP":IP,"AI_CAN_IP":AI_CAN_IP}
         with open('userData.pickle', 'wb') as f:
             pickle.dump(userDetails, f)
@@ -758,7 +758,7 @@ class Window(QDialog):
         layout.addRow(QLabel("Email"), self.emailLineEdit) 
   
         # for age and adding spin box 
-        layout.addRow(QLabel("IP"), self.iPLineEdit) 
+        layout.addRow(QLabel("Cam-IP"), self.iPLineEdit) 
   
         layout.addRow(QLabel("Json-IP"), self.JsonIP)
 
