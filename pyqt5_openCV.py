@@ -1,5 +1,4 @@
-# USB camera display using PyQt and OpenCV, from iosoft.blog
-# Copyright (c) Jeremy P Bentham 2019
+# Copyright (c) Sachin Singh Bhadoriya 2020
 # Please credit iosoft.blog if you use the information or software in it
 
 VERSION = "SPO2 Estimation software"
@@ -414,7 +413,7 @@ def check_url(url):
     elif url == "1":
         camera =1
     else:
-        camera = url
+        camera = "http://"+str(url)+"/mjpeg/1"
     return camera
 
 # Image widget
@@ -585,7 +584,7 @@ class MyWindow(QMainWindow):
     # Start image capture & display
     def start(self):
         IP = self.IP
-        IP =    check_url(IP)
+        
         print(IP)
         self.timer = QTimer(self)
         self.timer.setTimerType(Qt.PreciseTimer)        # Timer to trigger display
@@ -707,8 +706,8 @@ class Window(QDialog):
         print("IP : {0}".format(self.iPLineEdit.text())) 
         Identifier = self.nameLineEdit.text()
         Email = self.emailLineEdit.text()
-        IP="http://"+str(self.iPLineEdit.text())+"/mjpeg/1"
-        AI_CAN_IP =  "http://"+self.JsonIP
+        IP=check_url(self.iPLineEdit.text())
+        AI_CAN_IP =  "http://"+self.JsonIP.text()
         userDetails = {"Identifier":Identifier,"Email":Email,"IP":IP,"AI_CAN_IP":AI_CAN_IP}
         with open('userData.pickle', 'wb') as f:
             pickle.dump(userDetails, f)
