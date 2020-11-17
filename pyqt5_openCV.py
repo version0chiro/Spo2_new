@@ -63,6 +63,8 @@ capturing   = True              # Flag to indicate capturing
 
 setupFlag = True
 
+NoScanFlag= False
+
 frameCount=0
 
 globalCount=0
@@ -662,20 +664,28 @@ class Window(QDialog):
         self.emailLineEdit = QLineEdit() 
 
         # creating a line edit 
-        self.iPLineEdit = QLineEdit() 
+        self.iPLineEdit = QLineEdit()
 
+        self.JsonIP = QLineEdit()
+        
         # calling the method that create the form 
         self.createForm() 
-  
+
+        self.NoScanButton = QPushButton(self.tr("&No Scan"))
+
+
         # creating a dialog button for ok and cancel 
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel) 
-  
+
+
         # adding action when form is accepted 
         self.buttonBox.accepted.connect(self.getInfo) 
   
         # addding action when form is rejected 
         self.buttonBox.rejected.connect(self.reject) 
-  
+
+        self.NoScanButton.clicked.connect(self.NoScan)
+
         # creating a vertical layout 
         mainLayout = QVBoxLayout() 
   
@@ -684,10 +694,33 @@ class Window(QDialog):
   
         # adding button box to the layout 
         mainLayout.addWidget(self.buttonBox) 
+
+        mainLayout.addWidget(self.NoScanButton) 
   
         # setting lay out 
         self.setLayout(mainLayout) 
   
+
+    def NoScan(self):
+        print("Identifier : {0}".format(self.nameLineEdit.text())) 
+        print("Email : {0}".format(self.emailLineEdit.text())) 
+        print("IP : {0}".format(self.iPLineEdit.text())) 
+        Identifier = self.nameLineEdit.text()
+        Email = self.emailLineEdit.text()
+        IP=self.iPLineEdit.text()
+        AI_CAN_IP =  self.JsonIP
+        userDetails = {"Identifier":Identifier,"Email":Email,"IP":IP,"AI_CAN_IP":AI_CAN_IP}
+        with open('userData.pickle', 'wb') as f:
+            pickle.dump(userDetails, f)
+        # closing the window 
+        self.close()
+        win = MyWindow(IP,AI_CAN_IP,Email,Identifier)
+        win.show()
+        win.setWindowTitle(VERSION)
+        win.start()
+
+
+
     # get info method called when form is accepted 
     def getInfo(self): 
   
@@ -727,6 +760,8 @@ class Window(QDialog):
         # for age and adding spin box 
         layout.addRow(QLabel("IP"), self.iPLineEdit) 
   
+        layout.addRow(QLabel("Json-IP"), self.JsonIP)
+
         # setting layout 
         self.formGroupBox.setLayout(layout) 
 
