@@ -343,6 +343,7 @@ def grab_images(cam_num, queue,self):
                         if tempFlag==1:
                             print('entered try')
                             sensorValue=get_value(self.AI_CAN_IP)
+                            # print(sensorValue)
                             Ambient = stringGetValue(sensorValue,4) 
                             Compensated = stringGetValue(sensorValue,6) 
                             self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
