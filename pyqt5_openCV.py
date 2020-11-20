@@ -337,10 +337,13 @@ def grab_images(cam_num, queue,self):
                             self.label_2.setText("SPO2 Level:"+str(int(result)))
                         except:
                             self.label_2.setText("SPO2 Level:"+"NA")
-                        tempFlag=checkPing(self.AI_CAM_IP)
+                        tempFlag=checkPing(self.AI_CAN_IP)
+                        print('tempflag=')
+                        print(tempFlag)
                         if tempFlag==1:
                             try:
-                                sensorValue=get_value(self.AI_CAM_IP)
+                                print('entered try')
+                                sensorValue=get_value(self.AI_CAN_IP)
                                 Ambient = stringGetValue(sensorValue,4) 
                                 Compensated = stringGetValue(sensorValue,6) 
                                 self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
@@ -372,10 +375,10 @@ def grab_images(cam_num, queue,self):
                 frameCount=frameCount+1
                 globalCount=globalCount +1 
                 if globalCount%500==0:
-                    tempFlag=checkPing(self.AI_CAM_IP)
+                    tempFlag=checkPing(self.AI_CAN_IP)
                     if tempFlag==1:
                         try:
-                            sensorValue=get_value(self.AI_CAM_IP)
+                            sensorValue=get_value(self.AI_CAN_IP)
                             Ambient = stringGetValue(sensorValue,4) 
                             Compensated = stringGetValue(sensorValue,6) 
                             self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
@@ -447,7 +450,7 @@ class MyWindow(QMainWindow):
         
         # Ipaddress,done1 = QInputDialog.getText( 
         #      self, 'Input Dialog', 'IP address:')
-        self.AI_CAM_IP =AI_CAN_IP
+        self.AI_CAN_IP =AI_CAN_IP
         
         self.IP = IP
         self.textbox = QTextEdit(self.central)
@@ -708,6 +711,7 @@ class Window(QDialog):
         Email = self.emailLineEdit.text()
         IP=check_url(self.iPLineEdit.text())
         AI_CAN_IP =  "http://"+self.JsonIP.text()
+        print(AI_CAN_IP)
         userDetails = {"Identifier":Identifier,"Email":Email,"IP":IP,"AI_CAN_IP":AI_CAN_IP}
         with open('userData.pickle', 'wb') as f:
             pickle.dump(userDetails, f)

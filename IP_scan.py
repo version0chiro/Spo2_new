@@ -54,7 +54,7 @@ def get_IP(Identifier):
                 response.close()
                 dataReceivedFromClient = dataReceived.decode()
                 #print(dataReceivedFromClient)
-                substring = dataReceivedFromClient.find("AI CAN")
+                substring = dataReceivedFromClient.find(str(Identifier))
                 if substring == -1:
                     pass
                 else:

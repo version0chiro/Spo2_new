@@ -4,14 +4,14 @@ from pythonping import ping
 def checkPing(IP):
     IP=IP.split('//')[-1]
     try:
-        a=(ping(IP,timeout=1,count=1))
+        a=(ping(IP))
     except:
         return 0
     a = list(a)
     a = map(str,a)
-    # print(list(a))
-    # for i in a:
-    #     print((i))
+    print(list(a))
+    for i in a:
+        print((i))
 
     if any('Request timed out' in s for s in a):
         return 0
