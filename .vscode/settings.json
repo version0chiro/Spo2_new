@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "C:\\Users\\sachi\\Anaconda3\\envs\\openCVoxi\\python.exe"
+    "python.pythonPath": "D:\\Anaconda3\\envs\\cudaLearning\\python.exe",
+    "python.linting.enabled": false
 }

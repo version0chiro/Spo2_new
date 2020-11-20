@@ -3,6 +3,7 @@
 
 VERSION = "SPO2 Estimation software"
 from os import path
+from datetime import date
 from attendance import checkName
 from request import getRequest,sendRequest,url_ok,upload
 import imutils
@@ -25,6 +26,9 @@ from IP_scan import get_value
 from emailSender import send_mail
 from string_manipulation import stringGetValue
 from request import checkPing
+from frontalFaceDetection import detectionFrontFace
+import time
+import os
 try:
     from PyQt5.QtCore import Qt
     pyqt5 = True
@@ -63,6 +67,10 @@ capturing   = True              # Flag to indicate capturing
 setupFlag = True
 
 NoScanFlag= False
+
+recordFlag = False
+
+frontalFlag = True
 
 frameCount=0
 
@@ -228,12 +236,18 @@ def grab_images(cam_num, queue,self):
     global Spo2Flag
     global bpm
     global hr
-    
+    global recordFlag
+    global frontalFlag
 
     bpm=0
     hr=0
     # cap = cv2.VideoCapture(cam_num-1 + CAP_API)
     cap = cv2.VideoCapture(cam_num)
+    frame_width = int(cap.get(3)) 
+    frame_height = int(cap.get(4))
+    size = (frame_width, frame_height) 
+
+   
     # cap.set(cv2.CAP_PROP_FRAME_WIDTH, IMG_SIZE[0])
     # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, IMG_SIZE[1])
     name_final=''
@@ -243,35 +257,25 @@ def grab_images(cam_num, queue,self):
     else:
         cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)
     while capturing:
-        if cap.grab():                      
-            # if Webspo2Flag:
-            # if 1:
-            # print(Webspo2Flag)
-            # global Spo2Flag,FaceDetectionFlag,frameCount,final_sig,spo2_set,name
-            # final_sig=[]
-            # name=[]
-            # spo2_set=[]
-            # frameCount=0
-            # Spo2Flag=1
-            # FaceDetectionFlag=1
-            # # printing pressed
-            # print("pressed")
-            # # Webspo2Flag = not Webspo2Flag
-            # # if url_ok():
-            # #     sendRequest()
-                
+        if cap.grab():                             
             retval, image = cap.retrieve(0)
             fullScale = image.copy()
+            recordVid = image.copy()
             fullScale = imutils.resize(fullScale,width=400,height=400)
             fullScale = cv2.cvtColor(fullScale,cv2.COLOR_BGR2RGB)
+            if recordFlag:
+                saveFrame = fullScale.copy()
             image = imutils.resize(image,width=400,height=400)
-            
             boxFrame=image.copy()
             # print(queue.qsize())
             cv2.rectangle(boxFrame,(150,100),(250,200),(0,0,255),3)
             faceFrame = image[100:200,150:250]
+            if frontalFlag and detectionFrontFace(faceFrame.copy()):
+                print("")
+                frontalFlag = False 
+                self.clickme()   
             # cv2.imshow("face",faceFrame)
-            # cv2.waitKey(1)
+            cv2.waitKey(1)
             if boxFrame is not None and (queue.qsize() < 2 or (Spo2Flag))  :
                 # faceFrame = image[100:200,150:250]
 
@@ -299,6 +303,18 @@ def grab_images(cam_num, queue,self):
                         self.label_5.setText("ID:"+name)
                         name_final=name
                         FaceDetectionFlag=0
+                    if recordFlag:
+                        today = date.today()
+                        t = time.localtime()
+                        current_time = time.strftime("%H%M%S", t)
+                        print(current_time)
+                        if os.path.exists("recordings/"+str(today)):
+                            recording = cv2.VideoWriter("recordings/"+str(today)+'/'+str(name)+str(current_time)+'.avi',  
+                            cv2.VideoWriter_fourcc(*'MJPG'), 
+                            20, (400,400))
+                        else:
+                            os.mkdir("recordings/"+str(today))
+                            recording = cv2.VideoWriter("recordings/"+str(today)+str(current_time)+'/'+str(name)+str(current_time)+'.avi',cv2.VideoWriter_fourcc(*'MJPG'), 20, (400,400))
                     thresh,mask=face_detect_and_thresh(faceFrame)
 
                     temp,min_value,max_value=spartialAverage(mask,faceFrame)
@@ -313,7 +329,9 @@ def grab_images(cam_num, queue,self):
                     final_sig.append(temp)
 
                 elif (Spo2Flag==1) and frameCount<totalFrame and frameCount>1:
-                    
+                    if recordFlag:
+                        recordVid=cv2.resize(recordVid,(400,400))
+                        recording.write(recordVid)
                     thresh,mask=face_detect_and_thresh(faceFrame)
                     process.frame_in = fullScale
                     process.run()
@@ -330,6 +348,11 @@ def grab_images(cam_num, queue,self):
                     
 
                 if frameCount==totalFrame:
+                    if recordFlag:
+                        recording.release()
+                        recordFlag=False
+                        
+                        
                     if Spo2Flag==1:
                         result=SPooEsitmate(final_sig,totalFrame,totalFrame,duration) # the final signal list is sent to SPooEsitmate function with length of the video
                         print(result)
@@ -338,10 +361,9 @@ def grab_images(cam_num, queue,self):
                         except:
                             self.label_2.setText("SPO2 Level:"+"NA")
                         tempFlag=checkPing(self.AI_CAN_IP)
-                        print('tempflag=')
+                        
                         print(tempFlag)
                         if tempFlag==1:
-                            print('entered try')
                             sensorValue=get_value(self.AI_CAN_IP)
                             # print(sensorValue)
                             Ambient = stringGetValue(sensorValue,4) 
@@ -357,6 +379,7 @@ def grab_images(cam_num, queue,self):
                             self.label_4.setText("Compen.:"+Compensated)
                                 
                         checkName(name_final,result,hr,Compensated,Ambient)
+                        
                         # if url_ok():
                         #     upload()
                         Spo2Flag=0
@@ -373,6 +396,7 @@ def grab_images(cam_num, queue,self):
                 globalCount=globalCount +1 
                 if globalCount%500==0:
                     tempFlag=checkPing(self.AI_CAN_IP)
+                    frontalFlag = True
                     print(tempFlag)
                     if tempFlag==1:                       
                         sensorValue=get_value(self.AI_CAN_IP)
@@ -532,13 +556,17 @@ class MyWindow(QMainWindow):
         # adding action to a button
         button2.clicked.connect(self.updateV)
 
+        button3 = QPushButton("Record", self)
+
+        # setting geometry of button
+        button3.setGeometry(200, 150, 100, 30)
+        button3.move(500,335)
+        # adding action to a button
+        button3.clicked.connect(self.record)
+
         self.show()
 
-    def on_click(self):
-        textboxValue = self.textboxIP.text()
-        QMessageBox.question(self, 'Message - pythonspot.com', "You typed: " + textboxValue, QMessageBox.Ok, QMessageBox.Ok)
-        self.textboxIP.setText("")
-    # action method
+    
 
     def updateV(self):
         tempFlag=checkPing(self.AI_CAN_IP)
@@ -561,6 +589,12 @@ class MyWindow(QMainWindow):
             Compensated = "NA"
             self.label_3.setText("Ambient:"+Ambient)
             self.label_4.setText("Compen.:"+Compensated)
+
+    def record(self):
+        global recordFlag
+        recordFlag = True
+        self.clickme()
+
 
     def clickme(self):
         global hr,Spo2Flag,FaceDetectionFlag,frameCount,final_sig,spo2_set,name
