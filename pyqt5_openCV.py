@@ -548,11 +548,11 @@ class MyWindow(QMainWindow):
     # action method
 
     def updateV(self):
-        tempFlag=checkPing(self.AI_CAM_IP)
+        tempFlag=checkPing(self.AI_CAN_IP)
         if tempFlag==1:
             try:
                 
-                sensorValue=get_value(self.AI_CAM_IP)
+                sensorValue=get_value(self.AI_CAN_IP)
                 Ambient = stringGetValue(sensorValue,4) 
                 Compensated = stringGetValue(sensorValue,6) 
                 self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
