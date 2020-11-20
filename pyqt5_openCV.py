@@ -341,18 +341,14 @@ def grab_images(cam_num, queue,self):
                         print('tempflag=')
                         print(tempFlag)
                         if tempFlag==1:
-                            try:
-                                print('entered try')
-                                sensorValue=get_value(self.AI_CAN_IP)
-                                Ambient = stringGetValue(sensorValue,4) 
-                                Compensated = stringGetValue(sensorValue,6) 
-                                self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
-                                self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
-                                Ambient = format(float(Ambient),'.2f')
-                                Compensated = format(float(Compensated),'.2f')
-                            except:
-                                Ambient = "NA"
-                                Compensated = "NA"
+                            print('entered try')
+                            sensorValue=get_value(self.AI_CAN_IP)
+                            Ambient = stringGetValue(sensorValue,4) 
+                            Compensated = stringGetValue(sensorValue,6) 
+                            self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
+                            self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
+                            Ambient = format(float(Ambient),'.2f')
+                            Compensated = format(float(Compensated),'.2f')
                         else:
                             Ambient = "NA"
                             Compensated = "NA"
@@ -377,20 +373,15 @@ def grab_images(cam_num, queue,self):
                 if globalCount%500==0:
                     tempFlag=checkPing(self.AI_CAN_IP)
                     print(tempFlag)
-                    if tempFlag==1:
-                        try:
-                            sensorValue=get_value(self.AI_CAN_IP)
-                            Ambient = stringGetValue(sensorValue,4) 
-                            Compensated = stringGetValue(sensorValue,6) 
-                            self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
-                            self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
-                            if((float(Compensated))>37.7):
-                                send_mail()
-                        except:
-                            Ambient = "NA"
-                            Compensated = "NA"
-                            self.label_3.setText("Ambient:"+Ambient)
-                            self.label_4.setText("Compen.:"+Compensated)
+                    if tempFlag==1:                       
+                        sensorValue=get_value(self.AI_CAN_IP)
+                        Ambient = stringGetValue(sensorValue,4) 
+                        Compensated = stringGetValue(sensorValue,6) 
+                        self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
+                        self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
+                        if((float(Compensated))>37.7):
+                            send_mail()
+                        
                     
                     else:
                         Ambient = "NA"
@@ -552,23 +543,18 @@ class MyWindow(QMainWindow):
         tempFlag=checkPing(self.AI_CAN_IP)
         print(tempFlag)
         if tempFlag==1:
-            try:
-                
-                sensorValue=get_value(self.AI_CAN_IP)
-                Ambient = stringGetValue(sensorValue,4) 
-                Compensated = stringGetValue(sensorValue,6) 
-                self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
-                self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
-            # if globalCount>100000:
+
+            sensorValue=get_value(self.AI_CAN_IP)
+            Ambient = stringGetValue(sensorValue,4) 
+            Compensated = stringGetValue(sensorValue,6) 
+            self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
+            self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
+        # if globalCount>100000:
             #     globalCount=0
             
-                if(int(float(Compensated))>37):
-                    send_mail()
-            except:
-                Ambient = "NA"
-                Compensated = "NA"
-                self.label_3.setText("Ambient:"+Ambient)
-                self.label_4.setText("Compen.:"+Compensated)
+            if(int(float(Compensated))>37):
+                send_mail()
+        
         else:
             Ambient = "NA"
             Compensated = "NA"
