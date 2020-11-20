@@ -376,6 +376,7 @@ def grab_images(cam_num, queue,self):
                 globalCount=globalCount +1 
                 if globalCount%500==0:
                     tempFlag=checkPing(self.AI_CAN_IP)
+                    print(tempFlag)
                     if tempFlag==1:
                         try:
                             sensorValue=get_value(self.AI_CAN_IP)
@@ -549,6 +550,7 @@ class MyWindow(QMainWindow):
 
     def updateV(self):
         tempFlag=checkPing(self.AI_CAN_IP)
+        print(tempFlag)
         if tempFlag==1:
             try:
                 

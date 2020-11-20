@@ -14,6 +14,7 @@ def checkPing(IP):
         print((i))
 
     if any('Request timed out' in s for s in a):
+        print('found time out')
         return 0
     else:
         return 1
