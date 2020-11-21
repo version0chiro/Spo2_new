@@ -76,6 +76,8 @@ frameCount=0
 
 globalCount=0
 
+frontFaceCount = 0
+
 duration=10
 
 totalFrame = 250
@@ -238,6 +240,7 @@ def grab_images(cam_num, queue,self):
     global hr
     global recordFlag
     global frontalFlag
+    global frontFaceCount
 
     bpm=0
     hr=0
@@ -272,8 +275,11 @@ def grab_images(cam_num, queue,self):
             faceFrame = image[100:200,150:250]
             if frontalFlag and detectionFrontFace(faceFrame.copy()):
                 print("")
-                frontalFlag = False 
-                self.clickme()   
+                frontFaceCount=frontFaceCount+1
+                if frontFaceCount==5:    
+                    frontalFlag = False
+                    frontFaceCount=0 
+                    self.clickme()   
             # cv2.imshow("face",faceFrame)
             cv2.waitKey(1)
             if boxFrame is not None and (queue.qsize() < 2 or (Spo2Flag))  :
