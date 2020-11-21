@@ -271,16 +271,16 @@ def grab_images(cam_num, queue,self):
             fullScale = imutils.resize(fullScale,width=400,height=400)
             fullScale = cv2.cvtColor(fullScale,cv2.COLOR_BGR2RGB)
             if recordFlag:
-                print("made copy")
+                # print("made copy")
                 saveFrame = fullScale.copy()
                 
                 
             if (recordFlag) and ( not isRecordingFlag):
-                        print("made writer")
+                        # print("made writer")
                         today = date.today()
                         t = time.localtime()
                         current_time = time.strftime("%H%M%S", t)
-                        print(current_time)
+                        # print(current_time)
                         if os.path.exists("recordings/"+str(today)):
                             recording = cv2.VideoWriter("recordings/"+str(today)+'/'+str(current_time)+'.avi',  
                             cv2.VideoWriter_fourcc(*'MJPG'), 
@@ -298,7 +298,7 @@ def grab_images(cam_num, queue,self):
             faceFrame = image[int(100*0.9):int(200*1.1),int(150*0.9):int(250*1.1)]
             if self.autoFlag:
                 if frontalFlag and detectionFrontFace(faceFrame.copy()):
-                    print("")
+                    # print("")
                     frontFaceCount=frontFaceCount+1
                     if frontFaceCount==5:    
                         frontalFlag = False
@@ -308,7 +308,7 @@ def grab_images(cam_num, queue,self):
             cv2.waitKey(1)
             if boxFrame is not None and (queue.qsize() < 2 or (Spo2Flag))  :
                 # faceFrame = image[100:200,150:250]
-                print(queue.qsize())
+                # print(queue.qsize())
                 if frameCount==0 and (FaceDetectionFlag):
                     process=Process()
 
@@ -326,10 +326,10 @@ def grab_images(cam_num, queue,self):
                             for i in matchedIdxs:
                                 name = data["names"][i]
                                 counts[name]=counts.get(name,0)+1
-                            print(counts)
+                            # print(counts)
                             name = max(counts,key=counts.get)
 
-                        print(name)
+                        # print(name)
                         self.label_5.setText("ID:"+name)
                         name_final=name
                         FaceDetectionFlag=0
@@ -358,8 +358,8 @@ def grab_images(cam_num, queue,self):
                         if(max(process.bpms-np.mean(process.bpms))<20 and bpm<100):
                             hr=np.mean(process.bpms)
                     if bpm>0:
-                        print(bpm)
-                        print(hr)
+                        # print(bpm)
+                        # print(hr)
                     final_sig.append(MeanRGB(thresh,faceFrame,final_sig[-1],min_value,max_value))
                     self.label_1.setText("HeartRate:"+str(int(hr)))
                     
