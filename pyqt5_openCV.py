@@ -292,8 +292,10 @@ def grab_images(cam_num, queue,self):
             image = imutils.resize(image,width=400,height=400)
             boxFrame=image.copy()
             # print(queue.qsize())
-            cv2.rectangle(boxFrame,(150,100),(250,200),(0,0,255),3)
-            faceFrame = image[100:200,150:250]
+            # cv2.rectangle(boxFrame,(150,100),(250,200),(0,0,255),3)
+            # faceFrame = image[100:200,150:250]
+            cv2.rectangle(boxFrame,(int(150*1.3),int(100*1.3)),(int(250*1.3),int(200*1.3)),(0,0,255),3)
+            faceFrame = image[int(100*1.3):int(200*1.3),int(150*1.3):int(250*1.3)]
             if self.autoFlag:
                 if frontalFlag and detectionFrontFace(faceFrame.copy()):
                     print("")
