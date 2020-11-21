@@ -29,6 +29,7 @@ from request import checkPing
 from frontalFaceDetection import detectionFrontFace
 import time
 import os
+from password_check import checkPassword
 try:
     from PyQt5.QtCore import Qt
     pyqt5 = True
@@ -71,6 +72,7 @@ NoScanFlag= False
 recordFlag = False
 
 frontalFlag = True
+
 
 frameCount=0
 
@@ -241,6 +243,8 @@ def grab_images(cam_num, queue,self):
     global recordFlag
     global frontalFlag
     global frontFaceCount
+    isRecordingFlag=False
+    # global autoFlag
 
     bpm=0
     hr=0
@@ -267,19 +271,37 @@ def grab_images(cam_num, queue,self):
             fullScale = imutils.resize(fullScale,width=400,height=400)
             fullScale = cv2.cvtColor(fullScale,cv2.COLOR_BGR2RGB)
             if recordFlag:
+                print("made copy")
                 saveFrame = fullScale.copy()
+                
+                
+            if (recordFlag) and ( not isRecordingFlag):
+                        print("made writer")
+                        today = date.today()
+                        t = time.localtime()
+                        current_time = time.strftime("%H%M%S", t)
+                        print(current_time)
+                        if os.path.exists("recordings/"+str(today)):
+                            recording = cv2.VideoWriter("recordings/"+str(today)+'/'+str(current_time)+'.avi',  
+                            cv2.VideoWriter_fourcc(*'MJPG'), 
+                            20, (400,400))
+                        else:
+                            os.mkdir("recordings/"+str(today))
+                            recording = cv2.VideoWriter("recordings/"+str(today)+'/'+str(current_time)+'.avi',cv2.VideoWriter_fourcc(*'MJPG'), 20, (400,400))
+                        isRecordingFlag=True
             image = imutils.resize(image,width=400,height=400)
             boxFrame=image.copy()
             # print(queue.qsize())
             cv2.rectangle(boxFrame,(150,100),(250,200),(0,0,255),3)
             faceFrame = image[100:200,150:250]
-            if frontalFlag and detectionFrontFace(faceFrame.copy()):
-                print("")
-                frontFaceCount=frontFaceCount+1
-                if frontFaceCount==5:    
-                    frontalFlag = False
-                    frontFaceCount=0 
-                    self.clickme()   
+            if self.autoFlag:
+                if frontalFlag and detectionFrontFace(faceFrame.copy()):
+                    print("")
+                    frontFaceCount=frontFaceCount+1
+                    if frontFaceCount==5:    
+                        frontalFlag = False
+                        frontFaceCount=0 
+                        self.clickme()   
             # cv2.imshow("face",faceFrame)
             cv2.waitKey(1)
             if boxFrame is not None and (queue.qsize() < 2 or (Spo2Flag))  :
@@ -309,18 +331,7 @@ def grab_images(cam_num, queue,self):
                         self.label_5.setText("ID:"+name)
                         name_final=name
                         FaceDetectionFlag=0
-                    if recordFlag:
-                        today = date.today()
-                        t = time.localtime()
-                        current_time = time.strftime("%H%M%S", t)
-                        print(current_time)
-                        if os.path.exists("recordings/"+str(today)):
-                            recording = cv2.VideoWriter("recordings/"+str(today)+'/'+str(name)+str(current_time)+'.avi',  
-                            cv2.VideoWriter_fourcc(*'MJPG'), 
-                            20, (400,400))
-                        else:
-                            os.mkdir("recordings/"+str(today))
-                            recording = cv2.VideoWriter("recordings/"+str(today)+str(current_time)+'/'+str(name)+str(current_time)+'.avi',cv2.VideoWriter_fourcc(*'MJPG'), 20, (400,400))
+                    
                     thresh,mask=face_detect_and_thresh(faceFrame)
 
                     temp,min_value,max_value=spartialAverage(mask,faceFrame)
@@ -335,9 +346,7 @@ def grab_images(cam_num, queue,self):
                     final_sig.append(temp)
 
                 elif (Spo2Flag==1) and frameCount<totalFrame and frameCount>1:
-                    if recordFlag:
-                        recordVid=cv2.resize(recordVid,(400,400))
-                        recording.write(recordVid)
+                    
                     thresh,mask=face_detect_and_thresh(faceFrame)
                     process.frame_in = fullScale
                     process.run()
@@ -354,9 +363,7 @@ def grab_images(cam_num, queue,self):
                     
 
                 if frameCount==totalFrame:
-                    if recordFlag:
-                        recording.release()
-                        recordFlag=False
+                    
                         
                         
                     if Spo2Flag==1:
@@ -398,6 +405,19 @@ def grab_images(cam_num, queue,self):
 
                 # print(self.AI_CAM_IP)
                 queue.put(boxFrame)
+                if recordFlag:
+                    print('writen')
+                    recordVid=cv2.resize(recordVid,(400,400))
+                    recording.write(recordVid)
+                
+                if self.doneRecording:
+                    print('done ')
+                    if recordFlag:
+                        recording.release()
+                        recordFlag=False
+                        isRecordingFlag=False
+                        self.doneRecording=False
+                
                 frameCount=frameCount+1
                 globalCount=globalCount +1 
                 if globalCount%500==0:
@@ -504,8 +524,10 @@ class MyWindow(QMainWindow):
         self.top = 360
         # self.left = 500
         # self.top = 500
-        self.width = 640
+        self.width = 660
         self.height = 480
+        self.autoFlag=False
+        self.doneRecording=False
         self.UiComponents()
         self.mainMenu = self.menuBar()      # Menu bar
         exitAction = QAction('&Exit', self)
@@ -545,35 +567,53 @@ class MyWindow(QMainWindow):
         self.label_5.setStyleSheet("border: 1px solid black;")
         
         # creating a push button
-        button = QPushButton("SPO2", self)
+        self.button = QPushButton("SPO2", self)
 
         # setting geometry of button
-        button.setGeometry(200, 150, 100, 30)
-        button.move(500,125)
+        self.button.setGeometry(200, 150, 100, 30)
+        self.button.move(500,125)
         # adding action to a button
 
-        button.clicked.connect(self.clickme)
+        self.button.clicked.connect(self.clickme)
 
-        button2 = QPushButton("Update", self)
+        self.button2 = QPushButton("Update", self)
 
         # setting geometry of button
-        button2.setGeometry(200, 150, 100, 30)
-        button2.move(500,300)
+        self.button2.setGeometry(200, 150, 100, 30)
+        self.button2.move(500,300)
         # adding action to a button
-        button2.clicked.connect(self.updateV)
+        self.button2.clicked.connect(self.updateV)
+        # button2.move(425,335)
 
-        button3 = QPushButton("Record", self)
+        self.button3 = QPushButton("Record", self)
+
+        self.button3.setCheckable(True)
 
         # setting geometry of button
-        button3.setGeometry(200, 150, 100, 30)
-        button3.move(500,335)
+        self.button3.setGeometry(200, 150, 100, 30)
+        self.button3.move(545,335)
         # adding action to a button
-        button3.clicked.connect(self.record)
+        self.button3.clicked.connect(self.record)
+        
+        self.button4 = QPushButton("Auto", self)
+
+        self.button4.setCheckable(True)
+        
+        # setting geometry of button
+        self.button4.setGeometry(200, 150, 100, 30)
+        self.button4.move(425,335)
+        # adding action to a button
+        self.button4.clicked.connect(self.auto)
 
         self.show()
 
     
-
+    def auto(self):
+        print("auto")
+        if self.button4.isChecked():
+            self.autoFlag = True
+        else:
+            self.autoFlag = False
     def updateV(self):
         tempFlag=checkPing(self.AI_CAN_IP)
         print(tempFlag)
@@ -598,9 +638,14 @@ class MyWindow(QMainWindow):
 
     def record(self):
         global recordFlag
-        recordFlag = True
-        self.clickme()
-
+        
+        if self.button3.isChecked():
+            print("start recording")
+            recordFlag = True
+        else:
+            if recordFlag == True:
+                self.doneRecording = True
+                # recordFlag = False
 
     def clickme(self):
         global hr,Spo2Flag,FaceDetectionFlag,frameCount,final_sig,spo2_set,name
@@ -825,11 +870,21 @@ class SetupWindow(QWidget):
     def onClicked(self):
         global setupFlag
         if self.radiobuttonRun.isChecked():
+            self.getText()
             setupFlag=False
         else:
             setupFlag=True
         self.close()
 
+    def getText(self):
+        while(1):
+            text, okPressed = QInputDialog.getText(self, "Password","Enter Password:", QLineEdit.Normal, "")
+            if okPressed and text != '':
+                if checkPassword(text):
+                    break
+                else:
+                    continue
+            
 
 if __name__ == '__main__':
     
