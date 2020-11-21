@@ -9,9 +9,7 @@ def checkPing(IP):
         return 0
     a = list(a)
     a = map(str,a)
-    print(list(a))
-    for i in a:
-        print((i))
+    a=list(a)
 
     if any('Request timed out' in s for s in a):
         print('found time out')
