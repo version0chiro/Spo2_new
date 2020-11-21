@@ -308,7 +308,7 @@ def grab_images(cam_num, queue,self):
             cv2.waitKey(1)
             if boxFrame is not None and (queue.qsize() < 2 or (Spo2Flag))  :
                 # faceFrame = image[100:200,150:250]
-
+                print(queue.qsize())
                 if frameCount==0 and (FaceDetectionFlag):
                     process=Process()
 
@@ -343,6 +343,7 @@ def grab_images(cam_num, queue,self):
                     if(type(temp)==type(2)):
                         print("failed estimation, try again")
                         frameCount=totalFrame
+                        # break
                         Spo2Flag=2
 
                     final_sig.append(temp)
@@ -402,11 +403,12 @@ def grab_images(cam_num, queue,self):
                         
 
                     elif Spo2Flag==2:
-                        queue.clear()
                         print("Try again with face properly aligned")
+                        Spo2Flag=0
 
                 # print(self.AI_CAM_IP)
-                queue.put(boxFrame)
+                if Spo2Flag!=2:
+                    queue.put(boxFrame)
                 if recordFlag:
                     print('writen')
                     recordVid=cv2.resize(recordVid,(400,400))
