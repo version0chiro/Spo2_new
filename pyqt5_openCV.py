@@ -357,7 +357,7 @@ def grab_images(cam_num, queue,self):
                     if process.bpms.__len__() > 50:
                         if(max(process.bpms-np.mean(process.bpms))<20 and bpm<100):
                             hr=np.mean(process.bpms)
-                    if bpm>0:
+                    # if bpm>0:
                         # print(bpm)
                         # print(hr)
                     final_sig.append(MeanRGB(thresh,faceFrame,final_sig[-1],min_value,max_value))
