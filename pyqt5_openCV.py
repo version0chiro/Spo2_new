@@ -241,12 +241,12 @@ def grab_images(cam_num, queue,self):
     global Spo2Flag
     global bpm
     global hr
-    global recordFlag
+    # global recordFlag
     global frontalFlag
     global frontFaceCount
     isRecordingFlag=False
     # global autoFlag
-
+    recordFlag = self.recordFlag
     bpm=0
     hr=0
     # cap = cv2.VideoCapture(cam_num-1 + CAP_API)
@@ -271,18 +271,17 @@ def grab_images(cam_num, queue,self):
             recordVid = image.copy()
             fullScale = imutils.resize(fullScale,width=400,height=400)
             fullScale = cv2.cvtColor(fullScale,cv2.COLOR_BGR2RGB)
-            print(recordFlag)
-            print(isRecordingFlag)
-            if recordFlag:
+            
+            if self.recordFlag:
                 # print("made copy")
                 saveFrame = fullScale.copy()
                 
             cv2.waitKey(1)    
-            if (recordFlag) and ( not isRecordingFlag):
+            if (self.recordFlag) and ( not isRecordingFlag):
                         print("made writer")
                         today = date.today()
                         t = time.localtime()
-                        current_time = time.strftime("%H_%M_%S", t)
+                        current_time = time.strftime("%H%M%S", t)
                         # print(current_time)
                         if os.path.exists("recordings/"+str(today)):
                             self.recording = cv2.VideoWriter("recordings/"+str(today)+'/'+str(current_time)+'.avi',  
@@ -435,18 +434,19 @@ def grab_images(cam_num, queue,self):
 
                 # print(self.AI_CAM_IP)
                 if Spo2Flag!=2:
-                    queue.put(boxFrame)
+                    queue.put(image)
                     
-                if recordFlag:
+                if self.recordFlag and isRecordingFlag:
                     print('writen')
+                    cv2.putText(image,'rec:', (20,20), cv2.FONT_HERSHEY_SIMPLEX,1, (0, 0, 255) , 1, cv2.LINE_AA)
                     recordVid=cv2.resize(recordVid,(400,400))
                     self.recording.write(recordVid)
                 
                 if self.doneRecording:
                     print('done ')
-                    if recordFlag:
+                    if self.recordFlag:
                         self.recording.release()
-                        recordFlag=False
+                        self.recordFlag=False
                         isRecordingFlag=False
                         self.doneRecording=False
                 
@@ -559,6 +559,7 @@ class MyWindow(QMainWindow):
         self.width = 660
         self.height = 480
         self.autoFlag=False
+        self.recordFlag = False
         self.doneRecording=False
         self.UiComponents()
         self.mainMenu = self.menuBar()      # Menu bar
@@ -669,13 +670,11 @@ class MyWindow(QMainWindow):
             self.label_4.setText("Compen.:"+Compensated)
 
     def record(self):
-        global recordFlag
-        
         if self.button3.isChecked():
             print("start recording")
-            recordFlag = True
+            self.recordFlag = True
         else:
-            if recordFlag == True:
+            if self.recordFlag == True:
                 self.doneRecording = True
                 # recordFlag = False
 
