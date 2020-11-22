@@ -26,7 +26,7 @@ from IP_scan import get_value
 from emailSender import send_mail
 from string_manipulation import stringGetValue
 from request import checkPing
-from frontalFaceDetection import detectionFrontFace
+from frontalFaceDetection import detectionFrontFace,fix_box
 import time
 import os
 from password_check import checkPassword
@@ -73,6 +73,7 @@ recordFlag = False
 
 frontalFlag = True
 
+isRecordingFlag=False
 
 frameCount=0
 
@@ -270,32 +271,54 @@ def grab_images(cam_num, queue,self):
             recordVid = image.copy()
             fullScale = imutils.resize(fullScale,width=400,height=400)
             fullScale = cv2.cvtColor(fullScale,cv2.COLOR_BGR2RGB)
+            print(recordFlag)
+            print(isRecordingFlag)
             if recordFlag:
                 # print("made copy")
                 saveFrame = fullScale.copy()
                 
-                
+            cv2.waitKey(1)    
             if (recordFlag) and ( not isRecordingFlag):
-                        # print("made writer")
+                        print("made writer")
                         today = date.today()
                         t = time.localtime()
-                        current_time = time.strftime("%H%M%S", t)
+                        current_time = time.strftime("%H_%M_%S", t)
                         # print(current_time)
                         if os.path.exists("recordings/"+str(today)):
-                            recording = cv2.VideoWriter("recordings/"+str(today)+'/'+str(current_time)+'.avi',  
+                            self.recording = cv2.VideoWriter("recordings/"+str(today)+'/'+str(current_time)+'.avi',  
                             cv2.VideoWriter_fourcc(*'MJPG'), 
                             20, (400,400))
                         else:
                             os.mkdir("recordings/"+str(today))
-                            recording = cv2.VideoWriter("recordings/"+str(today)+'/'+str(current_time)+'.avi',cv2.VideoWriter_fourcc(*'MJPG'), 20, (400,400))
+                            self.recording = cv2.VideoWriter("recordings/"+str(today)+'/'+str(current_time)+'.avi',cv2.VideoWriter_fourcc(*'MJPG'), 20, (400,400))
                         isRecordingFlag=True
+                        
             image = imutils.resize(image,width=400,height=400)
             boxFrame=image.copy()
             # print(queue.qsize())
             # cv2.rectangle(boxFrame,(150,100),(250,200),(0,0,255),3)
             # faceFrame = image[100:200,150:250]
-            cv2.rectangle(boxFrame,(int(150*0.9),int(100*0.9)),(int(250*1.1),int(200*1.1)),(0,0,255),3)
-            faceFrame = image[int(100*0.9):int(200*1.1),int(150*0.9):int(250*1.1)]
+            # cv2.rectangle(boxFrame,(int(150*0.9),int(100*0.9)),(int(250*1.1),int(200*1.1)),(0,0,255),3)
+            if not hasattr(self, 'lastfaceFrame'):
+                self.lastfaceFrame=boxFrame[int(100*0.9):int(200*1.1),int(150*0.9):int(250*1.1)]
+            
+            try:
+                image,faceFrame = fix_box(image)
+            except:
+                faceFrame = boxFrame[int(100*0.9):int(200*1.1),int(150*0.9):int(250*1.1)]    
+            
+            height, width, channels = faceFrame.shape
+            
+            if height>0 and width>0:
+                self.lastfaceFrame=faceFrame
+            
+            else:
+                faceFrame=self.lastfaceFrame
+                
+            # print(height, width)
+            
+            cv2.imshow("faceFrame",faceFrame)
+            
             if self.autoFlag:
                 if frontalFlag and detectionFrontFace(faceFrame.copy()):
                     # print("")
@@ -351,9 +374,13 @@ def grab_images(cam_num, queue,self):
                 elif (Spo2Flag==1) and frameCount<totalFrame and frameCount>1:
                     
                     thresh,mask=face_detect_and_thresh(faceFrame)
-                    process.frame_in = fullScale
-                    process.run()
+                    process.frame_in = boxFrame
+                    try:
+                        process.run()
+                    except:
+                        process.bpm=self.bpmLast
                     bpm=process.bpm
+                    self.bpmLast=bpm
                     if process.bpms.__len__() > 50:
                         if(max(process.bpms-np.mean(process.bpms))<20 and bpm<100):
                             hr=np.mean(process.bpms)
@@ -409,15 +436,16 @@ def grab_images(cam_num, queue,self):
                 # print(self.AI_CAM_IP)
                 if Spo2Flag!=2:
                     queue.put(boxFrame)
+                    
                 if recordFlag:
                     print('writen')
                     recordVid=cv2.resize(recordVid,(400,400))
-                    recording.write(recordVid)
+                    self.recording.write(recordVid)
                 
                 if self.doneRecording:
                     print('done ')
                     if recordFlag:
-                        recording.release()
+                        self.recording.release()
                         recordFlag=False
                         isRecordingFlag=False
                         self.doneRecording=False
