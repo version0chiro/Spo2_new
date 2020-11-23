@@ -43,6 +43,7 @@ if pyqt5:
     from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel
     from PyQt5.QtWidgets import QWidget, QAction, QVBoxLayout, QHBoxLayout
     from PyQt5.QtGui import QFont, QPainter, QImage, QTextCursor
+    from PyQt5 import QtCore, QtGui 
 else:
     from PyQt4.QtCore import Qt, pyqtSignal, QTimer, QPoint
     from PyQt4.QtGui import QApplication, QMainWindow, QTextEdit, QLabel
@@ -89,6 +90,8 @@ Spo2Flag=0
 
 FaceDetectionFlag=0
 
+pickelName=None
+
 final_sig=[]
 
 name=[]
@@ -97,7 +100,7 @@ boxes=[(100,250,200,150)]
 
 spo2_set=[]
 
-data = pickle.loads(open("updated.pickle", "rb").read())
+data = pickle.loads(open("models/Trainedpickels/updated.pickle", "rb").read())
 
 process=Process()
 hr=0
@@ -818,10 +821,11 @@ class Window(QDialog):
         AI_CAN_IP =  "http://"+self.JsonIP.text()
         print(AI_CAN_IP)
         userDetails = {"Identifier":Identifier,"Email":Email,"IP":IP,"AI_CAN_IP":AI_CAN_IP}
-        with open('userData.pickle', 'wb') as f:
+        with open('userPickles/'+str(Identifier)+'.pickle', 'wb') as f:
             pickle.dump(userDetails, f)
         # closing the window 
         self.close()
+        self.getText()
         win = MyWindow(IP,AI_CAN_IP,Email,Identifier)
         win.show()
         win.setWindowTitle(VERSION)
@@ -841,16 +845,30 @@ class Window(QDialog):
         IP=self.iPLineEdit.text()
         AI_CAN_IP =  get_IP(Identifier)
         userDetails = {"Identifier":Identifier,"Email":Email,"IP":IP,"AI_CAN_IP":AI_CAN_IP}
-        with open('userData.pickle', 'wb') as f:
+        with open('userPickles/'+str(Identifier)+'.pickle', 'wb') as f:
             pickle.dump(userDetails, f)
         # closing the window 
         self.close()
+        self.getText()
         win = MyWindow(IP,AI_CAN_IP,Email,Identifier)
         win.show()
         win.setWindowTitle(VERSION)
         win.start()
         
-         
+    def getText(self):
+        count=0
+        while(1):
+            
+            text, okPressed = QInputDialog.getText(self, "Password","Enter Password:", QLineEdit.Normal, "")
+            if okPressed and text != '':
+                if checkPassword(text):
+                    break
+                else:
+                    count=count+1
+                    print(count)
+                    if(count>2):
+                        sys.exit()
+                    continue  
   
     # creat form method 
     def createForm(self): 
@@ -872,6 +890,60 @@ class Window(QDialog):
 
         # setting layout 
         self.formGroupBox.setLayout(layout) 
+
+class ListWindow(QMainWindow): 
+    
+  
+    def __init__(self): 
+        super().__init__() 
+  
+        # setting title 
+        self.setWindowTitle("Python ") 
+  
+        # setting geometry 
+        self.setGeometry(100, 100, 350, 450) 
+  
+        # calling method 
+        self.UiComponents() 
+
+        
+        
+
+        # showing all the widgets 
+        self.show() 
+  
+    # method for widgets 
+    def UiComponents(self): 
+  
+        self.l1 =QLabel('Please select your camera from the list below', self)
+        self.l1.move(50,100)
+        self.l1.adjustSize()
+        self.l1.setAlignment(QtCore.Qt.AlignCenter) 
+        # creating a combo box widget 
+        self.combo_box = QComboBox(self) 
+  
+        for file in os.listdir("userPickles/"):
+            if file.endswith(".pickle"):
+                self.combo_box.addItem(file.split('.')[0])
+        
+        
+        self.combo_box.move(115,200)
+        
+        
+        self.button = QPushButton('Select Cam', self)
+
+        
+        self.button.clicked.connect(self.pushed)
+
+        self.button.move(115,300)
+        
+        # adding items to combo box     
+
+    
+    def pushed(self):
+        global pickelName
+        pickelName = str(self.combo_box.currentText())
+        self.close()
 
 class SetupWindow(QWidget):
     def __init__(self):
@@ -908,12 +980,16 @@ class SetupWindow(QWidget):
         self.close()
 
     def getText(self):
+        count = 0
         while(1):
             text, okPressed = QInputDialog.getText(self, "Password","Enter Password:", QLineEdit.Normal, "")
             if okPressed and text != '':
                 if checkPassword(text):
                     break
                 else:
+                    count = count + 1
+                    if(count>2):
+                        sys.exit()
                     continue
             
 
@@ -932,9 +1008,20 @@ if __name__ == '__main__':
     if camera_num < 1:
         print("Invalid camera number '%s'" % sys.argv[1])
     else:
-        app = QApplication(sys.argv)
-        if (path.exists("userData.pickle") and (not setupFlag)):
-            with open('userData.pickle','rb') as f:
+        
+        # path.exists("userPickles/userData.pickle") and
+        if (not setupFlag):
+            
+            PreApp = QApplication(sys.argv) 
+            # create the instance of our Window 
+            window = ListWindow() 
+            
+            # start the app 
+            PreApp.exec()
+            app = QApplication(sys.argv)
+            # global pickelName
+            print(pickelName)
+            with open('userPickles/'+str(pickelName)+'.pickle','rb') as f:
 
                 userDetails = pickle.load(f)
                 IP = userDetails.get('IP')
@@ -949,6 +1036,7 @@ if __name__ == '__main__':
                 sys.exit(app.exec())
         
         else:
+            app = QApplication(sys.argv)
             window = Window() 
             window.show()
             sys.exit(app.exec())

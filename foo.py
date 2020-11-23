@@ -1,51 +1,73 @@
-import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit
-from PyQt5.QtGui import QIcon
+# importing libraries 
+from PyQt5.QtWidgets import * 
+from PyQt5 import QtCore, QtGui 
+from PyQt5.QtGui import * 
+from PyQt5.QtCore import * 
+import sys 
+import os
 
-class App(QWidget):
+  
+class Window(QMainWindow): 
+  
+    def __init__(self): 
+        super().__init__() 
+  
+        # setting title 
+        self.setWindowTitle("Python ") 
+  
+        # setting geometry 
+        self.setGeometry(100, 100, 350, 450) 
+  
+        # calling method 
+        self.UiComponents() 
 
-    def __init__(self):
-        super().__init__()
-        self.title = 'PyQt5 input dialogs - pythonspot.com'
-        self.left = 10
-        self.top = 10
-        self.width = 640
-        self.height = 480
-        self.initUI()
+        
+        
+
+        # showing all the widgets 
+        self.show() 
+  
+    # method for widgets 
+    def UiComponents(self): 
+  
+        self.l1 =QLabel('Please select your camera from the list below', self)
+        self.l1.move(50,100)
+        self.l1.adjustSize()
+        self.l1.setAlignment(QtCore.Qt.AlignCenter) 
+        # creating a combo box widget 
+        self.combo_box = QComboBox(self) 
+  
+        for file in os.listdir("userPickles/"):
+            if file.endswith(".pickle"):
+                self.combo_box.addItem(file.split('.')[0])
+        
+        
+        self.combo_box.move(115,200)
+        
+        
+        self.button = QPushButton('Select Cam', self)
+
+        
+        self.button.clicked.connect(self.pushed)
+
+        self.button.move(115,300)
+        
+        # adding items to combo box 
+         
+        
+
+        
+
     
-    def initUI(self):
-        self.setWindowTitle(self.title)
-        self.setGeometry(self.left, self.top, self.width, self.height)
+    def pushed(self):
+        print(str(self.combo_box.currentText()))
         
-        self.getInteger()
-        self.getText()
-        self.getDouble()
-        self.getChoice()
         
-        self.show()
-        
-    def getInteger(self):
-        i, okPressed = QInputDialog.getInt(self, "Get integer","Percentage:", 28, 0, 100, 1)
-        if okPressed:
-            print(i)
-
-    def getDouble(self):
-        d, okPressed = QInputDialog.getDouble(self, "Get double","Value:", 10.50, 0, 100, 10)
-        if okPressed:
-            print( d)
-        
-    def getChoice(self):
-        items = ("Red","Blue","Green")
-        item, okPressed = QInputDialog.getItem(self, "Get item","Color:", items, 0, False)
-        if ok and item:
-            print(item)
-
-    def getText(self):
-        text, okPressed = QInputDialog.getText(self, "Get text","Your name:", QLineEdit.Normal, "")
-        if okPressed and text != '':
-            print(text)
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ex = App()
-    sys.exit(app.exec_())
+# create pyqt5 app 
+App = QApplication(sys.argv) 
+  
+# create the instance of our Window 
+window = Window() 
+  
+# start the app 
+sys.exit(App.exec()) 
