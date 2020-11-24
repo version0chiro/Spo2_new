@@ -327,7 +327,7 @@ def grab_images(cam_num, queue,self):
                 if frontalFlag and detectionFrontFace(faceFrame.copy()):
                     # print("")
                     frontFaceCount=frontFaceCount+1
-                    if frontFaceCount==5:    
+                    if frontFaceCount==15:    
                         frontalFlag = False
                         frontFaceCount=0 
                         self.clickme()   
