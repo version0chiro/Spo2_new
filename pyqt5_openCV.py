@@ -29,7 +29,9 @@ from request import checkPing
 from frontalFaceDetection import detectionFrontFace,fix_box
 import time
 import os
+import threading
 from password_check import checkPassword
+from encode_faces import trainModel
 try:
     from PyQt5.QtCore import Qt
     pyqt5 = True
@@ -778,6 +780,8 @@ class Window(QDialog):
 
         self.JsonIP = QLineEdit()
         
+        self.statusLabel = QLabel('')
+        
         # calling the method that create the form 
         self.createForm() 
 
@@ -787,12 +791,28 @@ class Window(QDialog):
         # creating a dialog button for ok and cancel 
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel) 
 
+        self.ScanButton = QPushButton('Scan')
+        
+        self.CancelButton = QPushButton('Cancel')
+        
+        self.trainModel = QPushButton('Face Recog.')
+        
+        self.hbox = QHBoxLayout()
+        self.hbox.addStretch(0)
+        # self.hbox.setSpacing(100)
+        self.hbox.addWidget(self.ScanButton)
+        self.hbox.addWidget(self.trainModel)
+        self.hbox.addWidget(self.CancelButton)
+        
+        
 
         # adding action when form is accepted 
-        self.buttonBox.accepted.connect(self.getInfo) 
+        self.ScanButton.clicked.connect(self.getInfo)
+         
+        self.trainModel.clicked.connect(self.startTraining)
   
         # addding action when form is rejected 
-        self.buttonBox.rejected.connect(self.reject) 
+        self.CancelButton.clicked.connect(self.reject)
 
         self.NoScanButton.clicked.connect(self.NoScan)
 
@@ -803,15 +823,25 @@ class Window(QDialog):
         mainLayout.addWidget(self.formGroupBox) 
   
         # adding button box to the layout 
-        mainLayout.addWidget(self.buttonBox) 
+        mainLayout.addLayout(self.hbox) 
 
         mainLayout.addWidget(self.NoScanButton) 
   
         # setting lay out 
         self.setLayout(mainLayout) 
-  
+    
+    def startTraining(self):
+        self.statusLabel.setText("Please wait...")
+        thread = threading.Thread(target=trainModel)
+        checkFlag=trainModel()
+        if checkFlag == 1:
+            self.statusLabel.setText("Training completed")
+        else:
+            self.statusLabel.setText("Training failed, try again")
+            
 
     def NoScan(self):
+        self.statusLabel.setText("No Scan initalization")
         print("Identifier : {0}".format(self.nameLineEdit.text())) 
         print("Email : {0}".format(self.emailLineEdit.text())) 
         print("IP : {0}".format(self.iPLineEdit.text())) 
@@ -835,7 +865,7 @@ class Window(QDialog):
 
     # get info method called when form is accepted 
     def getInfo(self): 
-  
+        self.statusLabel.setText("Please wait...")
         # printing the form information 
         print("Identifier : {0}".format(self.nameLineEdit.text())) 
         print("Email : {0}".format(self.emailLineEdit.text())) 
@@ -848,6 +878,7 @@ class Window(QDialog):
         with open('userPickles/'+str(Identifier)+'.pickle', 'wb') as f:
             pickle.dump(userDetails, f)
         # closing the window 
+        self.statusLabel.setText("Scan finished")
         self.close()
         self.getText()
         win = MyWindow(IP,AI_CAN_IP,Email,Identifier)
@@ -887,6 +918,8 @@ class Window(QDialog):
         layout.addRow(QLabel("Cam-IP"), self.iPLineEdit) 
   
         layout.addRow(QLabel("Json-IP"), self.JsonIP)
+        
+        layout.addRow(QLabel("Status:"),self.statusLabel)
 
         # setting layout 
         self.formGroupBox.setLayout(layout) 

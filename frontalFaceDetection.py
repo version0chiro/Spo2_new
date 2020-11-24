@@ -57,7 +57,7 @@ def detectionFrontFace(frame):
         area= x*y
         # print(area)
         # print(box)
-        if confidence < 0.9660 or area>6500:
+        if confidence < 0.9660:
             # print("nahi mila face")
             return 0
         
