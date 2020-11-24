@@ -456,10 +456,14 @@ def grab_images(cam_num, queue,self):
                         self.doneRecording=False
                 
                 frameCount=frameCount+1
-                globalCount=globalCount +1 
+                globalCount=globalCount +1
+                
+                if globalCount%10000==0:
+                    frontalFlag = True
+                    
                 if globalCount%500==0:
                     tempFlag=checkPing(self.AI_CAN_IP)
-                    frontalFlag = True
+                    
                     print(tempFlag)
                     if tempFlag==1:                       
                         sensorValue=get_value(self.AI_CAN_IP)
