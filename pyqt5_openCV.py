@@ -274,6 +274,7 @@ def grab_images(cam_num, queue,self):
     while capturing:
         if cap.grab():                             
             retval, image = cap.retrieve(0)
+            image = imutils.resize(image,width=400,height=400)
             if self.RotationFlag>0:
                 image = cv2.rotate(image, (self.RotationDictionary.get(self.RotationFlag))) 
             fullScale = image.copy()
@@ -582,7 +583,7 @@ class MyWindow(QMainWindow):
         exitAction.triggered.connect(self.close)
         self.fileMenu = self.mainMenu.addMenu('&File')
         self.fileMenu.addAction(exitAction)
-        self.RotationDictionary = {0:0,1:cv2.ROTATE_90_COUNTERCLOCKWISE,2:cv2.ROTATE_180,3:cv2.ROTATE_90_COUNTERCLOCKWISE}
+        self.RotationDictionary = {0:0,1:cv2.ROTATE_90_CLOCKWISE,2:cv2.ROTATE_180,3:cv2.ROTATE_90_COUNTERCLOCKWISE}
 
         self.RotationFlag = 0
        
