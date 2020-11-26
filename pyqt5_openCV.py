@@ -630,7 +630,7 @@ class MyWindow(QMainWindow):
 
         # setting geometry of button
         self.button2.setGeometry(200, 150, 100, 30)
-        self.button2.move(500,300)
+        self.button2.move(545,300)
         # adding action to a button
         self.button2.clicked.connect(self.updateV)
         # button2.move(425,335)
@@ -658,12 +658,13 @@ class MyWindow(QMainWindow):
         self.button5 = QPushButton("ROTATE", self) 
   
         # setting geometry of button 
-        self.button5.setGeometry(200/4, 150/4, 100/4, 100/4)
+        self.button5.setGeometry(200, 150, 100, 30)
         
         self.button5.move(425,300) 
   
         # setting radius and border 
-        self.button5.setStyleSheet("border-radius : 50; border : 2px solid black") 
+        self.button5.setIcon(QIcon('resources/rotate_sign.png')) 
+
   
         # adding action to a button 
         self.button5.clicked.connect(self.rotate)
