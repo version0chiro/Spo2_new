@@ -642,6 +642,8 @@ class MyWindow(QMainWindow):
         # setting geometry of button
         self.button3.setGeometry(200, 150, 100, 30)
         self.button3.move(545,335)
+
+        self.button3.setIcon(QIcon('resources/record_icon.jpg'))
         # adding action to a button
         self.button3.clicked.connect(self.record)
         
