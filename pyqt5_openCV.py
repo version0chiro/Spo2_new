@@ -42,9 +42,9 @@ if pyqt5:
     from PyQt5.QtGui import *
     from PyQt5.QtCore import *
     from PyQt5.QtCore import QTimer, QPoint, pyqtSignal
-    from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel
+    from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel,QSplashScreen 
     from PyQt5.QtWidgets import QWidget, QAction, QVBoxLayout, QHBoxLayout
-    from PyQt5.QtGui import QFont, QPainter, QImage, QTextCursor
+    from PyQt5.QtGui import QFont, QPainter, QImage, QTextCursor,QPixmap
     from PyQt5 import QtCore, QtGui 
 else:
     from PyQt4.QtCore import Qt, pyqtSignal, QTimer, QPoint
@@ -77,6 +77,8 @@ recordFlag = False
 frontalFlag = True
 
 isRecordingFlag=False
+
+
 
 frameCount=0
 
@@ -272,9 +274,12 @@ def grab_images(cam_num, queue,self):
     while capturing:
         if cap.grab():                             
             retval, image = cap.retrieve(0)
+            if self.RotationFlag>0:
+                image = cv2.rotate(image, (self.RotationDictionary.get(self.RotationFlag))) 
             fullScale = image.copy()
             recordVid = image.copy()
             fullScale = imutils.resize(fullScale,width=400,height=400)
+            
             fullScale = cv2.cvtColor(fullScale,cv2.COLOR_BGR2RGB)
             
             if self.recordFlag:
@@ -577,7 +582,9 @@ class MyWindow(QMainWindow):
         exitAction.triggered.connect(self.close)
         self.fileMenu = self.mainMenu.addMenu('&File')
         self.fileMenu.addAction(exitAction)
-        
+        self.RotationDictionary = {0:0,1:cv2.ROTATE_90_COUNTERCLOCKWISE,2:cv2.ROTATE_180,3:cv2.ROTATE_90_COUNTERCLOCKWISE}
+
+        self.RotationFlag = 0
        
 
     def UiComponents(self):
@@ -646,9 +653,28 @@ class MyWindow(QMainWindow):
         self.button4.move(425,335)
         # adding action to a button
         self.button4.clicked.connect(self.auto)
+        
+        self.button5 = QPushButton("ROTATE", self) 
+  
+        # setting geometry of button 
+        self.button5.setGeometry(200/4, 150/4, 100/4, 100/4)
+        
+        self.button5.move(425,300) 
+  
+        # setting radius and border 
+        self.button5.setStyleSheet("border-radius : 50; border : 2px solid black") 
+  
+        # adding action to a button 
+        self.button5.clicked.connect(self.rotate)
 
         self.show()
 
+    
+    def rotate(self):
+        if self.RotationFlag<3:
+            self.RotationFlag = self.RotationFlag+1
+        else:
+            self.RotationFlag = 0
     
     def auto(self):
         print("auto")
@@ -835,15 +861,17 @@ class Window(QDialog):
         self.setLayout(mainLayout) 
     
     def startTraining(self):
+        
         self.statusLabel.setText("Please wait...")
-        thread = threading.Thread(target=trainModel)
+        time.sleep(2.0)
+        time.sleep(3.0)
         checkFlag=trainModel()
         if checkFlag == 1:
             self.statusLabel.setText("Training completed")
         else:
             self.statusLabel.setText("Training failed, try again")
             
-
+        
     def NoScan(self):
         self.statusLabel.setText("No Scan initalization")
         print("Identifier : {0}".format(self.nameLineEdit.text())) 
