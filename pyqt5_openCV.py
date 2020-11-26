@@ -261,6 +261,7 @@ def grab_images(cam_num, queue,self):
     frame_width = int(cap.get(3)) 
     frame_height = int(cap.get(4))
     size = (frame_width, frame_height) 
+    self.flashFlag = False
 
    
     # cap.set(cv2.CAP_PROP_FRAME_WIDTH, IMG_SIZE[0])
@@ -342,9 +343,11 @@ def grab_images(cam_num, queue,self):
             if boxFrame is not None and (queue.qsize() < 2 or (Spo2Flag))  :
                 # faceFrame = image[100:200,150:250]
                 # print(queue.qsize())
+                
                 if frameCount==0 and (FaceDetectionFlag):
                     process=Process()
-
+                    height=image.shape[0]
+                    cv2.putText(image,'SPO2 Estimation Underway', (20,height-50), cv2.FONT_HERSHEY_SIMPLEX,1, (0, 0, 255) , 1, cv2.LINE_AA)
                     encodings = face_recognition.face_encodings(image, boxes)
 
                     for encoding in encodings:
@@ -382,7 +385,11 @@ def grab_images(cam_num, queue,self):
                     final_sig.append(temp)
 
                 elif (Spo2Flag==1) and frameCount<totalFrame and frameCount>1:
-                    
+                    height=image.shape[0]
+                    cv2.putText(image,'SPO2 Estimation', (20,height-50), cv2.FONT_HERSHEY_SIMPLEX,1, (0, 0, 255) , 2, cv2.LINE_AA)
+                    if self.flashFlag:
+                        cv2.putText(image,'On Going', (20,height-25), cv2.FONT_HERSHEY_SIMPLEX,1, (0, 0, 255) , 2, cv2.LINE_AA)
+                    self.flashFlag = not self.flashFlag
                     thresh,mask=face_detect_and_thresh(faceFrame)
                     process.frame_in = boxFrame
                     try:
@@ -446,9 +453,11 @@ def grab_images(cam_num, queue,self):
                 # print(self.AI_CAM_IP)
                 if Spo2Flag!=2:
                     queue.put(image)
-                    
+
+                
+                
                 if self.recordFlag and isRecordingFlag:
-                    print('writen')
+                    # print('writen')
                     cv2.putText(image,'rec:', (20,20), cv2.FONT_HERSHEY_SIMPLEX,1, (0, 0, 255) , 1, cv2.LINE_AA)
                     recordVid=cv2.resize(recordVid,(400,400))
                     self.recording.write(recordVid)

@@ -75,6 +75,23 @@ def checkName(name,spo2,hr,Compensated,Ambient):
     	a = d.index[0]
     	return atte.append(d)
 
+    def unknown_to_list(str_name, atte, details,spo2,hr,Compensated,Ambient):
+    	atte = atte
+    	t = time.localtime()
+    	current_time = time.strftime("%H:%M:%S", t)
+    	d = details[details['Name'] == str_name]
+    	d['Name'] = str_name
+    	d['Address'] = 'N/A'
+    	d['Job'] = 'N/A'
+    	d['Time-Stamp'] = current_time
+    	d['SpO2_value'] = spo2
+    	d['Heart-rate'] = hr
+    	d['Compensated'] = Compensated
+    	d['Ambient'] = Ambient
+        # d['SpO2_value']=spo2
+    	a = d.index[0]
+    	return atte.append(d)
+
     details = pd.read_excel('excel_sheets/details.xlsx',index_col=0)
     atte=pd.read_excel('excel_sheets/attendance.xlsx',index_col=0)
 
@@ -87,3 +104,14 @@ def checkName(name,spo2,hr,Compensated,Ambient):
         else:
             with pd.ExcelWriter('excel_sheets/attendance.xlsx',mode='a') as writer:
                 atte.to_excel(writer,sheet_name=str(today))
+                
+    else:
+        atte = unknown_to_list(name,atte,details,spo2,hr,Compensated,Ambient)
+        xl = pd.ExcelFile('excel_sheets/attendance.xlsx')
+        today = date.today()
+        if str(today) in xl.sheet_names:
+            append_df_to_excel('excel_sheets/attendance.xlsx',atte,sheet_name=str(today))
+        else:
+            with pd.ExcelWriter('excel_sheets/attendance.xlsx',mode='a') as writer:
+                atte.to_excel(writer,sheet_name=str(today))
+        
