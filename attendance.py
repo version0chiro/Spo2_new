@@ -72,7 +72,7 @@ def checkName(name,spo2,hr,Compensated,Ambient):
     	d['Compensated'] = Compensated
     	d['Ambient'] = Ambient
         # d['SpO2_value']=spo2
-    	a = d.index[0]
+    	# a = d.index[0]
     	return atte.append(d)
 
     def unknown_to_list(str_name, atte, details,spo2,hr,Compensated,Ambient):
