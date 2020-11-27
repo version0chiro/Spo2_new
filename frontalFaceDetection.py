@@ -35,7 +35,7 @@ def fix_box(frame):
         # cv2.putText(frame,text,(startX,y),cv2.FONT_HERSHEY_SIMPLEX,0.4,(0, 0, 255), 2)
     
     
-    cv2.imshow("Frame", frame)
+    # cv2.imshow("Frame", frame)
     return frame,frameOG[startY2:endY2,startX2:endX2]
     
 def detectionFrontFace(frame):

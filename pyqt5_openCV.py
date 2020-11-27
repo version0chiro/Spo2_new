@@ -328,7 +328,7 @@ def grab_images(cam_num, queue,self):
                 
             # print(height, width)
             
-            cv2.imshow("faceFrame",faceFrame)
+            # cv2.imshow("faceFrame",faceFrame)
             
             if self.autoFlag:
                 if frontalFlag and detectionFrontFace(faceFrame.copy()):
@@ -1078,44 +1078,36 @@ if __name__ == '__main__':
     screen.show()
     state.exec()
     
-    if len(sys.argv) > 1:
-        try:
-            camera_num = int(sys.argv[1])
-        except:
-            camera_num = 0
-    if camera_num < 1:
-        print("Invalid camera number '%s'" % sys.argv[1])
-    else:
         
-        # path.exists("userPickles/userData.pickle") and
-        if (not setupFlag):
-            
-            PreApp = QApplication(sys.argv) 
-            # create the instance of our Window 
-            window = ListWindow() 
-            
-            # start the app 
-            PreApp.exec()
-            app = QApplication(sys.argv)
-            # global pickelName
-            print(pickelName)
-            with open('userPickles/'+str(pickelName)+'.pickle','rb') as f:
+    # path.exists("userPickles/userData.pickle") and
+    if (not setupFlag):
+        
+        PreApp = QApplication(sys.argv) 
+        # create the instance of our Window 
+        window = ListWindow() 
+        
+        # start the app 
+        PreApp.exec()
+        app = QApplication(sys.argv)
+        # global pickelName
+        print(pickelName)
+        with open('userPickles/'+str(pickelName)+'.pickle','rb') as f:
 
-                userDetails = pickle.load(f)
-                IP = userDetails.get('IP')
-                
-                Email = userDetails.get('Email')
-                Identifier = userDetails.get("Identifier")
-                AI_CAN_IP =  userDetails.get("AI_CAN_IP")
-                win = MyWindow(IP,AI_CAN_IP,Email,Identifier)
-                win.show()
-                win.setWindowTitle(VERSION)
-                win.start()
-                sys.exit(app.exec())
-        
-        else:
-            app = QApplication(sys.argv)
-            window = Window() 
-            window.show()
+            userDetails = pickle.load(f)
+            IP = userDetails.get('IP')
+            
+            Email = userDetails.get('Email')
+            Identifier = userDetails.get("Identifier")
+            AI_CAN_IP =  userDetails.get("AI_CAN_IP")
+            win = MyWindow(IP,AI_CAN_IP,Email,Identifier)
+            win.show()
+            win.setWindowTitle(VERSION)
+            win.start()
             sys.exit(app.exec())
+    
+    else:
+        app = QApplication(sys.argv)
+        window = Window() 
+        window.show()
+        sys.exit(app.exec())
 #EOF
