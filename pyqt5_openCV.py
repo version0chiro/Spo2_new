@@ -254,10 +254,22 @@ def grab_images(cam_num, queue,self):
     isRecordingFlag=False
     # global autoFlag
     recordFlag = self.recordFlag
+    self.captureFlag = False
     bpm=0
     hr=0
+    
     # cap = cv2.VideoCapture(cam_num-1 + CAP_API)
     cap = cv2.VideoCapture(cam_num)
+    while 1:
+        cap = cv2.VideoCapture(cam_num)
+        time.sleep(2)
+        if cap.grab():
+            self.captureFlag = True
+            break
+        else:
+            print("waiting for capture")
+            self.captureFlag = False
+        
     frame_width = int(cap.get(3)) 
     frame_height = int(cap.get(4))
     size = (frame_width, frame_height) 
@@ -273,7 +285,8 @@ def grab_images(cam_num, queue,self):
     else:
         cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)
     while capturing:
-        if cap.grab():                             
+        if cap.grab():
+            self.captureFlag = True                             
             retval, image = cap.retrieve(0)
             image = imutils.resize(image,width=400,height=400)
             if self.RotationFlag>0:
@@ -506,7 +519,17 @@ def grab_images(cam_num, queue,self):
                 time.sleep(DISP_MSEC / 1000.0)
         else:
             print("Error: can't grab camera image")
-            break
+            self.captureFlag = False
+            time.sleep(2)
+            while 1:
+                cap = cv2.VideoCapture(cam_num)
+                if cap.grab():
+                    break
+                else:
+                    time.sleep(2)
+                    print("waiting for capture")
+
+            # break
     cap.release()
 
 def check_url(url):
