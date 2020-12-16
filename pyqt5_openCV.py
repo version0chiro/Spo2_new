@@ -260,6 +260,8 @@ def grab_images(cam_num, queue,self):
     
     # cap = cv2.VideoCapture(cam_num-1 + CAP_API)
     cap = cv2.VideoCapture(cam_num)
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    cap.set(cv2.CAP_PROP_FPS, fps)
     while 1:
         cap = cv2.VideoCapture(cam_num)
         time.sleep(2)
@@ -445,6 +447,8 @@ def grab_images(cam_num, queue,self):
                             self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
                             Ambient = format(float(Ambient),'.2f')
                             Compensated = format(float(Compensated),'.2f')
+                            if(int(float(Compensated))>37):
+                                send_mail()
                         else:
                             Ambient = "NA"
                             Compensated = "NA"
@@ -728,6 +732,8 @@ class MyWindow(QMainWindow):
             Compensated = stringGetValue(sensorValue,6) 
             self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
             self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
+            if(int(float(Compensated))>37):
+                send_mail()
         # if globalCount>100000:
             #     globalCount=0
             
