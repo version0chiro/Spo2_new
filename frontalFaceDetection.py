@@ -17,10 +17,11 @@ def fix_box(frame):
                                     (300,300),(104.0,177.0,123.0))
     net.setInput(blob)
     detections = net.forward()
-    
-    for i in range(0,detections.shape[2]):
+    # print(detections.shape)
+    test=[0,0,0,0,0,0,0,0,0,0,0]
+    for i in test:
         confidence = detections[0,0,i,2]
-        if confidence < 0.8:
+        if confidence < 0.9:
             continue
         box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
         (startX, startY, endX, endY) = box.astype("int")
@@ -30,12 +31,16 @@ def fix_box(frame):
         endX2=int(int((endX+startX)/2)+50*1.3)
         startY2=int(int((endY+startY)/2)-50*1.3)
         endY2=int(int((endY+startY)/2)+50*1.3)
+        if ( startX2>=400 ) or ( startY2>=400 ) or ( endY2>=400 ) or ( endX2>=400 ):
+            raise Exception('Face out of bounds')
         cv2.rectangle(frame, (startX2, startY2), (endX2, endY2),(0, 0, 255), 2)
+        # print("for i = "+str(i))
+        # print(startX2, startY2,endX2, endY2)
         # print((startX2-endX2)*(startY2-endY2))
-        # cv2.putText(frame,text,(startX,y),cv2.FONT_HERSHEY_SIMPLEX,0.4,(0, 0, 255), 2)
+        # cv2.putText(frame,i,(startX2+20,startY2+20),cv2.FONT_HERSHEY_SIMPLEX,0.4,(0, 0, 255), 2)
     
     
-    # cv2.imshow("Frame", frame)
+    
     return frame,frameOG[startY2:endY2,startX2:endX2]
     
 def detectionFrontFace(frame):
