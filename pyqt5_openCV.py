@@ -30,7 +30,6 @@ from request import checkPing
 from frontalFaceDetection import detectionFrontFace,fix_box
 import time
 import os
-import matplotlib.pyplot as plt
 import threading
 from password_check import checkPassword
 from encode_faces import trainModel
