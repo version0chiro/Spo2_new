@@ -3,6 +3,7 @@
 
 VERSION = "SPO2 Estimation software"
 from os import path
+
 from datetime import date
 from attendance import checkName
 from request import getRequest,sendRequest,url_ok,upload
@@ -29,6 +30,7 @@ from request import checkPing
 from frontalFaceDetection import detectionFrontFace,fix_box
 import time
 import os
+import matplotlib.pyplot as plt
 import threading
 from password_check import checkPassword
 from encode_faces import trainModel
@@ -111,19 +113,16 @@ hr=0
 bpm=0
 heartRate=0
 
+hrSet=[]
+
 def face_detect_and_thresh(frame):
     skinM = skin_detector.process(frame)
     skin = cv2.bitwise_and(frame, frame, mask = skinM)
-    # cv2.imshow("skin2",skin)
-    # cv2.waitKey(1)
     return skin,skinM
 
 
 def spartialAverage(thresh,frame):
     a=list(np.argwhere(thresh>0))
-    # x=[i[0] for i in a]
-    # y=[i[1] for i in a]
-    # p=[x,y]
     if a:
         ind_img=(np.vstack((a)))
     else:
@@ -249,6 +248,7 @@ def grab_images(cam_num, queue,self):
     global bpm
     global hr
     # global recordFlag
+    global hrSet
     global frontalFlag
     global frontFaceCount
     isRecordingFlag=False
@@ -260,8 +260,8 @@ def grab_images(cam_num, queue,self):
     
     # cap = cv2.VideoCapture(cam_num-1 + CAP_API)
     cap = cv2.VideoCapture(cam_num)
-    fps = cap.get(cv2.CAP_PROP_FPS)
-    cap.set(cv2.CAP_PROP_FPS, fps)
+    # fps = cap.get(cv2.CAP_PROP_FPS)
+    # cap.set(cv2.CAP_PROP_FPS, fps)
     while 1:
         cap = cv2.VideoCapture(cam_num)
         time.sleep(2)
@@ -413,9 +413,10 @@ def grab_images(cam_num, queue,self):
                         process.bpm=self.bpmLast
                     bpm=process.bpm
                     self.bpmLast=bpm
-                    if process.bpms.__len__() > 50:
-                        if(max(process.bpms-np.mean(process.bpms))<20 and bpm<100):
+                    if process.bpms.__len__() > 1:
+                        if(max(process.bpms-np.mean(process.bpms))<200):#and bpm<100 and bpm>55):
                             hr=np.mean(process.bpms)
+                            hrSet.append(hr)
                     # if bpm>0:
                         # print(bpm)
                         # print(hr)
@@ -429,11 +430,24 @@ def grab_images(cam_num, queue,self):
                         
                         
                     if Spo2Flag==1:
+
+                        HRavg = np.nanmean(hrSet)
+                        
+                        # today = date.today()
+                        # t = time.localtime()
+                        # current_time = time.strftime("%H%M%S", t)
+                        # np.savetxt('graphs_HR/'+str(current_time)+'.csv',  
+                        # hrSet, 
+                        # delimiter =", ",  
+                        # fmt ='% s')
+                        hrSet = []
                         result=SPooEsitmate(final_sig,totalFrame,totalFrame,duration) # the final signal list is sent to SPooEsitmate function with length of the video
                         print(result)
                         try:
-                            self.label_2.setText("SPO2 Level:"+str(int(result)))
+                            self.label_1.setText("HeartRate:"+str(int(HRavg)))
+                            self.label_2.setText("SPO2 Level:"+str(int(np.ceil(result))))
                         except:
+                            self.label_1.setText("HeartRate:"+"NA")
                             self.label_2.setText("SPO2 Level:"+"NA")
                         tempFlag=checkPing(self.AI_CAN_IP)
                         
@@ -607,8 +621,8 @@ class MyWindow(QMainWindow):
         self.top = 360
         # self.left = 500
         # self.top = 500
-        self.width = 660
-        self.height = 480
+        self.width = 1024
+        self.height = 768
         self.autoFlag=False
         self.recordFlag = False
         self.doneRecording=False
@@ -631,24 +645,34 @@ class MyWindow(QMainWindow):
         self.setGeometry(self.left, self.top, self.width, self.height)
 
         self.label_2 = QLabel('SPO2 Level:',self)
-        self.label_2.move(500,50)
+        self.label_2.move(1100,50)
+        self.label_2.resize(300, 60)
+        self.label_2.setFont(QFont('Arial', 10))
         self.label_2.setStyleSheet("border: 1px solid black;")
         
         self.label_1 = QLabel('heartRate:', self) 
-        self.label_1.move(500, 75) 
+        self.label_1.move(1100, 250)
+        self.label_1.resize(300, 60)
+        self.label_1.setFont(QFont('Arial', 10)) 
         self.label_1.setStyleSheet("border: 1px solid black;")
 
 
         self.label_3 = QLabel('Ambient:',self)
-        self.label_3.move(500,225)
+        self.label_3.move(1550,50)
+        self.label_3.setFont(QFont('Arial', 10))
+        self.label_3.resize(300, 60)
         self.label_3.setStyleSheet("border: 1px solid black;")
 
         self.label_4 = QLabel('Compen.:',self)
-        self.label_4.move(500,250)
+        self.label_4.move(1550,250)
+        self.label_4.setFont(QFont('Arial', 10))
+        self.label_4.resize(300, 60)
         self.label_4.setStyleSheet("border: 1px solid black;")
          
         self.label_5 = QLabel('ID:',self)
-        self.label_5.move(500,175)
+        self.label_5.setFont(QFont('Arial', 10))
+        self.label_5.move(1350,150)
+        self.label_5.resize(300, 60)
         # self.label_5.resize(200,20) 
         self.label_5.setStyleSheet("border: 1px solid black;")
         
@@ -657,7 +681,9 @@ class MyWindow(QMainWindow):
 
         # setting geometry of button
         self.button.setGeometry(200, 150, 100, 30)
-        self.button.move(500,125)
+        self.button.move(1600,600)
+        self.button.resize(250, 50)
+        self.button.setFont(QFont('Arial', 10))
         # adding action to a button
 
         self.button.clicked.connect(self.clickme)
@@ -666,7 +692,9 @@ class MyWindow(QMainWindow):
 
         # setting geometry of button
         self.button2.setGeometry(200, 150, 100, 30)
-        self.button2.move(545,300)
+        self.button2.move(1600,500)
+        self.button.setFont(QFont('Arial', 10))
+        self.button2.resize(250, 50)
         # adding action to a button
         self.button2.clicked.connect(self.updateV)
         # button2.move(425,335)
@@ -677,8 +705,9 @@ class MyWindow(QMainWindow):
 
         # setting geometry of button
         self.button3.setGeometry(200, 150, 100, 30)
-        self.button3.move(545,335)
-
+        self.button3.move(1100,500)
+        self.button3.setFont(QFont('Arial', 10))
+        self.button3.resize(250, 50)
         self.button3.setIcon(QIcon('resources/record_icon.jpg'))
         # adding action to a button
         self.button3.clicked.connect(self.record)
@@ -689,7 +718,9 @@ class MyWindow(QMainWindow):
         
         # setting geometry of button
         self.button4.setGeometry(200, 150, 100, 30)
-        self.button4.move(425,335)
+        self.button4.move(1350,500)
+        self.button4.setFont(QFont('Arial', 10))
+        self.button4.resize(250, 50)
         # adding action to a button
         self.button4.clicked.connect(self.auto)
         
@@ -697,8 +728,10 @@ class MyWindow(QMainWindow):
   
         # setting geometry of button 
         self.button5.setGeometry(200, 150, 100, 30)
-        
-        self.button5.move(425,300) 
+        self.button5.move(1100,600)
+        self.button5.setFont(QFont('Arial', 10))
+        self.button5.resize(250, 50)
+        # self.button5.move(425*3,300) 
   
         # setting radius and border 
         self.button5.setIcon(QIcon('resources/rotate_sign.png')) 
@@ -707,7 +740,8 @@ class MyWindow(QMainWindow):
         # adding action to a button 
         self.button5.clicked.connect(self.rotate)
 
-        self.show()
+        self.showMaximized() 
+        # self.show()
 
     
     def rotate(self):
@@ -786,6 +820,7 @@ class MyWindow(QMainWindow):
             image = imageq.get()
             if image is not None and len(image) > 0:
                 img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                img = imutils.resize(img,width=1024,height=720)
                 self.display_image(img, display, scale)
 
     # Display an image, reduce size if required
@@ -1140,3 +1175,6 @@ if __name__ == '__main__':
         window.show()
         sys.exit(app.exec())
 #EOF
+
+#TODO C,F and K
+#TODO Resolution

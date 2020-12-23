@@ -11,7 +11,7 @@ class Process(object):
         self.frame_ROI = np.zeros((10, 10, 3), np.uint8)
         self.frame_out = np.zeros((10, 10, 3), np.uint8)
         self.samples = []
-        self.buffer_size = 100
+        self.buffer_size = 50
         self.times = []
         self.data_buffer = []
         self.fps = 0
@@ -32,18 +32,20 @@ class Process(object):
 
     def run(self):
 
-        frame, face_frame, ROI1, ROI2, status, mask = self.fd.face_detect(self.frame_in)
-
+        frame, face_frame, ROI1, ROI2,ROI3,  status, mask = self.fd.face_detect(self.frame_in)
+        # cv2.imshow('face_detect',ROI4)
         self.frame_out = frame
         self.frame_ROI = face_frame
 
         g1 = self.extractColor(ROI1)
         g2 = self.extractColor(ROI2)
+        g3 = self.extractColor(ROI3)
+        # g4 = self.extractColor(ROI4)
 
         L = len(self.data_buffer)
 
 
-        g = (g1 + g2) / 2
+        g = (g1 + g2 + g3 ) / 3
 
         if (abs(g - np.mean(
                 self.data_buffer)) > 10 and L > 99):  # remove sudden change, if the avg value change is over 10, use the mean of the data_buffer
@@ -69,8 +71,8 @@ class Process(object):
             interpolated = np.interp(even_times, self.times, processed)  # interpolation by 1
             interpolated = np.hamming(
                 L) * interpolated  # make the signal become more periodic (advoid spectral leakage)
-            # norm = (interpolated - np.mean(interpolated))/np.std(interpolated)#normalization
-            norm = interpolated / np.linalg.norm(interpolated)
+            norm = (interpolated - np.mean(interpolated))/np.std(interpolated)#normalization
+            # norm = interpolated / np.linalg.norm(interpolated)
             raw = np.fft.rfft(norm * 30)  # do real fft with the normalization multiplied by 10
 
             self.freqs = float(self.fps) / L * np.arange(L / 2 + 1)

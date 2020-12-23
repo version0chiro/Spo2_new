@@ -17,7 +17,7 @@ class FaceDetection(object):
         mask = np.zeros((10, 10, 3), np.uint8)
         ROI1 = np.zeros((10, 10, 3), np.uint8)
         ROI2 = np.zeros((10, 10, 3), np.uint8)
-        #ROI3 = np.zeros((10, 10, 3), np.uint8)
+        ROI3 = np.zeros((10, 10, 3), np.uint8)
         status = False
         
         if frame is None:
@@ -83,8 +83,11 @@ class FaceDetection(object):
                 ROI2 =  face_frame[shape[29][1]:shape[33][1], #left cheek
                         shape[4][0]:shape[48][0]]    
 
-                # ROI3 = face_frame[shape[29][1]:shape[33][1], #nose
-                        # shape[31][0]:shape[35][0]]
+                ROI3 = face_frame[shape[29][1]:shape[33][1], #nose
+                        shape[31][0]:shape[35][0]]
+                
+                # ROI4 = face_frame[shape[76][1]:shape[26][1],
+                #                 shape[69][0]:shape[72][0]]#]
                 
                 #get the shape of face for color amplification
                 rshape = np.zeros_like(shape) 
@@ -112,7 +115,7 @@ class FaceDetection(object):
             cv2.putText(frame, "No face detected",
                        (200,200), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 255),2)
             status = False
-        return frame, face_frame, ROI1, ROI2, status, mask    
+        return frame, face_frame, ROI1, ROI2,ROI3, status, mask    
     
     # some points in the facial landmarks need to be re-ordered
     def face_remap(self,shape):

@@ -21,7 +21,7 @@ def fix_box(frame):
     test=[0,0,0,0,0,0,0,0,0,0,0]
     for i in test:
         confidence = detections[0,0,i,2]
-        if confidence < 0.9:
+        if confidence < 0.8:
             continue
         box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
         (startX, startY, endX, endY) = box.astype("int")
