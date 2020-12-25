@@ -31,7 +31,7 @@ from frontalFaceDetection import detectionFrontFace,fix_box
 import time
 import os
 import threading
-from password_check import checkPassword
+from password_check import checkPassword,check_Password
 from encode_faces import trainModel
 try:
     from PyQt5.QtCore import Qt
@@ -1000,14 +1000,18 @@ class Window(QDialog):
             
             text, okPressed = QInputDialog.getText(self, "Password","Enter Password:", QLineEdit.Normal, "")
             if okPressed and text != '':
-                if checkPassword(text):
+                state=check_Password(text)
+                if state==1:
                     break
+                elif state==2:
+                    QMessageBox.warning(self, "Error", "Kindly renew your subscription")
+                    sys.exit()
                 else:
                     count=count+1
                     print(count)
                     if(count>2):
                         sys.exit()
-                    continue  
+                    continue
   
     # creat form method 
     def createForm(self): 
@@ -1125,10 +1129,15 @@ class SetupWindow(QWidget):
         while(1):
             text, okPressed = QInputDialog.getText(self, "Password","Enter Password:", QLineEdit.Normal, "")
             if okPressed and text != '':
-                if checkPassword(text):
+                state=check_Password(text)
+                if state==1:
                     break
+                elif state==2:
+                    QMessageBox.warning(self, "Error", "Kindly renew your subscription")
+                    sys.exit()
                 else:
-                    count = count + 1
+                    count=count+1
+                    print(count)
                     if(count>2):
                         sys.exit()
                     continue
