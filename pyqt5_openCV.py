@@ -1000,8 +1000,10 @@ class Window(QDialog):
             
             text, okPressed = QInputDialog.getText(self, "Password","Enter Password:", QLineEdit.Normal, "")
             if okPressed and text != '':
-                state=check_Password(text)
+                state,days_remaining=check_Password(text)
+                print(state)
                 if state==1:
+                    QMessageBox.information(self, "Alert", "Days remaining "+str(days_remaining.days))
                     break
                 elif state==2:
                     QMessageBox.warning(self, "Error", "Kindly renew your subscription")
@@ -1129,8 +1131,9 @@ class SetupWindow(QWidget):
         while(1):
             text, okPressed = QInputDialog.getText(self, "Password","Enter Password:", QLineEdit.Normal, "")
             if okPressed and text != '':
-                state=check_Password(text)
+                state,days_remaining=check_Password(text)
                 if state==1:
+                    QMessageBox.information(self, "Alert", "Days remaining "+str(days_remaining))
                     break
                 elif state==2:
                     QMessageBox.warning(self, "Error", "Kindly renew your subscription")
@@ -1144,44 +1147,47 @@ class SetupWindow(QWidget):
             
 
 if __name__ == '__main__':
-    
-    state = QApplication(sys.argv)
-    screen = SetupWindow()
-    screen.show()
-    state.exec()
-    
+    try:
+        state = QApplication(sys.argv)
+        screen = SetupWindow()
+        screen.show()
+        state.exec()
         
-    # path.exists("userPickles/userData.pickle") and
-    if (not setupFlag):
-        
-        PreApp = QApplication(sys.argv) 
-        # create the instance of our Window 
-        window = ListWindow() 
-        
-        # start the app 
-        PreApp.exec()
-        app = QApplication(sys.argv)
-        # global pickelName
-        print(pickelName)
-        with open('userPickles/'+str(pickelName)+'.pickle','rb') as f:
-
-            userDetails = pickle.load(f)
-            IP = userDetails.get('IP')
             
-            Email = userDetails.get('Email')
-            Identifier = userDetails.get("Identifier")
-            AI_CAN_IP =  userDetails.get("AI_CAN_IP")
-            win = MyWindow(IP,AI_CAN_IP,Email,Identifier)
-            win.show()
-            win.setWindowTitle(VERSION)
-            win.start()
+        # path.exists("userPickles/userData.pickle") and
+        if (not setupFlag):
+            
+            PreApp = QApplication(sys.argv) 
+            # create the instance of our Window 
+            window = ListWindow() 
+            
+            # start the app 
+            PreApp.exec()
+            app = QApplication(sys.argv)
+            # global pickelName
+            print(pickelName)
+            with open('userPickles/'+str(pickelName)+'.pickle','rb') as f:
+
+                userDetails = pickle.load(f)
+                IP = userDetails.get('IP')
+                
+                Email = userDetails.get('Email')
+                Identifier = userDetails.get("Identifier")
+                AI_CAN_IP =  userDetails.get("AI_CAN_IP")
+                win = MyWindow(IP,AI_CAN_IP,Email,Identifier)
+                win.show()
+                win.setWindowTitle(VERSION)
+                win.start()
+                sys.exit(app.exec())
+        
+        else:
+            app = QApplication(sys.argv)
+            window = Window() 
+            window.show()
             sys.exit(app.exec())
-    
-    else:
-        app = QApplication(sys.argv)
-        window = Window() 
-        window.show()
-        sys.exit(app.exec())
+    except FileNotFoundError:
+        sys.exit()
+        
 #EOF
 
 #TODO C,F and K
