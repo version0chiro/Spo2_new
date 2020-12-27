@@ -105,6 +105,8 @@ boxes=[(100,250,200,150)]
 
 spo2_set=[]
 
+size_ratio=[]
+
 data = pickle.loads(open("models/Trainedpickels/updated.pickle", "rb").read())
 
 process=Process()
@@ -594,9 +596,14 @@ class MyWindow(QMainWindow):
         self.IP = IP
         self.textbox = QTextEdit(self.central)
         self.textbox.setFont(TEXT_FONT)
-        self.textbox.setMinimumSize(300, 100)
+        
         self.text_update.connect(self.append_text)
         sys.stdout = self
+        global size_ratio
+        self.size_ratio = size_ratio
+        self.textbox.setMaximumSize(1850*size_ratio[0], 250*size_ratio[1])
+        self.textbox.setMinimumSize(300*size_ratio[0], 100*size_ratio[1])
+        print(size_ratio)
         print(identifier)
         print(IP)
         print(email)
@@ -644,34 +651,34 @@ class MyWindow(QMainWindow):
         self.setGeometry(self.left, self.top, self.width, self.height)
 
         self.label_2 = QLabel('SPO2 Level:',self)
-        self.label_2.move(1100,50)
-        self.label_2.resize(300, 60)
+        self.label_2.move(1100*size_ratio[0],50*size_ratio[1])
+        self.label_2.resize(300*size_ratio[0], 60*size_ratio[1])
         self.label_2.setFont(QFont('Arial', 10))
         self.label_2.setStyleSheet("border: 1px solid black;")
         
         self.label_1 = QLabel('heartRate:', self) 
-        self.label_1.move(1100, 250)
-        self.label_1.resize(300, 60)
+        self.label_1.move(1100*size_ratio[0], 250*size_ratio[1])
+        self.label_1.resize(300*size_ratio[0], 60*size_ratio[1])
         self.label_1.setFont(QFont('Arial', 10)) 
         self.label_1.setStyleSheet("border: 1px solid black;")
 
 
         self.label_3 = QLabel('Ambient:',self)
-        self.label_3.move(1550,50)
+        self.label_3.move(1550*size_ratio[0],50*size_ratio[1])
         self.label_3.setFont(QFont('Arial', 10))
-        self.label_3.resize(300, 60)
+        self.label_3.resize(300*size_ratio[0], 60*size_ratio[1])
         self.label_3.setStyleSheet("border: 1px solid black;")
 
         self.label_4 = QLabel('Compen.:',self)
-        self.label_4.move(1550,250)
+        self.label_4.move(1550*size_ratio[0],250*size_ratio[1])
         self.label_4.setFont(QFont('Arial', 10))
-        self.label_4.resize(300, 60)
+        self.label_4.resize(300*size_ratio[0], 60*size_ratio[1])
         self.label_4.setStyleSheet("border: 1px solid black;")
          
         self.label_5 = QLabel('ID:',self)
         self.label_5.setFont(QFont('Arial', 10))
-        self.label_5.move(1350,150)
-        self.label_5.resize(300, 60)
+        self.label_5.move(1350*size_ratio[0],150*size_ratio[1])
+        self.label_5.resize(300*size_ratio[0], 60*size_ratio[1])
         # self.label_5.resize(200,20) 
         self.label_5.setStyleSheet("border: 1px solid black;")
         
@@ -680,8 +687,8 @@ class MyWindow(QMainWindow):
 
         # setting geometry of button
         self.button.setGeometry(200, 150, 100, 30)
-        self.button.move(1600,600)
-        self.button.resize(250, 50)
+        self.button.move(1600*size_ratio[0],600*size_ratio[1])
+        self.button.resize(250*size_ratio[0], 50*size_ratio[1])
         self.button.setFont(QFont('Arial', 10))
         # adding action to a button
 
@@ -691,9 +698,9 @@ class MyWindow(QMainWindow):
 
         # setting geometry of button
         self.button2.setGeometry(200, 150, 100, 30)
-        self.button2.move(1600,500)
+        self.button2.move(1600*size_ratio[0],500*size_ratio[1])
         self.button.setFont(QFont('Arial', 10))
-        self.button2.resize(250, 50)
+        self.button2.resize(250*size_ratio[0], 50*size_ratio[1])
         # adding action to a button
         self.button2.clicked.connect(self.updateV)
         # button2.move(425,335)
@@ -704,9 +711,9 @@ class MyWindow(QMainWindow):
 
         # setting geometry of button
         self.button3.setGeometry(200, 150, 100, 30)
-        self.button3.move(1100,500)
+        self.button3.move(1100*size_ratio[0],500*size_ratio[1])
         self.button3.setFont(QFont('Arial', 10))
-        self.button3.resize(250, 50)
+        self.button3.resize(250*size_ratio[0], 50*size_ratio[1])
         self.button3.setIcon(QIcon('resources/record_icon.jpg'))
         # adding action to a button
         self.button3.clicked.connect(self.record)
@@ -717,9 +724,9 @@ class MyWindow(QMainWindow):
         
         # setting geometry of button
         self.button4.setGeometry(200, 150, 100, 30)
-        self.button4.move(1350,500)
+        self.button4.move(1350*size_ratio[0],500*size_ratio[1])
         self.button4.setFont(QFont('Arial', 10))
-        self.button4.resize(250, 50)
+        self.button4.resize(250*size_ratio[0], 50*size_ratio[1])
         # adding action to a button
         self.button4.clicked.connect(self.auto)
         
@@ -727,9 +734,9 @@ class MyWindow(QMainWindow):
   
         # setting geometry of button 
         self.button5.setGeometry(200, 150, 100, 30)
-        self.button5.move(1100,600)
+        self.button5.move(1100*size_ratio[0],600*size_ratio[1])
         self.button5.setFont(QFont('Arial', 10))
-        self.button5.resize(250, 50)
+        self.button5.resize(250*size_ratio[0], 50*size_ratio[1])
         # self.button5.move(425*3,300) 
   
         # setting radius and border 
@@ -819,7 +826,7 @@ class MyWindow(QMainWindow):
             image = imageq.get()
             if image is not None and len(image) > 0:
                 img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-                img = imutils.resize(img,width=1024,height=720)
+                img = imutils.resize(img,width=int(1024*self.size_ratio[0]),height=int(720*self.size_ratio[1]))
                 self.display_image(img, display, scale)
 
     # Display an image, reduce size if required
@@ -1164,6 +1171,16 @@ if __name__ == '__main__':
             # start the app 
             PreApp.exec()
             app = QApplication(sys.argv)
+            
+            screen = app.primaryScreen()
+            size = screen.size()
+            rect = screen.availableGeometry()
+            width = rect.width()
+            height = rect.height()
+            # print(width,height)
+            # global size_ratio
+            size_ratio = [width/1920, height/1030]
+            print(size_ratio)
             # global pickelName
             print(pickelName)
             with open('userPickles/'+str(pickelName)+'.pickle','rb') as f:
