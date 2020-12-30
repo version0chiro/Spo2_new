@@ -3,7 +3,8 @@ import os
 from datetime import date
 import os
 import datetime
-
+import pymongo
+from getmac import get_mac_address as gma
 import pickle
 
 def checkPassword(password):
@@ -18,6 +19,21 @@ def checkPassword(password):
         return 0
     
 def check_Password(password):
+    
+    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+    mydb = myclient["playing_around"]
+    mycol = mydb["identities"]
+    MAC = str(gma())
+    
+    query = {"MAC": MAC}
+
+    search = mycol.find(query)[0]
+    
+    if not search:
+      return [2,0]
+  
+    print("found in mongoDB")
+  
     try:
         if os.path.isfile("password/date.p"):
             
