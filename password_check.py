@@ -20,8 +20,8 @@ def checkPassword(password):
     
 def check_Password(password):
     
-    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-    mydb = myclient["playing_around"]
+    myclient = pymongo.MongoClient("mongodb+srv://admin-sachin:Sachin123@cluster0.pf7ee.mongodb.net/")
+    mydb = myclient["spo2"]
     mycol = mydb["identities"]
     MAC = str(gma())
     
