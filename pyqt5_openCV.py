@@ -1016,6 +1016,9 @@ class Window(QDialog):
                 elif state==2:
                     QMessageBox.warning(self, "Error", "Kindly renew your subscription")
                     sys.exit()
+                elif state==3:
+                    QMessageBox.warning(self, "Error", "MAC ID has not registered")
+                    sys.exit()
                 else:
                     count=count+1
                     print(count)
@@ -1145,6 +1148,9 @@ class SetupWindow(QWidget):
                     break
                 elif state==2:
                     QMessageBox.warning(self, "Error", "Kindly renew your subscription")
+                    sys.exit()
+                elif state==3:
+                    QMessageBox.warning(self, "Error", "MAC ID has not registered")
                     sys.exit()
                 else:
                     count=count+1
