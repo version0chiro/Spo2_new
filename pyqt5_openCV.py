@@ -345,10 +345,12 @@ def grab_images(cam_num, queue,self):
             # print(height, width)
             
             # cv2.imshow("faceFrame",faceFrame)
-            
+            print(self.autoFlag)
             if self.autoFlag:
+                print("")
                 if frontalFlag and detectionFrontFace(faceFrame.copy()):
-                    # print("")
+                    print("")
+                    print(frontFaceCount)
                     frontFaceCount=frontFaceCount+1
                     if frontFaceCount==15:    
                         frontalFlag = False
@@ -505,7 +507,8 @@ def grab_images(cam_num, queue,self):
                 frameCount=frameCount+1
                 globalCount=globalCount +1
                 
-                if globalCount%10000==0:
+                print(globalCount)
+                if globalCount%1000==0:
                     frontalFlag = True
                     
                 if globalCount%500==0:
