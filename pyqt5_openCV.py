@@ -601,6 +601,7 @@ class MyWindow(QMainWindow):
         sys.stdout = self
         global size_ratio
         self.size_ratio = size_ratio
+        print(size_ratio)
         self.textbox.setMaximumSize(1850*size_ratio[0], 250*size_ratio[1])
         self.textbox.setMinimumSize(300*size_ratio[0], 100*size_ratio[1])
         print(size_ratio)
@@ -1010,10 +1011,13 @@ class Window(QDialog):
                 state,days_remaining=check_Password(text)
                 print(state)
                 if state==1:
-                    QMessageBox.information(self, "Alert", "Days remaining "+str(days_remaining.days))
+                    QMessageBox.information(self, "Alert", "Days remaining "+str(days_remaining))
                     break
                 elif state==2:
                     QMessageBox.warning(self, "Error", "Kindly renew your subscription")
+                    sys.exit()
+                elif state==3:
+                    QMessageBox.warning(self, "Error", "MAC ID has not registered")
                     sys.exit()
                 else:
                     count=count+1
@@ -1145,6 +1149,9 @@ class SetupWindow(QWidget):
                 elif state==2:
                     QMessageBox.warning(self, "Error", "Kindly renew your subscription")
                     sys.exit()
+                elif state==3:
+                    QMessageBox.warning(self, "Error", "MAC ID has not registered")
+                    sys.exit()
                 else:
                     count=count+1
                     print(count)
@@ -1199,6 +1206,15 @@ if __name__ == '__main__':
         
         else:
             app = QApplication(sys.argv)
+            screen = app.primaryScreen()
+            size = screen.size()
+            rect = screen.availableGeometry()
+            width = rect.width()
+            height = rect.height()
+            # print(width,height)
+            # global size_ratio
+            size_ratio = [width/1920, height/1030]
+            print(size_ratio)
             window = Window() 
             window.show()
             sys.exit(app.exec())
