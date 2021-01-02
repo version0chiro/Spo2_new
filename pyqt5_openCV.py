@@ -517,8 +517,8 @@ def grab_images(cam_num, queue,self):
                     print(tempFlag)
                     if tempFlag==1:                       
                         sensorValue=get_value(self.AI_CAN_IP)
-                        Ambient = stringGetValue(sensorValue,4) 
-                        Compensated = stringGetValue(sensorValue,6) 
+                        Ambient = stringGetValue(sensorValue,2) 
+                        Compensated = stringGetValue(sensorValue,1) 
                         self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
                         self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
                         if((float(Compensated))>37.7):
