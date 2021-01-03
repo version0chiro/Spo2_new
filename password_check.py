@@ -6,7 +6,7 @@ import datetime
 import pymongo
 from getmac import get_mac_address as gma
 import pickle
-
+import re, uuid
 def checkPassword(password):
     passwd=b'pyqt543'
     salt = bcrypt.gensalt()
@@ -23,7 +23,8 @@ def check_Password(password):
     myclient = pymongo.MongoClient("mongodb+srv://admin-sachin:Sachin123@cluster0.pf7ee.mongodb.net/")
     mydb = myclient["spo2"]
     mycol = mydb["identities"]
-    MAC = str(gma())
+    MAC = str(':'.join(re.findall('..', '%012x' % uuid.getnode())))
+    # MAC = str(gma())
     
     query = {"MAC": MAC}
     try:
