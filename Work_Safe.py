@@ -633,6 +633,17 @@ class MyWindow(QMainWindow):
     def UiComponents(self):
 
         global hr
+        
+        oImage = QImage("resources/wallpaper.png")
+        
+        sImage = oImage.scaled(QSize(1920*size_ratio[0],1080*size_ratio[1]))
+        
+        
+        palette = QPalette()
+        palette.setBrush(QPalette.Window,QBrush(sImage))
+        
+        self.setPalette(palette)
+        
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
 
@@ -640,33 +651,34 @@ class MyWindow(QMainWindow):
         self.label_2.move(1100*size_ratio[0],50*size_ratio[1])
         self.label_2.resize(300*size_ratio[0], 60*size_ratio[1])
         self.label_2.setFont(QFont('Arial', 10))
-        self.label_2.setStyleSheet("border: 1px solid black;")
+        self.label_2.setStyleSheet("background-color: white; border: 1px solid black;")
+        
         
         self.label_1 = QLabel('heartRate:', self) 
         self.label_1.move(1100*size_ratio[0], 250*size_ratio[1])
         self.label_1.resize(300*size_ratio[0], 60*size_ratio[1])
         self.label_1.setFont(QFont('Arial', 10)) 
-        self.label_1.setStyleSheet("border: 1px solid black;")
+        self.label_1.setStyleSheet("background-color: white; border: 1px solid black;")
 
 
         self.label_3 = QLabel('Ambient:',self)
         self.label_3.move(1550*size_ratio[0],50*size_ratio[1])
         self.label_3.setFont(QFont('Arial', 10))
         self.label_3.resize(300*size_ratio[0], 60*size_ratio[1])
-        self.label_3.setStyleSheet("border: 1px solid black;")
+        self.label_3.setStyleSheet("background-color: white; border: 1px solid black;")
 
         self.label_4 = QLabel('Compen.:',self)
         self.label_4.move(1550*size_ratio[0],250*size_ratio[1])
         self.label_4.setFont(QFont('Arial', 10))
         self.label_4.resize(300*size_ratio[0], 60*size_ratio[1])
-        self.label_4.setStyleSheet("border: 1px solid black;")
+        self.label_4.setStyleSheet("background-color: white; border: 1px solid black;")
          
         self.label_5 = QLabel('ID:',self)
         self.label_5.setFont(QFont('Arial', 10))
         self.label_5.move(1350*size_ratio[0],150*size_ratio[1])
         self.label_5.resize(300*size_ratio[0], 60*size_ratio[1])
         # self.label_5.resize(200,20) 
-        self.label_5.setStyleSheet("border: 1px solid black;")
+        self.label_5.setStyleSheet("background-color: white; border: 1px solid black;")
         
         # creating a push button
         self.button = QPushButton("SPO2", self)
@@ -691,7 +703,7 @@ class MyWindow(QMainWindow):
         self.button2.clicked.connect(self.updateV)
         # button2.move(425,335)
 
-        self.button3 = QPushButton("Record", self)
+        self.button3 = QPushButton("RECORD", self)
 
         self.button3.setCheckable(True)
 
@@ -704,7 +716,7 @@ class MyWindow(QMainWindow):
         # adding action to a button
         self.button3.clicked.connect(self.record)
         
-        self.button4 = QPushButton("Auto", self)
+        self.button4 = QPushButton("AUTO", self)
 
         self.button4.setCheckable(True)
         

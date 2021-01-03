@@ -30,7 +30,7 @@ def check_Password(password):
     try:
         search = mycol.find_one(query)
         activationFromServer = search["ActivationKey"]
-        dateFromServer = search["updated_at"].date()
+        dateFromServer = search["created_at"].date()
         
     except:
         return [3,0]
@@ -39,14 +39,14 @@ def check_Password(password):
   
     try:
         today = date.today()
-        difftime = dateFromServer - today
+        difftime =  today - dateFromServer 
         difftime = difftime.days
         print(difftime)
         if difftime > 0:
             if str(activationFromServer)==str(password):
-                return [1,difftime.days]
+                return [1,difftime]
             else:
-                return [0,difftime.days]
+                return [0,difftime]
         else:
             return [2,0]
     except FileNotFoundError:
