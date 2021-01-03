@@ -431,13 +431,6 @@ def grab_images(cam_num, queue,self):
 
                         HRavg = np.nanmean(hrSet)
                         
-                        # today = date.today()
-                        # t = time.localtime()
-                        # current_time = time.strftime("%H%M%S", t)
-                        # np.savetxt('graphs_HR/'+str(current_time)+'.csv',  
-                        # hrSet, 
-                        # delimiter =", ",  
-                        # fmt ='% s')
                         hrSet = []
                         result=SPooEsitmate(final_sig,totalFrame,totalFrame,duration) # the final signal list is sent to SPooEsitmate function with length of the video
                         try:
@@ -467,9 +460,7 @@ def grab_images(cam_num, queue,self):
                             self.label_4.setText("Compen.:"+Compensated)
                                 
                         checkName(name_final,result,hr,Compensated,Ambient)
-                        
-                        # if url_ok():
-                        #     upload()
+                    
                         Spo2Flag=0
                         # Webspo2Flag= not Webspo2Flag
                         
@@ -689,12 +680,12 @@ class MyWindow(QMainWindow):
 
         self.button.clicked.connect(self.clickme)
 
-        self.button2 = QPushButton("Update", self)
+        self.button2 = QPushButton("TEMPERATURE", self)
 
         # setting geometry of button
         self.button2.setGeometry(200, 150, 100, 30)
         self.button2.move(1600*size_ratio[0],500*size_ratio[1])
-        self.button.setFont(QFont('Arial', 10))
+        self.button2.setFont(QFont('Arial', 10))
         self.button2.resize(250*size_ratio[0], 50*size_ratio[1])
         # adding action to a button
         self.button2.clicked.connect(self.updateV)
@@ -915,7 +906,7 @@ class Window(QDialog):
         # self.trainModel.clicked.connect(self.startTraining)
   
         # addding action when form is rejected 
-        self.CancelButton.clicked.connect(self.reject)
+        # self.CancelButton.clicked.connect(self.reject)
 
         self.NoScanButton.clicked.connect(self.NoScan)
 
@@ -1076,6 +1067,7 @@ class SetupWindow(QWidget):
         QWidget.__init__(self)
         layout = QGridLayout()
         self.setLayout(layout)
+        self.setWindowTitle("Setup Window") 
 
         self.radiobuttonSetup = QRadioButton("Setup")
         self.radiobuttonSetup.setChecked(True)
