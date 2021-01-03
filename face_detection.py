@@ -42,7 +42,7 @@ class FaceDetection(object):
             (x, y, w, h) = face_utils.rect_to_bb(rects[0])
             #cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 1)
             if y<0:
-                print("a")
+                # print("a")
                 return frame, face_frame, ROI1, ROI2, status, mask
             #if i==0:
             face_frame = frame[y:y+h,x:x+w]
@@ -62,7 +62,7 @@ class FaceDetection(object):
             if len(rectsf) >0:
                 shape = self.predictor(grayf, rectsf[0])
                 shape = face_utils.shape_to_np(shape)
-                print(shape)
+                # print(shape)
                 for (a, b) in shape:
                     cv2.circle(face_frame, (a, b), 1, (0, 0, 255), -1) #draw facial landmarks
                 

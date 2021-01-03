@@ -1,7 +1,7 @@
 # Copyright (c) Sachin Singh Bhadoriya 2020
 # Please credit iosoft.blog if you use the information or software in it
 
-VERSION = "SPO2 Estimation software"
+VERSION = "Main Window"
 from os import path
 
 from datetime import date
@@ -30,6 +30,7 @@ from request import checkPing
 from frontalFaceDetection import detectionFrontFace,fix_box
 import time
 import os
+import re, uuid
 import threading
 from password_check import checkPassword,check_Password
 from encode_faces import trainModel
@@ -302,7 +303,7 @@ def grab_images(cam_num, queue,self):
                 
             cv2.waitKey(1)    
             if (self.recordFlag) and ( not isRecordingFlag):
-                        print("made writer")
+                        # print("made writer")
                         today = date.today()
                         t = time.localtime()
                         current_time = time.strftime("%H%M%S", t)
@@ -341,12 +342,10 @@ def grab_images(cam_num, queue,self):
             # print(height, width)
             
             # cv2.imshow("faceFrame",faceFrame)
-            print(self.autoFlag)
+            # print(self.autoFlag)
             if self.autoFlag:
-                print("")
+                
                 if frontalFlag and detectionFrontFace(faceFrame.copy()):
-                    print("")
-                    print(frontFaceCount)
                     frontFaceCount=frontFaceCount+1
                     if frontFaceCount==15:    
                         frontalFlag = False
@@ -441,7 +440,6 @@ def grab_images(cam_num, queue,self):
                         # fmt ='% s')
                         hrSet = []
                         result=SPooEsitmate(final_sig,totalFrame,totalFrame,duration) # the final signal list is sent to SPooEsitmate function with length of the video
-                        print(result)
                         try:
                             self.label_1.setText("HeartRate:"+str(int(HRavg)))
                             self.label_2.setText("SPO2 Level:"+str(int(np.ceil(result))))
@@ -450,7 +448,6 @@ def grab_images(cam_num, queue,self):
                             self.label_2.setText("SPO2 Level:"+"NA")
                         tempFlag=checkPing(self.AI_CAN_IP)
                         
-                        print(tempFlag)
                         if tempFlag==1:
                             sensorValue=get_value(self.AI_CAN_IP)
                             # print(sensorValue)
@@ -461,6 +458,7 @@ def grab_images(cam_num, queue,self):
                             Ambient = format(float(Ambient),'.2f')
                             Compensated = format(float(Compensated),'.2f')
                             if(int(float(Compensated))>37):
+                                # save pic here and save 
                                 send_mail()
                         else:
                             Ambient = "NA"
@@ -493,7 +491,6 @@ def grab_images(cam_num, queue,self):
                     self.recording.write(recordVid)
                 
                 if self.doneRecording:
-                    print('done ')
                     if self.recordFlag:
                         self.recording.release()
                         self.recordFlag=False
@@ -504,7 +501,7 @@ def grab_images(cam_num, queue,self):
                 globalCount=globalCount +1
                 
                 print(globalCount)
-                if globalCount%1000==0:
+                if globalCount%300==0:
                     frontalFlag = True
                     
                 if globalCount%500==0:
@@ -529,7 +526,6 @@ def grab_images(cam_num, queue,self):
                     
                     if globalCount>100000:
                         globalCount=0
-                    print(globalCount)
                     
 
                 # print(frameCount)
@@ -600,7 +596,6 @@ class MyWindow(QMainWindow):
         sys.stdout = self
         global size_ratio
         self.size_ratio = size_ratio
-        print(size_ratio)
         self.textbox.setMaximumSize(1850*size_ratio[0], 250*size_ratio[1])
         self.textbox.setMinimumSize(300*size_ratio[0], 100*size_ratio[1])
         print(size_ratio)
@@ -622,7 +617,7 @@ class MyWindow(QMainWindow):
         self.vlayout.addWidget(self.textbox)
         self.central.setLayout(self.vlayout)
         self.setCentralWidget(self.central)
-        self.title = 'PyQt5 simple window - pythonspot.com'
+        self.title = 'Main Window'
         self.left = 640
         self.top = 360
         # self.left = 500
@@ -871,7 +866,7 @@ class Window(QDialog):
         super(Window, self).__init__() 
   
         # setting window title 
-        self.setWindowTitle("Setup") 
+        self.setWindowTitle("Setup Window") 
   
         # setting geometry to the window 
         self.setGeometry(100, 100, 300, 400) 
@@ -880,8 +875,7 @@ class Window(QDialog):
         self.formGroupBox = QGroupBox("Enter user details") 
   
         # creating spin box to select age 
-         
-  
+        
         # creating a line edit 
         self.nameLineEdit = QLineEdit() 
 
@@ -893,36 +887,32 @@ class Window(QDialog):
 
         self.JsonIP = QLineEdit()
         
-        self.statusLabel = QLabel('')
+        # self.statusLabel = QLabel('')
         
         # calling the method that create the form 
         self.createForm() 
 
-        self.NoScanButton = QPushButton(self.tr("&No Scan"))
+        self.NoScanButton = QPushButton(self.tr("&Proceed"))
 
 
         # creating a dialog button for ok and cancel 
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel) 
 
-        self.ScanButton = QPushButton('Scan')
+        # self.ScanButton = QPushButton('Scan')
         
-        self.CancelButton = QPushButton('Cancel')
+        # self.CancelButton = QPushButton('Cancel')
         
-        self.trainModel = QPushButton('Face Recog.')
+        # self.trainModel = QPushButton('Face Recog.')
         
         self.hbox = QHBoxLayout()
         self.hbox.addStretch(0)
         # self.hbox.setSpacing(100)
-        self.hbox.addWidget(self.ScanButton)
-        self.hbox.addWidget(self.trainModel)
-        self.hbox.addWidget(self.CancelButton)
-        
-        
+        # self.hbox.addWidget(self.CancelButton)
 
         # adding action when form is accepted 
-        self.ScanButton.clicked.connect(self.getInfo)
+        # self.ScanButton.clicked.connect(self.getInfo)
          
-        self.trainModel.clicked.connect(self.startTraining)
+        # self.trainModel.clicked.connect(self.startTraining)
   
         # addding action when form is rejected 
         self.CancelButton.clicked.connect(self.reject)
@@ -943,20 +933,20 @@ class Window(QDialog):
         # setting lay out 
         self.setLayout(mainLayout) 
     
-    def startTraining(self):
+    # def startTraining(self):
         
-        self.statusLabel.setText("Please wait...")
-        time.sleep(2.0)
-        time.sleep(3.0)
-        checkFlag=trainModel()
-        if checkFlag == 1:
-            self.statusLabel.setText("Training completed")
-        else:
-            self.statusLabel.setText("Training failed, try again")
+    #     self.statusLabel.setText("Please wait...")
+    #     time.sleep(2.0)
+    #     time.sleep(3.0)
+    #     checkFlag=trainModel()
+    #     if checkFlag == 1:
+    #         self.statusLabel.setText("Training completed")
+    #     else:
+    #         self.statusLabel.setText("Training failed, try again")
             
         
     def NoScan(self):
-        self.statusLabel.setText("No Scan initalization")
+        # self.statusLabel.setText("No Scan initalization")
         print("Identifier : {0}".format(self.nameLineEdit.text())) 
         print("Email : {0}".format(self.emailLineEdit.text())) 
         print("IP : {0}".format(self.iPLineEdit.text())) 
@@ -977,38 +967,15 @@ class Window(QDialog):
         win.start()
 
 
-
-    # get info method called when form is accepted 
-    def getInfo(self): 
-        self.statusLabel.setText("Please wait...")
-        # printing the form information 
-        print("Identifier : {0}".format(self.nameLineEdit.text())) 
-        print("Email : {0}".format(self.emailLineEdit.text())) 
-        print("IP : {0}".format(self.iPLineEdit.text())) 
-        Identifier = self.nameLineEdit.text()
-        Email = self.emailLineEdit.text()
-        IP=self.iPLineEdit.text()
-        AI_CAN_IP =  get_IP(Identifier)
-        userDetails = {"Identifier":Identifier,"Email":Email,"IP":IP,"AI_CAN_IP":AI_CAN_IP}
-        with open('saved_devices/'+str(Identifier)+'.pickle', 'wb') as f:
-            pickle.dump(userDetails, f)
-        # closing the window 
-        self.statusLabel.setText("Scan finished")
-        self.close()
-        self.getText()
-        win = MyWindow(IP,AI_CAN_IP,Email,Identifier)
-        win.show()
-        win.setWindowTitle(VERSION)
-        win.start()
         
     def getText(self):
         count=0
         while(1):
             
-            text, okPressed = QInputDialog.getText(self, "Password","Enter Password:", QLineEdit.Normal, "")
+            text, okPressed = QInputDialog.getText(self, "Activation","Enter Password:", QLineEdit.Normal, "")
             if okPressed and text != '':
                 state,days_remaining=check_Password(text)
-                print(state)
+                # print(state)
                 if state==1:
                     QMessageBox.information(self, "Alert", "Days remaining "+str(days_remaining))
                     break
@@ -1017,10 +984,12 @@ class Window(QDialog):
                     sys.exit()
                 elif state==3:
                     QMessageBox.warning(self, "Error", "MAC ID has not registered")
+                    MAC = str(':'.join(re.findall('..', '%012x' % uuid.getnode())))
+                    QMessageBox.information(self, "Alert","The MAC ID of your Computer is :"+MAC)
                     sys.exit()
                 else:
                     count=count+1
-                    print(count)
+                    # print(count)
                     if(count>2):
                         sys.exit()
                     continue
@@ -1043,7 +1012,7 @@ class Window(QDialog):
   
         layout.addRow(QLabel("Json-IP"), self.JsonIP)
         
-        layout.addRow(QLabel("Status:"),self.statusLabel)
+        # layout.addRow(QLabel("Status:"),self.statusLabel)
 
         # setting layout 
         self.formGroupBox.setLayout(layout) 
@@ -1055,7 +1024,7 @@ class ListWindow(QMainWindow):
         super().__init__() 
   
         # setting title 
-        self.setWindowTitle("Python ") 
+        self.setWindowTitle("Selection Window") 
   
         # setting geometry 
         self.setGeometry(100, 100, 350, 450) 
@@ -1150,10 +1119,12 @@ class SetupWindow(QWidget):
                     sys.exit()
                 elif state==3:
                     QMessageBox.warning(self, "Error", "MAC ID has not registered")
+                    MAC = str(':'.join(re.findall('..', '%012x' % uuid.getnode())))
+                    QMessageBox.information(self, "Alert","The MAC ID of your Computer is :"+MAC)
                     sys.exit()
                 else:
                     count=count+1
-                    print(count)
+                    # print(count)
                     if(count>2):
                         sys.exit()
                     continue
@@ -1186,7 +1157,7 @@ if __name__ == '__main__':
             # print(width,height)
             # global size_ratio
             size_ratio = [width/1920, height/1030]
-            print(size_ratio)
+            # print(size_ratio)
             # global pickelName
             print(pickelName)
             with open('saved_devices/'+str(pickelName)+'.pickle','rb') as f:
