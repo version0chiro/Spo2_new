@@ -22,7 +22,6 @@ class Process(object):
         self.fd = FaceDetection()
         self.bpms = []
         self.peaks = []
-        # self.red = np.zeros((256,256,3),np.uint8)
 
     def extractColor(self, frame):
 
@@ -33,14 +32,12 @@ class Process(object):
     def run(self):
 
         frame, face_frame, ROI1, ROI2,ROI3,  status, mask = self.fd.face_detect(self.frame_in)
-        # cv2.imshow('face_detect',ROI4)
         self.frame_out = frame
         self.frame_ROI = face_frame
 
         g1 = self.extractColor(ROI1)
         g2 = self.extractColor(ROI2)
         g3 = self.extractColor(ROI3)
-        # g4 = self.extractColor(ROI4)
 
         L = len(self.data_buffer)
 
@@ -72,15 +69,11 @@ class Process(object):
             interpolated = np.hamming(
                 L) * interpolated  # make the signal become more periodic (advoid spectral leakage)
             norm = (interpolated - np.mean(interpolated))/np.std(interpolated)#normalization
-            # norm = interpolated / np.linalg.norm(interpolated)
             raw = np.fft.rfft(norm * 30)  # do real fft with the normalization multiplied by 10
 
             self.freqs = float(self.fps) / L * np.arange(L / 2 + 1)
             freqs = 60. * self.freqs
-
-
             self.fft = np.abs(raw) ** 2  # get amplitude spectrum
-
             idx = np.where((freqs > 50) & (freqs < 180))  # the range of frequency that HR is supposed to be within
             pruned = self.fft[idx]
             pfreq = freqs[idx]

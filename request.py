@@ -44,4 +44,3 @@ def upload():
         file_dict = {"attendance": a_file}
 
         response = requests.post("http://localhost:3000/checkFile", files=file_dict)
-

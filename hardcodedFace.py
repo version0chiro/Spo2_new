@@ -31,9 +31,6 @@ def face_detect_and_thresh(frame):
 
 def spartialAverage(thresh,frame):
     a=list(np.argwhere(thresh>0))
-    # x=[i[0] for i in a]
-    # y=[i[1] for i in a]
-    # p=[x,y]
     ind_img=(np.vstack((a)))
     sig_fin=np.zeros([np.shape(ind_img)[0],3])
     test_fin=[]
@@ -42,45 +39,25 @@ def spartialAverage(thresh,frame):
         sig_temp = sig_temp.reshape((1, 3))
         if sig_temp.any()!=0:
             sig_fin=np.concatenate((sig_fin,sig_temp))
-    # print(sig_fin)
     for _ in sig_fin:
         if sum(_)>0:
-            # test_fin=np.concatenate((test_fin,_))
             test_fin.append(_)
-    # print("min=>")
     a= [item for item in sig_fin if sum(item)>0]
-    # print(min(a, key=sum))
     min_value=sum(min(a, key=sum))
     max_value=sum(max(a, key=sum))
-    # print(sum1)
     img_rgb_mean=np.nanmean(test_fin,axis=0)
     print(img_rgb_mean)
     return img_rgb_mean,min_value,max_value
 
 def MeanRGB(thresh,frame,last_stage,min_value,max_value):
     cv2.imshow("threshh",thresh)
-    # print(thresh)
     print("==<>>")
-    # print(img_rgb)
-    # cv2.waitKey()
-    # print(img_rgb[0])
-    # thresh=thresh.reshape((1,3))
-    # img_rgb_mean=np.nanmean(thresh,axis=0)
     a= [item for item in frame[0] if (sum(item)>200 and sum(item)<700)]
     print(a)
-    # a = filter(lambda (x,y,z) : i+j+k>764 ,frame[0])
-    # print(a[1:10])
-    # img_temp = [item for item in img_rgb if sum(item)>764]
-    # print(frame[0])
-    # print(img_temp)
-    # print(np.mean(a, axis=(0)))
     if a:
         print("==>")
-        # print(a)
         print("==>")
         img_mean=np.mean(a, axis=(0))
-        # print(img_mean)
-
         return img_mean[::-1]
     else:
         return last_stage
@@ -89,7 +66,6 @@ def face_detect_and_thresh2(frame):
     lower = np.array([0, 48, 80], dtype = "uint8")
     upper = np.array([20, 255, 255], dtype = "uint8")
     face_frame=frame[gBox[0]:gBox[1],gBox[2]:gBox[3]]
-    # cv2.imshow("face_testing",face_frame)
     frame=face_frame
     cv2.imshow("testing",frame)
     converted = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -106,8 +82,7 @@ def face_detect_and_thresh2(frame):
     skin = skin_detector.process(face_frame)
     skin = cv2.bitwise_and(face_frame, face_frame, mask = skin)
     cv2.imshow("skin",skin)
-    # print(np.mean(skin, axis=(0, 1)))
-    # cv2.imshow("face_testing",skin)
+    # print(np.mean(skin, axis=(0, 1)
     return skin,frame
 
 def preprocess(z1,z2,detrended_RGB,window_size,size_video,duration,frame):
@@ -124,19 +99,6 @@ def preprocess(z1,z2,detrended_RGB,window_size,size_video,duration,frame):
         p=[list(a) for a in zip(temp_R, temp_B)]
 
         out.append(p)
-        # if not main_R:
-        #     main_R.append(temp_R)
-        # else:
-        #     main_R=[main_R,temp_R]
-        #
-        # if not main_B:
-        #     main_B.append(temp_B)
-        # else:
-        #     main_B=[main_B,temp_B]
-
-
-    # out=[main_R,main_B]
-    # print(out[0])
     return out[0]
 
 
@@ -154,9 +116,6 @@ def SPooEsitmate(final_sig,video_size,frames,seconds):
     R_temp = [item[0] for item in Spo2]
     DC_R_comp=np.mean(R_temp)
     AC_R_comp=np.std(R_temp)
-    # print(DC_R_comp)
-    # print(R_temp)
-    # print(AC_R_comp)
     I_r=AC_R_comp/DC_R_comp
 
     B_temp = [item[1] for item in Spo2]
@@ -188,9 +147,6 @@ while(cap.isOpened()):
         frame = imutils.resize(frame,width=400)
         cv2.imshow("testing if flipped",frame)  #just run this if you have issue with inverted frames, can result in fail detection
         cv2.waitKey()
-        # cv2.imshow("testing if flipped2",imutils.rotate_bound(frame, -90))  #just run this if you have issue with inverted frames, can result in fail detection
-        # cv2.waitKey()
-        # frame= imutils.rotate_bound(frame, 90)
         cv2.imshow("testing if flipped",frame)  #just run this if you have issue with inverted frames, can result in fail detection
         cv2.waitKey()
 
@@ -202,12 +158,7 @@ while(cap.isOpened()):
 
     if ret == True:
         frame = imutils.resize(frame,width=400)
-        # frame= imutils.rotate_bound(frame, 90)
-
-        # cv2.imshow("testing if flipped",frame)  #just run this if you have issue with inverted frames, can result in fail detection
         frameCount+=1
-        # frame= imutils.rotate_bound(frame, 90)
-
         print(frameCount)
         cv2.imshow('Frame',frame)
 
@@ -216,13 +167,6 @@ while(cap.isOpened()):
         cv2.imshow("img_rgb",thresh)
         end = time.time()
         print(end - start)
-
-        # start = time.time()
-        #
-        # final_sig.append(spartialAverage(maskT,frame)) # The frames are then sent to spartialAverage to find RGB mean values
-        # end = time.time()
-        # print(end - start)
-
         start = time.time()
         if final_sig:
             final_sig.append(MeanRGB(thresh,frame,final_sig[-1],min_value,max_value)) # The frames are then sent to spartialAverage to find RGB mean values
@@ -256,16 +200,3 @@ pickle.dump(final_sig, open( "spo2.p", "wb" ) ) #For debugging you can try savin
 print(final_sig)
 result=SPooEsitmate(final_sig,length,length,seconds) # the final signal list is sent to SPooEsitmate function with length of the video
 print(result)
-
-# TODO: Detrended into better results
-# z1=[item[0] for item in final_sig]
-# detrended_R=dethreding(z1)
-# print(detrended_R)
-#
-# z2=[item[1] for item in final_sig]
-# detrended_G=dethreding(z2)
-# print(detrended_R)
-#
-# z3=[item[2] for item in final_sig]
-# detrended_B=dethreding(z3)
-# print(detrended_R)

@@ -12,9 +12,6 @@ def get_value(IP):
                 break
         except:
             pass
-    # print(type(html))
-    # jsonD = json.dumps(html)
-    # jsonL = json.loads(jsonD)
     sensorValues = html.decode()
     return sensorValues
 
@@ -25,7 +22,6 @@ def get_IP(Identifier):
     substr = "."
     for ind in range(0, 3):
         val = laptop_ip_address.find(substr, val + 1)
-    #print(val)
     laptop_ip_address = laptop_ip_address[0:val+1]
     print(laptop_ip_address)
 
@@ -42,9 +38,7 @@ def get_IP(Identifier):
         if res:
             print("Device found at: ", laptop_ip_address+str(i) + ":"+str(80))
             available_devices.append("http://"+laptop_ip_address+str(i))
-
     # identifying our device
-    # print("Available IP Addresses : {}".format(available_devices))
     ipaddress = ""
     for ip in available_devices:
         try:
@@ -53,14 +47,11 @@ def get_IP(Identifier):
                 dataReceived = response.read()
                 response.close()
                 dataReceivedFromClient = dataReceived.decode()
-                #print(dataReceivedFromClient)
                 substring = dataReceivedFromClient.find(str(Identifier))
                 if substring == -1:
                     pass
                 else:
                     ipaddress = str(ip)
-                    # print("Device found at IP Address {}".format(ipaddress))
         except:
             pass
-
     return ipaddress

@@ -42,11 +42,6 @@ def check_Password(password):
             difftime = expire_date - today
             
             if difftime > datetime.timedelta(days=0):
-                # if os.path.isfile('password/salt.p'):
-                # salt=pickle.load( open( "password/salt.p", "rb" ))
-                # userHashed = bcrypt.hashpw(bytes(password, encoding='utf-8'), salt)
-                # p = open("password/bycrpt.txt", "r")
-                # txt=p.read()
                 if str(activationFromServer)==str(password):
                     return [1,difftime.days]
                 else:

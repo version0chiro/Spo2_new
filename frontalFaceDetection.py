@@ -10,14 +10,12 @@ import cv2
 net = cv2.dnn.readNetFromCaffe("models/deploy.prototxt.txt", "models/res10_300x300_ssd_iter_140000.caffemodel")
 
 def fix_box(frame):
-    # frame = imutils.resize(frame, width=400)
     frameOG = frame.copy()
     (h,w) = frame.shape[:2]
     blob = cv2.dnn.blobFromImage(cv2.resize(frame,(300,300)),1.0,
                                     (300,300),(104.0,177.0,123.0))
     net.setInput(blob)
     detections = net.forward()
-    # print(detections.shape)
     test=[0,0,0,0,0,0,0,0,0,0,0]
     for i in test:
         confidence = detections[0,0,i,2]
@@ -34,18 +32,12 @@ def fix_box(frame):
         if ( startX2>=400 ) or ( startY2>=400 ) or ( endY2>=400 ) or ( endX2>=400 ):
             raise Exception('Face out of bounds')
         cv2.rectangle(frame, (startX2, startY2), (endX2, endY2),(0, 0, 255), 2)
-        # print("for i = "+str(i))
-        # print(startX2, startY2,endX2, endY2)
-        # print((startX2-endX2)*(startY2-endY2))
-        # cv2.putText(frame,i,(startX2+20,startY2+20),cv2.FONT_HERSHEY_SIMPLEX,0.4,(0, 0, 255), 2)
     
     
     
     return frame,frameOG[startY2:endY2,startX2:endX2]
     
 def detectionFrontFace(frame):
-    # cv2.imshow("face",frame)
-    # frame=imutils.resize(frame,width=300,height=300)
     (h,w) = frame.shape[:2]
     blob = cv2.dnn.blobFromImage(cv2.resize(frame,(300,300)),1.0,
                                  (300,300),(104.0,177.0,123.0))
@@ -60,12 +52,8 @@ def detectionFrontFace(frame):
         x=startX-endX
         y=startY-endY
         area= x*y
-        # print(area)
-        # print(box)
         if confidence < 0.9660:
-            # print("nahi mila face")
             return 0
-        
         else:
             return 1
     

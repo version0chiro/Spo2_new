@@ -64,8 +64,6 @@ if __name__ == '__main__':
                 break 
         
         # Our operations on the frame come here
-        # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
         # Display the resulting frame
         cv2.imshow('frame',frame)
         

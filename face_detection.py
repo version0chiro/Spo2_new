@@ -37,9 +37,6 @@ class FaceDetection(object):
         #assumpion: only 1 face is detected
         if len(rects)>0:
             status = True
-            # shape = self.predictor(gray, rects[0])
-            # shape = face_utils.shape_to_np(shape)
-
                 # convert dlib's rectangle to a OpenCV-style bounding box
                 # [i.e., (x, y, w, h)], then draw the face bounding box
             (x, y, w, h) = face_utils.rect_to_bb(rects[0])
@@ -54,9 +51,6 @@ class FaceDetection(object):
                 #    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
                 # loop over the (x, y)-coordinates for the facial landmarks
                 # and draw them on the image
-                
-            # for (x, y) in shape:
-                # cv2.circle(frame, (x, y), 1, (0, 0, 255), -1) #draw facial landmarks
             if(face_frame.shape[:2][1] != 0):
                 face_frame = imutils.resize(face_frame,width=256)
                 
@@ -86,30 +80,12 @@ class FaceDetection(object):
                 ROI3 = face_frame[shape[29][1]:shape[33][1], #nose
                         shape[31][0]:shape[35][0]]
                 
-                # ROI4 = face_frame[shape[76][1]:shape[26][1],
-                #                 shape[69][0]:shape[72][0]]#]
-                
                 #get the shape of face for color amplification
                 rshape = np.zeros_like(shape) 
                 rshape = self.face_remap(shape)    
                 mask = np.zeros((face_frame.shape[0], face_frame.shape[1]))
             
-                cv2.fillConvexPoly(mask, rshape[0:27], 1) 
-                # mask = np.zeros((face_frame.shape[0], face_frame.shape[1],3),np.uint8)
-                # cv2.fillConvexPoly(mask, shape, 1)
-                
-            #cv2.imshow("face align", face_frame)
-            
-            # cv2.rectangle(frame,(shape[54][0], shape[29][1]), #draw rectangle on right and left cheeks
-                    # (shape[12][0],shape[54][1]), (0,255,0), 0)
-            # cv2.rectangle(frame, (shape[4][0], shape[29][1]), 
-                    # (shape[48][0],shape[48][1]), (0,255,0), 0)
-            
-            # ROI1 = frame[shape[29][1]:shape[54][1], #right cheek
-                    # shape[54][0]:shape[12][0]]
-                    
-            # ROI2 =  frame[shape[29][1]:shape[54][1], #left cheek
-                    # shape[4][0]:shape[48][0]]   
+                cv2.fillConvexPoly(mask, rshape[0:27], 1)    
                 
         else:
             cv2.putText(frame, "No face detected",
@@ -136,9 +112,4 @@ class FaceDetection(object):
         remapped_image[27] = shape[0]
         
         remapped_image = cv2.convexHull(shape)
-        return remapped_image       
-        
-        
-        
-        
-        
+        return remapped_image      
