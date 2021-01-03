@@ -277,10 +277,6 @@ def grab_images(cam_num, queue,self):
     frame_height = int(cap.get(4))
     size = (frame_width, frame_height) 
     self.flashFlag = False
-
-   
-    # cap.set(cv2.CAP_PROP_FRAME_WIDTH, IMG_SIZE[0])
-    # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, IMG_SIZE[1])
     name_final=''
     if EXPOSURE:
         cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0)
