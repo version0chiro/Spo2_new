@@ -1,4 +1,4 @@
 import os
-for file in os.listdir("userPickels/"):
+for file in os.listdir("saved_devices/"):
     if file.endswith(".pickle"):
-        print(os.path.join("userPickels/", file))
+        print(os.path.join("saved_devices/", file))

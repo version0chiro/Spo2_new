@@ -966,7 +966,7 @@ class Window(QDialog):
         AI_CAN_IP =  "http://"+self.JsonIP.text()
         print(AI_CAN_IP)
         userDetails = {"Identifier":Identifier,"Email":Email,"IP":IP,"AI_CAN_IP":AI_CAN_IP}
-        with open('userPickles/'+str(Identifier)+'.pickle', 'wb') as f:
+        with open('saved_devices/'+str(Identifier)+'.pickle', 'wb') as f:
             pickle.dump(userDetails, f)
         # closing the window 
         self.close()
@@ -990,7 +990,7 @@ class Window(QDialog):
         IP=self.iPLineEdit.text()
         AI_CAN_IP =  get_IP(Identifier)
         userDetails = {"Identifier":Identifier,"Email":Email,"IP":IP,"AI_CAN_IP":AI_CAN_IP}
-        with open('userPickles/'+str(Identifier)+'.pickle', 'wb') as f:
+        with open('saved_devices/'+str(Identifier)+'.pickle', 'wb') as f:
             pickle.dump(userDetails, f)
         # closing the window 
         self.statusLabel.setText("Scan finished")
@@ -1079,7 +1079,7 @@ class ListWindow(QMainWindow):
         # creating a combo box widget 
         self.combo_box = QComboBox(self) 
   
-        for file in os.listdir("userPickles/"):
+        for file in os.listdir("saved_devices/"):
             if file.endswith(".pickle"):
                 self.combo_box.addItem(file.split('.')[0])
         
@@ -1167,7 +1167,7 @@ if __name__ == '__main__':
         state.exec()
         
             
-        # path.exists("userPickles/userData.pickle") and
+        # path.exists("saved_devices/userData.pickle") and
         if (not setupFlag):
             
             PreApp = QApplication(sys.argv) 
@@ -1189,7 +1189,7 @@ if __name__ == '__main__':
             print(size_ratio)
             # global pickelName
             print(pickelName)
-            with open('userPickles/'+str(pickelName)+'.pickle','rb') as f:
+            with open('saved_devices/'+str(pickelName)+'.pickle','rb') as f:
 
                 userDetails = pickle.load(f)
                 IP = userDetails.get('IP')
