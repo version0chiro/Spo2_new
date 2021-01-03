@@ -379,7 +379,7 @@ def grab_images(cam_num, queue,self):
                             name = max(counts,key=counts.get)
 
                         # print(name)
-                        self.label_5.setText("ID:"+name)
+                        self.label_5.setText("Face ID:"+name)
                         name_final=name
                         FaceDetectionFlag=0
                     
@@ -419,7 +419,7 @@ def grab_images(cam_num, queue,self):
                         # print(bpm)
                         # print(hr)
                     final_sig.append(MeanRGB(thresh,faceFrame,final_sig[-1],min_value,max_value))
-                    self.label_1.setText("HeartRate:"+str(int(hr)))
+                    self.label_1.setText("Heart-Rate:"+str(int(hr)))
                     
                     
 
@@ -434,10 +434,10 @@ def grab_images(cam_num, queue,self):
                         hrSet = []
                         result=SPooEsitmate(final_sig,totalFrame,totalFrame,duration) # the final signal list is sent to SPooEsitmate function with length of the video
                         try:
-                            self.label_1.setText("HeartRate:"+str(int(HRavg)))
+                            self.label_1.setText("Heart-Rate:"+str(int(HRavg)))
                             self.label_2.setText("SPO2 Level:"+str(int(np.ceil(result))))
                         except:
-                            self.label_1.setText("HeartRate:"+"NA")
+                            self.label_1.setText("Heart-Rate:"+"NA")
                             self.label_2.setText("SPO2 Level:"+"NA")
                         tempFlag=checkPing(self.AI_CAN_IP)
                         
@@ -447,7 +447,7 @@ def grab_images(cam_num, queue,self):
                             Ambient = stringGetValue(sensorValue,4) 
                             Compensated = stringGetValue(sensorValue,6) 
                             self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
-                            self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
+                            self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f'))))
                             Ambient = format(float(Ambient),'.2f')
                             Compensated = format(float(Compensated),'.2f')
                             if(int(float(Compensated))>37):
@@ -457,7 +457,7 @@ def grab_images(cam_num, queue,self):
                             Ambient = "NA"
                             Compensated = "NA"
                             self.label_3.setText("Ambient:"+Ambient)
-                            self.label_4.setText("Compen.:"+Compensated)
+                            self.label_4.setText("Body-Temperature:"+Compensated)
                                 
                         checkName(name_final,result,hr,Compensated,Ambient)
                     
@@ -504,7 +504,7 @@ def grab_images(cam_num, queue,self):
                         Ambient = stringGetValue(sensorValue,2) 
                         Compensated = stringGetValue(sensorValue,1) 
                         self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
-                        self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
+                        self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f'))))
                         if((float(Compensated))>37.7):
                             send_mail()
                         
@@ -513,7 +513,7 @@ def grab_images(cam_num, queue,self):
                         Ambient = "NA"
                         Compensated = "NA"
                         self.label_3.setText("Ambient:"+Ambient)
-                        self.label_4.setText("Compen.:"+Compensated)
+                        self.label_4.setText("Body-Temperature:"+Compensated)
                     
                     if globalCount>100000:
                         globalCount=0
@@ -654,7 +654,7 @@ class MyWindow(QMainWindow):
         self.label_2.setStyleSheet("background-color: white; border: 1px solid black;")
         
         
-        self.label_1 = QLabel('heartRate:', self) 
+        self.label_1 = QLabel('Heart-Rate:', self) 
         self.label_1.move(1100*size_ratio[0], 250*size_ratio[1])
         self.label_1.resize(300*size_ratio[0], 60*size_ratio[1])
         self.label_1.setFont(QFont('Arial', 10)) 
@@ -667,13 +667,13 @@ class MyWindow(QMainWindow):
         self.label_3.resize(300*size_ratio[0], 60*size_ratio[1])
         self.label_3.setStyleSheet("background-color: white; border: 1px solid black;")
 
-        self.label_4 = QLabel('Compen.:',self)
+        self.label_4 = QLabel('Body-Temperature:',self)
         self.label_4.move(1550*size_ratio[0],250*size_ratio[1])
         self.label_4.setFont(QFont('Arial', 10))
         self.label_4.resize(300*size_ratio[0], 60*size_ratio[1])
         self.label_4.setStyleSheet("background-color: white; border: 1px solid black;")
          
-        self.label_5 = QLabel('ID:',self)
+        self.label_5 = QLabel('Face ID:',self)
         self.label_5.setFont(QFont('Arial', 10))
         self.label_5.move(1350*size_ratio[0],150*size_ratio[1])
         self.label_5.resize(300*size_ratio[0], 60*size_ratio[1])
@@ -722,7 +722,7 @@ class MyWindow(QMainWindow):
         
         # setting geometry of button
         self.button4.setGeometry(200, 150, 100, 30)
-        self.button4.move(1350*size_ratio[0],500*size_ratio[1])
+        self.button4.move(1350*size_ratio[0],550*size_ratio[1])
         self.button4.setFont(QFont('Arial', 10))
         self.button4.resize(250*size_ratio[0], 50*size_ratio[1])
         # adding action to a button
@@ -769,7 +769,7 @@ class MyWindow(QMainWindow):
             Ambient = stringGetValue(sensorValue,4) 
             Compensated = stringGetValue(sensorValue,6) 
             self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
-            self.label_4.setText("Compen.:"+str((format(float(Compensated),'.2f'))))
+            self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f'))))
             if(int(float(Compensated))>37):
                 send_mail()
         # if globalCount>100000:
@@ -782,7 +782,7 @@ class MyWindow(QMainWindow):
             Ambient = "NA"
             Compensated = "NA"
             self.label_3.setText("Ambient:"+Ambient)
-            self.label_4.setText("Compen.:"+Compensated)
+            self.label_4.setText("Body-Temperature:"+Compensated)
 
     def record(self):
         if self.button3.isChecked():
@@ -801,7 +801,7 @@ class MyWindow(QMainWindow):
         frameCount=0
         Spo2Flag=1
         FaceDetectionFlag=1
-        self.label_1.setText("HeartRate:" + str(hr))
+        self.label_1.setText("Heart-Rate:" + str(hr))
         # printing pressed
         print("pressed")
     # Start image capture & display
