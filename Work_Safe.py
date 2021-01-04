@@ -450,10 +450,10 @@ def grab_images(cam_num, queue,self):
                             self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f'))))
                             Ambient = format(float(Ambient),'.2f')
                             Compensated = format(float(Compensated),'.2f')
-                            if(int(float(Compensated))>37):
+                            if( int(float(Compensated))>37 or int(HRavg)>100 or int(np.ceil(result)<90)):
                                 # save pic here and save
                                 cv2.imwrite("email_content/"+str(name)+'.jpg',faceFrame) 
-                                send_mail(email,str(name)+'.jpg',int(np.ceil(result)),int(HRavg),format(float(Compensated),'.2f'))
+                                send_mail(self.email,str(name)+'.jpg',int(np.ceil(result)),int(HRavg),format(float(Compensated),'.2f'))
                                 os.remove("email_content/"+str(name)+'.jpg')
                                 
                         else:
@@ -461,6 +461,11 @@ def grab_images(cam_num, queue,self):
                             Compensated = "NA"
                             self.label_3.setText("Ambient:"+Ambient)
                             self.label_4.setText("Body-Temperature:"+Compensated)
+                            if(int(HRavg)>100 or int(np.ceil(result)<100)):
+                                # save pic here and save
+                                cv2.imwrite("email_content/"+str(name)+'.jpg',faceFrame) 
+                                send_mail(self.email,str(name)+'.jpg',int(np.ceil(result)),int(HRavg),Compensated)
+                                os.remove("email_content/"+str(name)+'.jpg')
                                 
                         checkName(name_final,result,hr,Compensated,Ambient)
                     
@@ -600,7 +605,7 @@ class MyWindow(QMainWindow):
         print("Image size %u x %u" % IMG_SIZE)
         if DISP_SCALE > 1:
             print("Display scale %u:1" % DISP_SCALE)
-
+        self.email = email
         self.vlayout = QVBoxLayout()        # Window layout
         self.displays = QHBoxLayout()
         self.disp = ImageWidget(self)
