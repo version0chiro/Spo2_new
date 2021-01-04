@@ -1122,6 +1122,9 @@ class ListWindow(QMainWindow):
 class SetupWindow(QWidget):
     def __init__(self):
         QWidget.__init__(self)
+        MAC= (':'.join(re.findall('..', '%012x' % uuid.getnode())))
+        QMessageBox.information(self, "Alert", "Your MAC address is : "+str(MAC))
+
         layout = QGridLayout()
         self.setLayout(layout)
         self.setWindowTitle("Setup Window") 
