@@ -451,8 +451,11 @@ def grab_images(cam_num, queue,self):
                             Ambient = format(float(Ambient),'.2f')
                             Compensated = format(float(Compensated),'.2f')
                             if(int(float(Compensated))>37):
-                                # save pic here and save 
-                                send_mail()
+                                # save pic here and save
+                                cv2.imwrite("email_content/"+str(name)+'.jpg',faceFrame) 
+                                send_mail(email,str(name)+'.jpg',int(np.ceil(result)),int(HRavg),format(float(Compensated),'.2f'))
+                                os.remove("email_content/"+str(name)+'.jpg')
+                                
                         else:
                             Ambient = "NA"
                             Compensated = "NA"
@@ -634,7 +637,7 @@ class MyWindow(QMainWindow):
 
         global hr
         
-        oImage = QImage("resources/wallpaper.png")
+        oImage = QImage("resources/wallpaper3.png")
         
         sImage = oImage.scaled(QSize(1920*size_ratio[0],1080*size_ratio[1]))
         
@@ -722,7 +725,7 @@ class MyWindow(QMainWindow):
         
         # setting geometry of button
         self.button4.setGeometry(200, 150, 100, 30)
-        self.button4.move(1350*size_ratio[0],550*size_ratio[1])
+        self.button4.move(1350*size_ratio[0],500*size_ratio[1])
         self.button4.setFont(QFont('Arial', 10))
         self.button4.resize(250*size_ratio[0], 50*size_ratio[1])
         # adding action to a button

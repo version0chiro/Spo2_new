@@ -1,8 +1,48 @@
 # Python code to illustrate Sending mail from 
 # your Gmail account 
 import smtplib 
+from email.mime.multipart import MIMEMultipart 
+from email.mime.text import MIMEText 
+from email.mime.base import MIMEBase 
+from email import encoders 
 
-def send_mail(mailID):
+def send_mail(mailID,name,SPO2,HR,body):
+    
+    msg = MIMEMultipart() 
+
+    # storing the senders email address 
+    msg['From'] = "adamjensenroxx@gmail.com" 
+
+    # storing the receivers email address 
+    msg['To'] = mailID 
+
+    # storing the subject 
+    msg['Subject'] = "Alert For high Temperature"
+
+    # string to store the body of the mail 
+    body = "The Worksafe software has detected high temperature of " + str(name) + "with following parameter= SPO2:"+str(SPO2) + " HR:"+str(HR) + " Body-Temperature:"+str(body)
+
+    # attach the body with the msg instance 
+    msg.attach(MIMEText(body, 'plain')) 
+
+    # open the file to be sent 
+    filename = str(name)
+    attachment = open("email_content/"+str(name), "rb") 
+
+    # instance of MIMEBase and named as p 
+    p = MIMEBase('application', 'octet-stream') 
+
+    # To change the payload into encoded form 
+    p.set_payload((attachment).read()) 
+
+    # encode into base64 
+    encoders.encode_base64(p) 
+
+    p.add_header('Content-Disposition', "attachment; filename= %s" % filename) 
+
+    # attach the instance 'p' to instance 'msg' 
+    msg.attach(p) 
+
     # creates SMTP session 
     s = smtplib.SMTP('smtp.gmail.com', 587) 
 
@@ -10,13 +50,13 @@ def send_mail(mailID):
     s.starttls() 
 
     # Authentication 
-    s.login("adamjensenroxx@gmail.com", "Sachin@123") 
+    s.login(fromaddr, "Sachin@123") 
 
-    # message to be sent 
-    message = "We have obtained high temperature being recorded"
+    # Converts the Multipart msg into a string 
+    text = msg.as_string() 
 
     # sending the mail 
-    s.sendmail("adamjensenroxx@gmail.com", mailID, message) 
+    s.sendmail(fromaddr, toaddr, text) 
 
     # terminating the session 
     s.quit() 
