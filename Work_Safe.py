@@ -25,7 +25,7 @@ from HeartRate import Process
 from IP_scan import get_IP
 from IP_scan import get_value
 from emailSender import send_mail
-from string_manipulation import stringGetValue
+from string_manipulation import stringGetValue,changeTemp
 from request import checkPing
 from frontalFaceDetection import detectionFrontFace,fix_box
 import time
@@ -116,6 +116,8 @@ bpm=0
 heartRate=0
 
 hrSet=[]
+
+
 
 def face_detect_and_thresh(frame):
     skinM = skin_detector.process(frame)
@@ -444,8 +446,12 @@ def grab_images(cam_num, queue,self):
                         if tempFlag==1:
                             sensorValue=get_value(self.AI_CAN_IP)
                             # print(sensorValue)
-                            Ambient = stringGetValue(sensorValue,4) 
-                            Compensated = stringGetValue(sensorValue,6) 
+                            Ambient = stringGetValue(sensorValue,2)
+                            Ambient = changeTemp(Ambient,self.tempFormatDict,self.tempCounter) 
+
+                            Compensated = stringGetValue(sensorValue,1) 
+                            Compensated = changeTemp(Compensated,self.tempFormatDict,self.tempCounter) 
+
                             self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
                             self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f'))))
                             Ambient = format(float(Ambient),'.2f')
@@ -511,7 +517,11 @@ def grab_images(cam_num, queue,self):
                     if tempFlag==1:                       
                         sensorValue=get_value(self.AI_CAN_IP)
                         Ambient = stringGetValue(sensorValue,2) 
+                        Ambient = changeTemp(Ambient,self.tempFormatDict,self.tempCounter) 
+
                         Compensated = stringGetValue(sensorValue,1) 
+                        Compensated = changeTemp(Compensated,self.tempFormatDict,self.tempCounter) 
+
                         self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
                         self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f'))))
                         # if((float(Compensated))>37.7):
@@ -620,6 +630,9 @@ class MyWindow(QMainWindow):
         self.title = 'Main Window'
         self.left = 640
         self.top = 360
+        self.tempFormatDict={0:'Celsius',1:'Fahrenheit',2:'Kelvin'}
+        self.tempCounter= 0
+        
         # self.left = 500
         # self.top = 500
         self.width = 1024
@@ -753,9 +766,30 @@ class MyWindow(QMainWindow):
         # adding action to a button 
         self.button5.clicked.connect(self.rotate)
 
+        self.button6 = QPushButton("C/F/K Shift",self)
+                # setting geometry of button 
+        self.button6.setGeometry(200, 150, 100, 30)
+        self.button6.move(1350*size_ratio[0],600*size_ratio[1])
+        self.button6.setFont(QFont('Arial', 10))
+        self.button6.resize(250*size_ratio[0], 50*size_ratio[1])
+        # self.button5.move(425*3,300) 
+  
+        # setting radius and border 
+        # self.button5.setIcon(QIcon('resources/rotate_sign.png')) 
+
+  
+        # adding action to a button 
+        self.button6.clicked.connect(self.changeTemp)
+        
         self.showMaximized() 
         # self.show()
 
+    
+    def changeTemp(self):
+        if self.tempCounter<2:
+            self.tempCounter = self.tempCounter + 1
+        else:
+            self.tempCounter = 0
     
     def rotate(self):
         if self.RotationFlag<3:
@@ -775,8 +809,10 @@ class MyWindow(QMainWindow):
         if tempFlag==1:
 
             sensorValue=get_value(self.AI_CAN_IP)
-            Ambient = stringGetValue(sensorValue,4) 
-            Compensated = stringGetValue(sensorValue,6) 
+            Ambient = stringGetValue(sensorValue,2)
+            Ambient = changeTemp(Ambient,self.tempFormatDict,self.tempCounter) 
+            Compensated = stringGetValue(sensorValue,1) 
+            Compensated = changeTemp(Compensated,self.tempFormatDict,self.tempCounter) 
             self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
             self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f'))))
             # if(int(float(Compensated))>37):
