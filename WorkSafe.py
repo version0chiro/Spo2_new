@@ -452,8 +452,8 @@ def grab_images(cam_num, queue,self):
                             Compensated = stringGetValue(sensorValue,1) 
                             Compensated = changeTemp(Compensated,self.tempFormatDict,self.tempCounter) 
 
-                            self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
-                            self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f'))))
+                            self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f')))+str(self.tempFormatDict[self.tempCounter]))
+                            self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f')))+str(self.tempFormatDict[self.tempCounter]))
                             Ambient = format(float(Ambient),'.2f')
                             Compensated = format(float(Compensated),'.2f')
                             if( int(float(Compensated))>37 or int(HRavg)>100 or int(np.ceil(result)<90)):
@@ -466,8 +466,8 @@ def grab_images(cam_num, queue,self):
                         else:
                             Ambient = "NA"
                             Compensated = "NA"
-                            self.label_3.setText("Ambient:"+Ambient)
-                            self.label_4.setText("Body-Temperature:"+Compensated)
+                            self.label_3.setText("Ambient:"+Ambient+" "+str(self.tempFormatDict[self.tempCounter]))
+                            self.label_4.setText("Body-Temperature:"+Compensated+" "+str(self.tempFormatDict[self.tempCounter]))
                             if(int(HRavg)>100 or int(np.ceil(result)<90)):
                                 # save pic here and save
                                 cv2.imwrite("email_content/"+str(name)+'.jpg',faceFrame) 
@@ -522,8 +522,8 @@ def grab_images(cam_num, queue,self):
                         Compensated = stringGetValue(sensorValue,1) 
                         Compensated = changeTemp(Compensated,self.tempFormatDict,self.tempCounter) 
 
-                        self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
-                        self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f'))))
+                        self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f')))+str(self.tempFormatDict[self.tempCounter]))
+                        self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f')))+str(self.tempFormatDict[self.tempCounter]))
                         # if((float(Compensated))>37.7):
                         #     send_mail()
                         
@@ -531,8 +531,8 @@ def grab_images(cam_num, queue,self):
                     else:
                         Ambient = "NA"
                         Compensated = "NA"
-                        self.label_3.setText("Ambient:"+Ambient)
-                        self.label_4.setText("Body-Temperature:"+Compensated)
+                        self.label_3.setText("Ambient:"+Ambient+" "+str(self.tempFormatDict[self.tempCounter]))
+                        self.label_4.setText("Body-Temperature:"+Compensated+" "+str(self.tempFormatDict[self.tempCounter]))
                     
                     if globalCount>100000:
                         globalCount=0
@@ -813,8 +813,8 @@ class MyWindow(QMainWindow):
             Ambient = changeTemp(Ambient,self.tempFormatDict,self.tempCounter) 
             Compensated = stringGetValue(sensorValue,1) 
             Compensated = changeTemp(Compensated,self.tempFormatDict,self.tempCounter) 
-            self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f'))))
-            self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f'))))
+            self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f')))+str(self.tempFormatDict[self.tempCounter]))
+            self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f')))+str(self.tempFormatDict[self.tempCounter]))
             # if(int(float(Compensated))>37):
             #     send_mail()
         # if globalCount>100000:
@@ -826,8 +826,8 @@ class MyWindow(QMainWindow):
         else:
             Ambient = "NA"
             Compensated = "NA"
-            self.label_3.setText("Ambient:"+Ambient)
-            self.label_4.setText("Body-Temperature:"+Compensated)
+            self.label_3.setText("Ambient:"+Ambient+" "+str(self.tempFormatDict[self.tempCounter]))
+            self.label_4.setText("Body-Temperature:"+Compensated+" "+str(self.tempFormatDict[self.tempCounter]))
 
     def record(self):
         if self.button3.isChecked():
