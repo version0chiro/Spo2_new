@@ -34,6 +34,7 @@ import re, uuid
 import threading
 from password_check import checkPassword,check_Password
 from encode_faces import trainModel
+import pyperclip
 try:
     from PyQt5.QtCore import Qt
     pyqt5 = True
@@ -1123,8 +1124,8 @@ class SetupWindow(QWidget):
     def __init__(self):
         QWidget.__init__(self)
         MAC= (':'.join(re.findall('..', '%012x' % uuid.getnode())))
-        QMessageBox.information(self, "Alert", "Your MAC address is : "+str(MAC))
-
+        pyperclip.copy(str(MAC))
+        QMessageBox.information(self, "Alert", "Your MAC address is : "+str(MAC) + " This has been copied!")
         layout = QGridLayout()
         self.setLayout(layout)
         self.setWindowTitle("Setup Window") 
