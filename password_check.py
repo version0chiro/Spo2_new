@@ -39,7 +39,7 @@ def check_Password(password):
   
     try:
         today = date.today()
-        difftime =  today - dateFromServer 
+        difftime =  abs(dateFromServer-today) 
         difftime = difftime.days
         print(difftime)
         if difftime > 0:
