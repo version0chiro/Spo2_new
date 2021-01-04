@@ -1032,7 +1032,7 @@ class Window(QDialog):
                     QMessageBox.warning(self, "Error", "Kindly renew your subscription")
                     sys.exit()
                 elif state==3:
-                    QMessageBox.warning(self, "Error", "MAC ID has not registered")
+                    QMessageBox.warning(self, "Error", "MAC ID has not been registered")
                     MAC = str(':'.join(re.findall('..', '%012x' % uuid.getnode())))
                     QMessageBox.information(self, "Alert","The MAC ID of your Computer is :"+MAC)
                     sys.exit()
