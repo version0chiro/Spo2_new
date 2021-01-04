@@ -1,5 +1,4 @@
 # Copyright (c) Sachin Singh Bhadoriya 2020
-# Please credit iosoft.blog if you use the information or software in it
 
 VERSION = "Main Window"
 from os import path
@@ -1161,7 +1160,7 @@ class SetupWindow(QWidget):
     def getText(self):
         count = 0
         while(1):
-            text, okPressed = QInputDialog.getText(self, "Password","Enter Password:", QLineEdit.Normal, "")
+            text, okPressed = QInputDialog.getText(self, "Password","Enter Activation Key:", QLineEdit.Normal, "")
             if okPressed and text != '':
                 state,days_remaining=check_Password(text)
                 if state==1:
