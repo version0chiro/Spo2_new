@@ -1020,7 +1020,7 @@ class Window(QDialog):
         count=0
         while(1):
             
-            text, okPressed = QInputDialog.getText(self, "Activation","Enter Password:", QLineEdit.Normal, "")
+            text, okPressed = QInputDialog.getText(self, "Activation","Enter Activation Key:", QLineEdit.Normal, "")
             if okPressed and text != '':
                 state,days_remaining=check_Password(text)
                 # print(state)
