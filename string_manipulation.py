@@ -5,11 +5,11 @@ def stringGetValue(test,num):
     #         self.tempFormatDict={0:'Celsius',1:'Fahrenheit',2:'Kelvin'}
 
 def changeTemp(num,tempDictionary,tempCounter):
-    if tempDictionary['tempCounter'] == 'Celsius':
+    if tempDictionary[tempCounter] == 'Celsius':
         return num
-    elif tempDictionary['tempCounter'] == 'Fahrenheit':
+    elif tempDictionary[tempCounter] == 'Fahrenheit':
         num = (num * 1.8) + 32  
         return num
-    elif tempDictionary['tempCounter'] == 'Kelvin':
+    elif tempDictionary[tempCounter] == 'Kelvin':
         num=num + 273.15
         return num
