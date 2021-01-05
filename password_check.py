@@ -41,7 +41,7 @@ def check_Password(password):
         today = date.today()
         difftime =  abs(dateFromServer-today) 
         difftime = difftime.days
-        print(difftime)
+        difftime = 30 - difftime
         if difftime > 0:
             if str(activationFromServer)==str(password):
                 return [1,difftime]

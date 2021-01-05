@@ -446,14 +446,14 @@ def grab_images(cam_num, queue,self):
                         if tempFlag==1:
                             sensorValue=get_value(self.AI_CAN_IP)
                             # print(sensorValue)
-                            Ambient = stringGetValue(sensorValue,2)
+                            Ambient = stringGetValue(sensorValue,1)
                             Ambient = changeTemp(Ambient,self.tempFormatDict,self.tempCounter) 
 
-                            Compensated = stringGetValue(sensorValue,1) 
+                            Compensated = stringGetValue(sensorValue,2) 
                             Compensated = changeTemp(Compensated,self.tempFormatDict,self.tempCounter) 
 
-                            self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f')))+str(self.tempFormatDict[self.tempCounter]))
-                            self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f')))+str(self.tempFormatDict[self.tempCounter]))
+                            self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
+                            self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
                             Ambient = format(float(Ambient),'.2f')
                             Compensated = format(float(Compensated),'.2f')
                             if( int(float(Compensated))>37 or int(HRavg)>100 or int(np.ceil(result)<90)):
@@ -516,14 +516,14 @@ def grab_images(cam_num, queue,self):
                     print(tempFlag)
                     if tempFlag==1:                       
                         sensorValue=get_value(self.AI_CAN_IP)
-                        Ambient = stringGetValue(sensorValue,2) 
+                        Ambient = stringGetValue(sensorValue,1) 
                         Ambient = changeTemp(Ambient,self.tempFormatDict,self.tempCounter) 
 
-                        Compensated = stringGetValue(sensorValue,1) 
+                        Compensated = stringGetValue(sensorValue,2) 
                         Compensated = changeTemp(Compensated,self.tempFormatDict,self.tempCounter) 
 
-                        self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f')))+str(self.tempFormatDict[self.tempCounter]))
-                        self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f')))+str(self.tempFormatDict[self.tempCounter]))
+                        self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
+                        self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
                         # if((float(Compensated))>37.7):
                         #     send_mail()
                         
