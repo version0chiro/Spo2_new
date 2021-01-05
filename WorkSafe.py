@@ -458,10 +458,10 @@ def grab_images(cam_num, queue,self):
                             Compensated = format(float(Compensated),'.2f')
                             if( int(float(Compensated))>37 or int(HRavg)>100 or int(np.ceil(result)<90)):
                                 # save pic here and save
-                                cv2.imwrite("email_content/"+str(name)+'.jpg',faceFrame) 
-                                send_mail(self.email,str(name)+'.jpg',int(np.ceil(result)),int(HRavg),format(float(Compensated),'.2f'))
+                                # cv2.imwrite("email_content/"+str(name)+'.jpg',faceFrame) 
+                                send_mail(self.email,str(name),str(np.ceil(result)),str(HRavg),str(format(float(Compensated),'.2f')))
                                 print("email alert sent")
-                                os.remove("email_content/"+str(name)+'.jpg')
+                                # os.remove("email_content/"+str(name)+'.jpg')
                                 
                         else:
                             Ambient = "NA"
@@ -470,8 +470,9 @@ def grab_images(cam_num, queue,self):
                             self.label_4.setText("Body-Temperature:"+Compensated+" "+str(self.tempFormatDict[self.tempCounter]))
                             if(int(HRavg)>100 or int(np.ceil(result)<90)):
                                 # save pic here and save
-                                cv2.imwrite("email_content/"+str(name)+'.jpg',faceFrame) 
-                                send_mail(self.email,str(name)+'.jpg',int(np.ceil(result)),int(HRavg),Compensated)
+                                # cv2.imwrite("email_content/"+str(name)+'.jpg',faceFrame) 
+                                send_mail(self.email,str(name),str(np.ceil(result)),str(HRavg),str(Compensated))
+                                print('email sent')
                                 # os.remove("email_content/"+str(name)+'.jpg')
                                 
                         checkName(name_final,result,hr,Compensated,Ambient)
