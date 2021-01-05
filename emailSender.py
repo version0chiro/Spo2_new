@@ -12,7 +12,7 @@ def send_mail(mailID,name,SPO2,HR,body):
     string = "The Worksafe software has detected high temperature of "+ str(name)+" with following parameter= SPO2:"+ str(SPO2) +" HR:" + str(int(HR)) +" Body-Temperature:" + str(body)
     try:
         dataP = {'email':str(mailID),'string':string}
-        url = 'http://localhost:3000/sendMail'
+        url = 'https://spo2-registration.herokuapp.com/sendMail'
         r = requests.post(url, data=dataP)
         
     except Exception as e:
