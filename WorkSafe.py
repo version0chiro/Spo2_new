@@ -472,7 +472,7 @@ def grab_images(cam_num, queue,self):
                                 # save pic here and save
                                 cv2.imwrite("email_content/"+str(name)+'.jpg',faceFrame) 
                                 send_mail(self.email,str(name)+'.jpg',int(np.ceil(result)),int(HRavg),Compensated)
-                                os.remove("email_content/"+str(name)+'.jpg')
+                                # os.remove("email_content/"+str(name)+'.jpg')
                                 
                         checkName(name_final,result,hr,Compensated,Ambient)
                     
