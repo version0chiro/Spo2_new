@@ -29,13 +29,14 @@ def fix_box(frame):
         endX2=int(int((endX+startX)/2)+50*1.3)
         startY2=int(int((endY+startY)/2)-50*1.3)
         endY2=int(int((endY+startY)/2)+50*1.3)
+        
         if ( startX2>=400 ) or ( startY2>=400 ) or ( endY2>=400 ) or ( endX2>=400 ):
             raise Exception('Face out of bounds')
         cv2.rectangle(frame, (startX2, startY2), (endX2, endY2),(0, 0, 255), 2)
+        
+    box=[(startY2,endX2,endY2,start)]
     
-    
-    
-    return frame,frameOG[startY2:endY2,startX2:endX2]
+    return frame,frameOG[startY2:endY2,startX2:endX2],box
     
 def detectionFrontFace(frame):
     (h,w) = frame.shape[:2]

@@ -329,10 +329,10 @@ def grab_images(cam_num, queue,self):
                 self.lastfaceFrame=boxFrame[int(100*0.9):int(200*1.1),int(150*0.9):int(250*1.1)]
             
             try:
-                image,faceFrame = fix_box(image)
+                image,faceFrame,boxes = fix_box(image)
             except:
                 faceFrame = boxFrame[int(100*0.9):int(200*1.1),int(150*0.9):int(250*1.1)]    
-            
+                boxes = [(int(100*0.9),int(250*0.9),int(200*0.9),int(150*0.9))]
             height, width, channels = faceFrame.shape
             
             if height>0 and width>0:
