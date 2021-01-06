@@ -673,31 +673,31 @@ class MyWindow(QMainWindow):
         self.label_2 = QLabel('SPO2 Level:',self)
         self.label_2.move(1100*size_ratio[0],50*size_ratio[1])
         self.label_2.resize(300*size_ratio[0], 60*size_ratio[1])
-        self.label_2.setFont(QFont('Arial', 10))
+        self.label_2.setFont(QFont('Arial', 13,weight=QtGui.QFont.Bold))
         self.label_2.setStyleSheet("background-color: white; border: 1px solid black;")
         
         
         self.label_1 = QLabel('Heart-Rate:', self) 
         self.label_1.move(1100*size_ratio[0], 250*size_ratio[1])
         self.label_1.resize(300*size_ratio[0], 60*size_ratio[1])
-        self.label_1.setFont(QFont('Arial', 10)) 
+        self.label_1.setFont(QFont('Arial', 13,weight=QtGui.QFont.Bold)) 
         self.label_1.setStyleSheet("background-color: white; border: 1px solid black;")
 
 
         self.label_3 = QLabel('Ambient:',self)
         self.label_3.move(1550*size_ratio[0],50*size_ratio[1])
-        self.label_3.setFont(QFont('Arial', 10))
+        self.label_3.setFont(QFont('Arial', 13,weight=QtGui.QFont.Bold))
         self.label_3.resize(300*size_ratio[0], 60*size_ratio[1])
         self.label_3.setStyleSheet("background-color: white; border: 1px solid black;")
 
         self.label_4 = QLabel('Body-Temperature:',self)
         self.label_4.move(1550*size_ratio[0],250*size_ratio[1])
-        self.label_4.setFont(QFont('Arial', 10))
+        self.label_4.setFont(QFont('Arial', 13,weight=QtGui.QFont.Bold))
         self.label_4.resize(300*size_ratio[0], 60*size_ratio[1])
         self.label_4.setStyleSheet("background-color: white; border: 1px solid black;")
          
         self.label_5 = QLabel('Face ID:',self)
-        self.label_5.setFont(QFont('Arial', 10))
+        self.label_5.setFont(QFont('Arial', 13,weight=QFont.Bold))
         self.label_5.move(1350*size_ratio[0],150*size_ratio[1])
         self.label_5.resize(300*size_ratio[0], 60*size_ratio[1])
         # self.label_5.resize(200,20) 
@@ -710,7 +710,7 @@ class MyWindow(QMainWindow):
         self.button.setGeometry(200, 150, 100, 30)
         self.button.move(1600*size_ratio[0],600*size_ratio[1])
         self.button.resize(250*size_ratio[0], 50*size_ratio[1])
-        self.button.setFont(QFont('Arial', 10))
+        self.button.setFont(QFont('Arial', 13,weight=QFont.Bold)))
         # adding action to a button
 
         self.button.clicked.connect(self.clickme)
@@ -720,7 +720,7 @@ class MyWindow(QMainWindow):
         # setting geometry of button
         self.button2.setGeometry(200, 150, 100, 30)
         self.button2.move(1600*size_ratio[0],500*size_ratio[1])
-        self.button2.setFont(QFont('Arial', 10))
+        self.button2.setFont(QFont('Arial', 13,weight=QFont.Bold))
         self.button2.resize(250*size_ratio[0], 50*size_ratio[1])
         # adding action to a button
         self.button2.clicked.connect(self.updateV)
@@ -733,7 +733,7 @@ class MyWindow(QMainWindow):
         # setting geometry of button
         self.button3.setGeometry(200, 150, 100, 30)
         self.button3.move(1100*size_ratio[0],500*size_ratio[1])
-        self.button3.setFont(QFont('Arial', 10))
+        self.button3.setFont(QFont('Arial', 13,weight=QFont.Bold))
         self.button3.resize(250*size_ratio[0], 50*size_ratio[1])
         self.button3.setIcon(QIcon('resources/record_icon.jpg'))
         # adding action to a button
@@ -746,7 +746,7 @@ class MyWindow(QMainWindow):
         # setting geometry of button
         self.button4.setGeometry(200, 150, 100, 30)
         self.button4.move(1350*size_ratio[0],500*size_ratio[1])
-        self.button4.setFont(QFont('Arial', 10))
+        self.button4.setFont(QFont('Arial', 13,weight=QFont.Bold))
         self.button4.resize(250*size_ratio[0], 50*size_ratio[1])
         # adding action to a button
         self.button4.clicked.connect(self.auto)
@@ -756,7 +756,7 @@ class MyWindow(QMainWindow):
         # setting geometry of button 
         self.button5.setGeometry(200, 150, 100, 30)
         self.button5.move(1100*size_ratio[0],600*size_ratio[1])
-        self.button5.setFont(QFont('Arial', 10))
+        self.button5.setFont(QFont('Arial', 13,weight=QFont.Bold))
         self.button5.resize(250*size_ratio[0], 50*size_ratio[1])
         # self.button5.move(425*3,300) 
   
@@ -771,7 +771,7 @@ class MyWindow(QMainWindow):
                 # setting geometry of button 
         self.button6.setGeometry(200, 150, 100, 30)
         self.button6.move(1350*size_ratio[0],600*size_ratio[1])
-        self.button6.setFont(QFont('Arial', 10))
+        self.button6.setFont(QFont('Arial', 13,weight=QFont.Bold))
         self.button6.resize(250*size_ratio[0], 50*size_ratio[1])
         # self.button5.move(425*3,300) 
   
