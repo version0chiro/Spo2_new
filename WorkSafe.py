@@ -1016,8 +1016,9 @@ class Window(QDialog):
         with open('saved_devices/'+str(Identifier)+'.pickle', 'wb') as f:
             pickle.dump(userDetails, f)
         # closing the window 
-        self.close()
+        
         self.getText()
+        self.close()
         win = MyWindow(IP,AI_CAN_IP,Email,Identifier)
         win.show()
         win.setWindowTitle(VERSION)
@@ -1027,14 +1028,24 @@ class Window(QDialog):
         
     def getText(self):
         count=0
+
+        if path.exists("password/password.p"):
+            text,okPressed = pickle.load(open( "password/password.p", "rb" ))
         while(1):
+            if (("text" in locals()) and count>1):
+                if path.exists("password/password.p"):
+                    os.remove("password/password.p")
+
+            if not (("text" in locals())):
+                text, okPressed = QInputDialog.getText(self, "Password","Enter Activation Key:", QLineEdit.Normal, "")
+                            
             
-            text, okPressed = QInputDialog.getText(self, "Activation","Enter Activation Key:", QLineEdit.Normal, "")
             if okPressed and text != '':
                 state,days_remaining=check_Password(text,self.Email)
-                # print(state)
+                print(state)
                 if state==1:
                     QMessageBox.information(self, "Alert", "Days remaining "+str(days_remaining))
+                    pickle.dump( [text,okPressed], open("password/password.p", "wb" ))
                     break
                 elif state==2:
                     QMessageBox.warning(self, "Error", "Kindly renew your subscription")
@@ -1053,7 +1064,7 @@ class Window(QDialog):
                     if(count>2):
                         sys.exit()
                     continue
-  
+    
     # creat form method 
     def createForm(self): 
   
@@ -1129,7 +1140,58 @@ class ListWindow(QMainWindow):
     def pushed(self):
         global pickelName
         pickelName = str(self.combo_box.currentText())
+        self.pickelName = pickelName
+        self.getText()
         self.close()
+        
+    def getText(self):
+        count = 0
+        
+        with open('saved_devices/'+str(pickelName)+'.pickle','rb') as f:
+            userDetails = pickle.load(f)                
+            Email = userDetails.get('Email')
+            f.close()
+        
+        if path.exists("password/password.p"):
+            text,okPressed = pickle.load(open( "password/password.p", "rb" ))
+        
+        while(1):
+            
+            if (("text" in locals()) and count>1):
+                if path.exists("password/password.p"):
+                    os.remove("password/password.p")
+            
+            if not (("text" in locals())):
+                text, okPressed = QInputDialog.getText(self, "Password","Enter Activation Key:", QLineEdit.Normal, "")
+            if okPressed and text != '':
+                state,days_remaining=check_Password(text,Email)
+                if state==1:
+                    QMessageBox.information(self, "Alert", "Days remaining "+str(days_remaining))
+                    pickle.dump( [text,okPressed], open("password/password.p", "wb" ))
+                    break
+                elif state==2:
+                    QMessageBox.warning(self, "Error", "Kindly renew your subscription")
+                    if path.exists("password/password.p"):
+                        os.remove("password/password.p")
+                    sys.exit()
+                elif state==3:
+                    QMessageBox.warning(self, "Error", "MAC ID has not registered")
+                    MAC = str(':'.join(re.findall('..', '%012x' % uuid.getnode())))
+                    QMessageBox.information(self, "Alert","The MAC ID of your Computer is :"+MAC)
+                    if path.exists("password/password.p"):
+                        os.remove("password/password.p")
+                    sys.exit()
+                elif state==4:
+                    QMessageBox.warning(self, "Error", "Your email address is not registered")
+                    if path.exists("password/password.p"):
+                        os.remove("password/password.p")
+                    sys.exit()
+                else:
+                    count=count+1
+                    # print(count)
+                    if(count>2):
+                        sys.exit()
+                    continue
 
 class SetupWindow(QWidget):
     def __init__(self):
@@ -1163,7 +1225,7 @@ class SetupWindow(QWidget):
     def onClicked(self):
         global setupFlag
         if self.radiobuttonRun.isChecked():
-            self.getText()
+            # self.getText()
             setupFlag=False
         else:
             setupFlag=True

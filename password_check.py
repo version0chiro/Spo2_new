@@ -1,12 +1,13 @@
 import bcrypt
 import os
 from datetime import date
+from datetime import datetime as dt
 import os
-import datetime
 import pymongo
 from getmac import get_mac_address as gma
 import pickle
 import re, uuid
+import requests
 
 def checkPassword(password):
     passwd=b'pyqt543'
@@ -41,8 +42,11 @@ def check_Password(password,userEmail):
     print("found in mongoDB")
   
     try:
-        today = date.today()
-        difftime =  abs(dateFromServer-today) 
+        x = requests.get('http://worldclockapi.com/api/json/est/now')
+        x=x.json()['currentDateTime'] [:10]
+        today =dt.strptime(x, '%Y-%m-%d')
+        today = today.date()
+        difftime =  abs(today-dateFromServer) 
         difftime = difftime.days
         difftime = 30 - difftime
         if difftime > 0:
