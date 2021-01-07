@@ -19,7 +19,7 @@ def checkPassword(password):
     else:
         return 0
     
-def check_Password(password):
+def check_Password(password,userEmail):
     myclient = pymongo.MongoClient("mongodb://admin-sachin:Sachin123@cluster0-shard-00-00.pf7ee.mongodb.net:27017,cluster0-shard-00-01.pf7ee.mongodb.net:27017,cluster0-shard-00-02.pf7ee.mongodb.net:27017/spo2?ssl=true&replicaSet=atlas-x3z4ou-shard-0&authSource=admin&retryWrites=true&w=majority")
     mydb = myclient["spo2"]
     mycol = mydb["identities"]
@@ -30,11 +30,14 @@ def check_Password(password):
     try:
         search = mycol.find_one(query)
         activationFromServer = search["ActivationKey"]
+        email = search["Email"]
+        if userEmail != email:
+            return [4,0]
         dateFromServer = search["created_at"].date()
         
     except:
         return [3,0]
-  
+     
     print("found in mongoDB")
   
     try:

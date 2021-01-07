@@ -1008,6 +1008,7 @@ class Window(QDialog):
         print("IP : {0}".format(self.iPLineEdit.text())) 
         Identifier = self.nameLineEdit.text()
         Email = self.emailLineEdit.text()
+        self.Email = Email
         IP=check_url(self.iPLineEdit.text())
         AI_CAN_IP =  "http://"+self.JsonIP.text()
         print(AI_CAN_IP)
@@ -1030,7 +1031,7 @@ class Window(QDialog):
             
             text, okPressed = QInputDialog.getText(self, "Activation","Enter Activation Key:", QLineEdit.Normal, "")
             if okPressed and text != '':
-                state,days_remaining=check_Password(text)
+                state,days_remaining=check_Password(text,self.Email)
                 # print(state)
                 if state==1:
                     QMessageBox.information(self, "Alert", "Days remaining "+str(days_remaining))
@@ -1042,6 +1043,9 @@ class Window(QDialog):
                     QMessageBox.warning(self, "Error", "MAC ID has not been registered")
                     MAC = str(':'.join(re.findall('..', '%012x' % uuid.getnode())))
                     QMessageBox.information(self, "Alert","The MAC ID of your Computer is :"+MAC)
+                    sys.exit()
+                elif state==4:
+                    QMessageBox.warning(self, "Error", "Your email address is not registered")
                     sys.exit()
                 else:
                     count=count+1
