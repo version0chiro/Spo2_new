@@ -710,7 +710,7 @@ class MyWindow(QMainWindow):
         self.button.setGeometry(200, 150, 100, 30)
         self.button.move(1600*size_ratio[0],600*size_ratio[1])
         self.button.resize(250*size_ratio[0], 50*size_ratio[1])
-        self.button.setFont(QFont('Arial', 13,weight=QFont.Bold)))
+        self.button.setFont(QFont('Arial', 13,weight=QFont.Bold))
         # adding action to a button
 
         self.button.clicked.connect(self.clickme)

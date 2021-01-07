@@ -91,10 +91,19 @@ def checkName(name,spo2,hr,Compensated,Ambient):
         # d['SpO2_value']=spo2
     	a = d.index[0]
     	return atte.append(d)
-
-    details = pd.read_excel('excel_sheets/details.xlsx',index_col=0)
-    atte=pd.read_excel('excel_sheets/attendance.xlsx',index_col=0)
-
+    if os.path.isfile('excel_sheets/details.xlsx'): 
+        details = pd.read_excel('excel_sheets/details.xlsx',index_col=0)
+    else:
+        with open('excel_sheets/details.xlsx', 'w') as fp: 
+            pass
+        atte=pd.read_excel('excel_sheets/details.xlsx',index_col=0)
+    if os.path.isfile('excel_sheets/attendance.xlsx'): 
+        atte=pd.read_excel('excel_sheets/attendance.xlsx',index_col=0)
+    else:
+        with open('excel_sheets/attendance.xlsx', 'w') as fp: 
+            pass
+        atte=pd.read_excel('excel_sheets/attendance.xlsx',index_col=0)
+        
     if details['Name'].str.contains(name).any():
         try:
             atte = add_to_list(name,atte,details,spo2,hr,Compensated,Ambient)
