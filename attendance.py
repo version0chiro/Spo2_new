@@ -3,6 +3,7 @@ from datetime import date
 import pandas as pd
 from collections import Counter
 import time
+import xlsxwriter
 def checkName(name,spo2,hr,Compensated,Ambient):
 
 
@@ -91,30 +92,34 @@ def checkName(name,spo2,hr,Compensated,Ambient):
         # d['SpO2_value']=spo2
     	a = d.index[0]
     	return atte.append(d)
+ 
     if os.path.isfile('excel_sheets/details.xlsx'): 
         details = pd.read_excel('excel_sheets/details.xlsx',index_col=0)
     else:
-        with open('excel_sheets/details.xlsx', 'w') as fp: 
-            pass
-        atte=pd.read_excel('excel_sheets/details.xlsx',index_col=0)
+        workbook = xlsxwriter.Workbook('excel_sheets/details.xlsx')
+        workbook.close()
+        details=pd.read_excel('excel_sheets/details.xlsx',index_col=0)
+    
+    print(details)
     if os.path.isfile('excel_sheets/attendance.xlsx'): 
         atte=pd.read_excel('excel_sheets/attendance.xlsx',index_col=0)
     else:
-        with open('excel_sheets/attendance.xlsx', 'w') as fp: 
-            pass
+        workbook = xlsxwriter.Workbook('excel_sheets/attendance.xlsx')
+        workbook.close()
         atte=pd.read_excel('excel_sheets/attendance.xlsx',index_col=0)
         
     if details['Name'].str.contains(name).any():
         try:
             atte = add_to_list(name,atte,details,spo2,hr,Compensated,Ambient)
-            xl = pd.ExcelFile('excel_sheets/attendance.xlsx')
+            xl = pd.ExcelFile('excel_sheets/attendance.xlsx',engine="openpyxl")
             today = date.today()
             if str(today) in xl.sheet_names:
                 append_df_to_excel('excel_sheets/attendance.xlsx',atte,sheet_name=str(today))
             else:
-                with pd.ExcelWriter('excel_sheets/attendance.xlsx',mode='a') as writer:
+                with pd.ExcelWriter('excel_sheets/attendance.xlsx',engine="openpyxl",mode='a') as writer:
                     atte.to_excel(writer,sheet_name=str(today))
-        except:
+        except Exception as e:
+            print(e)
             pass
                         
     elif name != 'Unknown':

@@ -432,6 +432,7 @@ def grab_images(cam_num, queue,self):
                     if Spo2Flag==1:
 
                         HRavg = np.nanmean(hrSet)
+                        HRavg = int(HRavg)
                         
                         hrSet = []
                         result=SPooEsitmate(final_sig,totalFrame,totalFrame,duration) # the final signal list is sent to SPooEsitmate function with length of the video
