@@ -516,7 +516,7 @@ def grab_images(cam_num, queue,self):
                     tempFlag=checkPing(self.AI_CAN_IP)
                     
                     print(tempFlag)
-                    if tempFlag==1:                       
+                    if (tempFlag==1 and Spo2Flag==0):                       
                         sensorValue=get_value(self.AI_CAN_IP)
                         Ambient = stringGetValue(sensorValue,1) 
                         Ambient = changeTemp(Ambient,self.tempFormatDict,self.tempCounter) 
@@ -530,7 +530,7 @@ def grab_images(cam_num, queue,self):
                         #     send_mail()
                         
                     
-                    else:
+                    elif Spo2Flag==0:
                         Ambient = "NA"
                         Compensated = "NA"
                         self.label_3.setText("Ambient:"+Ambient+" "+str(self.tempFormatDict[self.tempCounter]))
