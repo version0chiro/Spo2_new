@@ -684,7 +684,7 @@ class MyWindow(QMainWindow):
         self.label_1.setFont(QFont('Arial', 13,weight=QtGui.QFont.Bold)) 
         self.label_1.setStyleSheet("background-color: white; border: 1px solid black;")
 
-
+        # Ambient body-temp face-id
         self.label_3 = QLabel('Ambient:',self)
         self.label_3.move(1550*size_ratio[0],50*size_ratio[1])
         self.label_3.setFont(QFont('Arial', 13,weight=QtGui.QFont.Bold))
@@ -848,9 +848,15 @@ class MyWindow(QMainWindow):
         frameCount=0
         Spo2Flag=1
         FaceDetectionFlag=1
-        self.label_1.setText("Heart-Rate:" + str(hr))
+        # Ambient body-temp face-id
+        self.label_2.setText("SPO2:" + " ")
+        self.label_1.setText("Heart-Rate:" + " ")
+        self.label_3.setText("Ambient:" + " ")
+        self.label_4.setText("Body-Temperature:" + " ")
+        self.label_5.setText("Face-ID:" + " ")
         # printing pressed
         print("pressed")
+        
     # Start image capture & display
     def start(self):
         IP = self.IP
