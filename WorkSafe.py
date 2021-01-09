@@ -1031,6 +1031,7 @@ class Window(QDialog):
 
         if path.exists("password/password.p"):
             text,okPressed = pickle.load(open( "password/password.p", "rb" ))
+        
         while(1):
             if (("text" in locals()) and count>1):
                 if path.exists("password/password.p"):
@@ -1187,6 +1188,8 @@ class ListWindow(QMainWindow):
                         os.remove("password/password.p")
                     sys.exit()
                 else:
+                    QMessageBox.warning(self, "Error", "The password entered was incorrect")
+                    
                     count=count+1
                     # print(count)
                     if(count>2):

@@ -49,14 +49,17 @@ def check_Password(password,userEmail):
         difftime =  abs(today-dateFromServer) 
         difftime = difftime.days
         difftime = 30 - difftime
+        print(difftime)
         if difftime > 0:
+            print(activationFromServer)
             if str(activationFromServer)==str(password):
                 return [1,difftime]
             else:
                 return [0,difftime]
         else:
             return [2,0]
-    except FileNotFoundError:
+    except Exception as e:
+        print(e)
         return [2,0]
 
 
