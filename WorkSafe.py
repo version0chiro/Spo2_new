@@ -454,7 +454,8 @@ def grab_images(cam_num, queue,self):
                             Compensated = changeTemp(Compensated,self.tempFormatDict,self.tempCounter) 
 
                             self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
-                            self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
+                            if Compensated>0:
+                                self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
                             Ambient = format(float(Ambient),'.2f')
                             Compensated = format(float(Compensated),'.2f')
                             if( int(float(Compensated))>37 or int(HRavg)>100 or int(np.ceil(result)<90)):
@@ -525,7 +526,8 @@ def grab_images(cam_num, queue,self):
                         Compensated = changeTemp(Compensated,self.tempFormatDict,self.tempCounter) 
 
                         self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
-                        self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
+                        if Compensated>0:
+                            self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
                         # if((float(Compensated))>37.7):
                         #     send_mail()
                         
@@ -816,7 +818,8 @@ class MyWindow(QMainWindow):
             Compensated = stringGetValue(sensorValue,1) 
             Compensated = changeTemp(Compensated,self.tempFormatDict,self.tempCounter) 
             self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f')))+str(self.tempFormatDict[self.tempCounter]))
-            self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f')))+str(self.tempFormatDict[self.tempCounter]))
+            if Compensated>0:
+                self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f')))+str(self.tempFormatDict[self.tempCounter]))
             # if(int(float(Compensated))>37):
             #     send_mail()
         # if globalCount>100000:
