@@ -259,6 +259,7 @@ def grab_images(cam_num, queue,self):
     # global autoFlag
     recordFlag = self.recordFlag
     self.captureFlag = False
+    self.FailCheck= False
     bpm=0
     hr=0
     
@@ -359,12 +360,10 @@ def grab_images(cam_num, queue,self):
                 # faceFrame = image[100:200,150:250]
                 # print(queue.qsize())
                 
-                if frameCount==0 and (FaceDetectionFlag):
-                    process=Process()
-                    height=image.shape[0]
-                    cv2.putText(image,'SPO2 Estimation Underway', (20,height-50), cv2.FONT_HERSHEY_SIMPLEX,1, (0, 0, 255) , 1, cv2.LINE_AA)
+                if (FaceDetectionFlag) and frameCount<5:
+                    if frameCount==0:
+                        self.counts ={}
                     encodings = face_recognition.face_encodings(image, boxes)
-
                     for encoding in encodings:
                         matches = face_recognition.compare_faces(data["encodings"],
                         encoding)
@@ -372,18 +371,42 @@ def grab_images(cam_num, queue,self):
 
                         if True in matches:
                             matchedIdxs = [i for (i,b) in enumerate(matches) if b]
-                            counts ={}
+                            print(matchedIdxs)
+                            i=matchedIdxs[0]
+                            name = data["names"][i]
+                            self.counts[name]=self.counts.get(name,0)+1
+                            # for i in matchedIdxs:
+                            #     name = data["names"][i]
+                            #     self.counts[name]=self.counts.get(name,0)+1
+                            print(self.counts)
+                
+                
+                if frameCount==0 and (FaceDetectionFlag):
+                    
+                    process=Process()
+                    height=image.shape[0]
+                    cv2.putText(image,'SPO2 Estimation Underway', (20,height-50), cv2.FONT_HERSHEY_SIMPLEX,1, (0, 0, 255) , 1, cv2.LINE_AA)
+                    # encodings = face_recognition.face_encodings(image, boxes)
 
-                            for i in matchedIdxs:
-                                name = data["names"][i]
-                                counts[name]=counts.get(name,0)+1
-                            # print(counts)
-                            name = max(counts,key=counts.get)
+                    # for encoding in encodings:
+                    #     matches = face_recognition.compare_faces(data["encodings"],
+                    #     encoding)
+                    #     name='Unknown'
 
-                        # print(name)
-                        self.label_5.setText("Face ID:"+name)
-                        name_final=name
-                        FaceDetectionFlag=0
+                    #     if True in matches:
+                    #         matchedIdxs = [i for (i,b) in enumerate(matches) if b]
+                            
+
+                    #         for i in matchedIdxs:
+                    #             name = data["names"][i]
+                    #             self.counts[name]=self.counts.get(name,0)+1
+                    #         print(self.counts)
+                    #     #     name = max(counts,key=counts.get)
+
+                        # # print(name)
+                        # self.label_5.setText("Face ID:"+name)
+                        # name_final=name
+                        # FaceDetectionFlag=0
                     
                     thresh,mask=face_detect_and_thresh(faceFrame)
 
@@ -398,6 +421,8 @@ def grab_images(cam_num, queue,self):
                         Spo2Flag=2
 
                     final_sig.append(temp)
+                    
+                            
 
                 elif (Spo2Flag==1) and frameCount<totalFrame and frameCount>1:
                     height=image.shape[0]
@@ -409,7 +434,8 @@ def grab_images(cam_num, queue,self):
                     process.frame_in = boxFrame
                     try:
                         process.run()
-                    except:
+                    except Exception as e:
+                        print(e)
                         process.bpm=self.bpmLast
                     bpm=process.bpm
                     self.bpmLast=bpm
@@ -432,10 +458,17 @@ def grab_images(cam_num, queue,self):
                     if Spo2Flag==1:
 
                         HRavg = np.nanmean(hrSet)
-                        HRavg = int(HRavg)
-                        
+                        try:
+                            HRavg = int(HRavg)
+                        except:
+                            HRavg = 0                    
                         hrSet = []
                         result=SPooEsitmate(final_sig,totalFrame,totalFrame,duration) # the final signal list is sent to SPooEsitmate function with length of the video
+                        name = max(self.counts,key=self.counts.get)
+
+                        # print(name)
+                        self.label_5.setText("Face ID:"+name)
+                        name_final=name
                         try:
                             self.label_1.setText("Heart-Rate:"+str(int(HRavg)))
                             self.label_2.setText("SPO2 Level:"+str(int(np.ceil(result))))
@@ -480,12 +513,17 @@ def grab_images(cam_num, queue,self):
                         checkName(name_final,result,hr,Compensated,Ambient)
                     
                         Spo2Flag=0
+                        FaceDetectionFlag=0
                         # Webspo2Flag= not Webspo2Flag
                         
 
                     elif Spo2Flag==2:
                         print("Try again with face properly aligned")
+                        if self.autoFlag:
+                            frontalFlag = True
                         Spo2Flag=0
+
+                            
 
                 # print(self.AI_CAM_IP)
                 if Spo2Flag!=2:
@@ -509,8 +547,8 @@ def grab_images(cam_num, queue,self):
                 frameCount=frameCount+1
                 globalCount=globalCount +1
                 
-                print(globalCount)
-                if globalCount%300==0:
+                # print(globalCount)
+                if globalCount%500==0:
                     frontalFlag = True
                     
                 if globalCount%500==0:

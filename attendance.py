@@ -94,19 +94,19 @@ def checkName(name,spo2,hr,Compensated,Ambient):
     	return atte.append(d)
  
     if os.path.isfile('excel_sheets/details.xlsx'): 
-        details = pd.read_excel('excel_sheets/details.xlsx',index_col=0)
+        details = pd.read_excel('excel_sheets/details.xlsx',engine="openpyxl",index_col=0)
     else:
         workbook = xlsxwriter.Workbook('excel_sheets/details.xlsx')
         workbook.close()
-        details=pd.read_excel('excel_sheets/details.xlsx',index_col=0)
+        details=pd.read_excel('excel_sheets/details.xlsx',engine="openpyxl",index_col=0)
     
     print(details)
     if os.path.isfile('excel_sheets/attendance.xlsx'): 
-        atte=pd.read_excel('excel_sheets/attendance.xlsx',index_col=0)
+        atte=pd.read_excel('excel_sheets/attendance.xlsx',engine="openpyxl",index_col=0)
     else:
         workbook = xlsxwriter.Workbook('excel_sheets/attendance.xlsx')
         workbook.close()
-        atte=pd.read_excel('excel_sheets/attendance.xlsx',index_col=0)
+        atte=pd.read_excel('excel_sheets/attendance.xlsx',engine="openpyxl",index_col=0)
         
     if details['Name'].str.contains(name).any():
         try:
