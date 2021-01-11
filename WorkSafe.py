@@ -813,9 +813,9 @@ class MyWindow(QMainWindow):
         if tempFlag==1:
 
             sensorValue=get_value(self.AI_CAN_IP)
-            Ambient = stringGetValue(sensorValue,2)
+            Ambient = stringGetValue(sensorValue,1)
             Ambient = changeTemp(Ambient,self.tempFormatDict,self.tempCounter) 
-            Compensated = stringGetValue(sensorValue,1) 
+            Compensated = stringGetValue(sensorValue,2) 
             Compensated = changeTemp(Compensated,self.tempFormatDict,self.tempCounter) 
             self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f')))+str(self.tempFormatDict[self.tempCounter]))
             if Compensated>0:
