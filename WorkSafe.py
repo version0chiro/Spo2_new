@@ -383,9 +383,13 @@ def grab_images(cam_num, queue,self):
                                 self.counts[name]=self.counts.get(name,0)+1
                             print(self.counts)
                             try:
-                                Tempname = max(self.counts,key=self.counts.get)
-                                print("tempName is "+str(Tempname))
-                                self.CheckFlag[Tempname]=self.CheckFlag.get(Tempname,0)+1
+                                for name in self.counts:
+                                    Tempname = name
+                                    self.CheckFlag[Tempname]=self.CheckFlag.get(Tempname,0)+1
+
+                                # Tempname = max(self.counts,key=self.counts.get)
+                                # print("tempName is "+str(Tempname))
+                                # self.CheckFlag[Tempname]=self.CheckFlag.get(Tempname,0)+1
 
                             except:
                                 pass
