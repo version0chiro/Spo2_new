@@ -363,6 +363,7 @@ def grab_images(cam_num, queue,self):
                 if (FaceDetectionFlag) and frameCount<10:
                     self.counts ={}
                     if frameCount==0:
+                        print('reset')
                         self.CheckFlag={}    
                         
                     encodings = face_recognition.face_encodings(image, boxes)
@@ -382,7 +383,8 @@ def grab_images(cam_num, queue,self):
                                 self.counts[name]=self.counts.get(name,0)+1
                             print(self.counts)
                             Tempname = max(self.counts,key=self.counts.get)
-                            self.CheckFlag[Tempname]=self.CheckFlag.get(name,0)+1
+                            print("tempName is "+str(Tempname))
+                            self.CheckFlag[Tempname]=self.CheckFlag.get(Tempname,0)+1
                     print(self.CheckFlag)
                 
                 if frameCount==0 and (FaceDetectionFlag):
