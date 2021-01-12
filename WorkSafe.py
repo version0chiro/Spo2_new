@@ -361,10 +361,10 @@ def grab_images(cam_num, queue,self):
                 # print(queue.qsize())
                 
                 if (FaceDetectionFlag) and frameCount<10:
-                    self.CheckFlag={}
+                    self.counts ={}
                     if frameCount==0:
+                        self.CheckFlag={}    
                         
-                        self.counts ={}
                     encodings = face_recognition.face_encodings(image, boxes)
                     for encoding in encodings:
                         matches = face_recognition.compare_faces(data["encodings"],
