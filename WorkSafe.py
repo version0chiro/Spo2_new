@@ -372,12 +372,12 @@ def grab_images(cam_num, queue,self):
                         if True in matches:
                             matchedIdxs = [i for (i,b) in enumerate(matches) if b]
                             print(matchedIdxs)
-                            i=matchedIdxs[0]
-                            name = data["names"][i]
-                            self.counts[name]=self.counts.get(name,0)+1
-                            # for i in matchedIdxs:
-                            #     name = data["names"][i]
-                            #     self.counts[name]=self.counts.get(name,0)+1
+                            # i=matchedIdxs[0]
+                            # name = data["names"][i]
+                            # self.counts[name]=self.counts.get(name,0)+1
+                            for i in matchedIdxs:
+                                name = data["names"][i]
+                                self.counts[name]=self.counts.get(name,0)+1
                             print(self.counts)
                 
                 
