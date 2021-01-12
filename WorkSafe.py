@@ -1088,7 +1088,7 @@ class Window(QDialog):
                     os.remove("password/password.p")
 
             if not (("text" in locals())):
-                text, okPressed = QInputDialog.getText(self, "Password","Enter Activation Key:", QLineEdit.Normal, "")
+                text, okPressed = QInputDialog.getText(self, "Activation Key","Enter Activation Key:", QLineEdit.Normal, "")
                             
             
             if okPressed and text != '':
