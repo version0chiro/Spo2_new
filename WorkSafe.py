@@ -478,7 +478,7 @@ def grab_images(cam_num, queue,self):
                             HRavg = 0                    
                         hrSet = []
                         result=SPooEsitmate(final_sig,totalFrame,totalFrame,duration) # the final signal list is sent to SPooEsitmate function with length of the video
-                        name = max(self.counts,key=self.counts.get)
+                        name = max(self.CheckFlag,key=self.CheckFlag.get)
 
                         # print(name)
                         self.label_5.setText("Face ID:"+name)
