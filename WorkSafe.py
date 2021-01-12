@@ -382,7 +382,7 @@ def grab_images(cam_num, queue,self):
                             print(self.counts)
                             Tempname = max(self.counts,key=self.counts.get)
                             self.CheckFlag[Tempname]=self.counts.get(name,0)+1
-                    print(self.checkFlag)
+                    print(self.CheckFlag)
                 
                 if frameCount==0 and (FaceDetectionFlag):
                     
