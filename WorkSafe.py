@@ -360,8 +360,9 @@ def grab_images(cam_num, queue,self):
                 # faceFrame = image[100:200,150:250]
                 # print(queue.qsize())
                 
-                if (FaceDetectionFlag) and frameCount<5:
+                if (FaceDetectionFlag) and frameCount<10:
                     if frameCount==0:
+                        self.CheckFlag={}
                         self.counts ={}
                     encodings = face_recognition.face_encodings(image, boxes)
                     for encoding in encodings:
@@ -379,7 +380,9 @@ def grab_images(cam_num, queue,self):
                                 name = data["names"][i]
                                 self.counts[name]=self.counts.get(name,0)+1
                             print(self.counts)
-                
+                            Tempname = max(self.counts,key=self.counts.get)
+                            self.CheckFlag[Tempname]=self.counts.get(name,0)+1
+                    print(self.checkFlag)
                 
                 if frameCount==0 and (FaceDetectionFlag):
                     
