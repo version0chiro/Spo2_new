@@ -374,26 +374,26 @@ def grab_images(cam_num, queue,self):
 
                         if True in matches:
                             matchedIdxs = [i for (i,b) in enumerate(matches) if b]
-                            print(matchedIdxs)
+                            # print(matchedIdxs)
                             # i=matchedIdxs[0]
                             # name = data["names"][i]
                             # self.counts[name]=self.counts.get(name,0)+1
                             for i in matchedIdxs:
                                 name = data["names"][i]
                                 self.counts[name]=self.counts.get(name,0)+1
-                            print(self.counts)
+                            # print(self.counts)
                             try:
                                 # for name in self.counts:
                                 #     Tempname = name
                                 #     self.CheckFlag[Tempname]=self.CheckFlag.get(Tempname,0)+1
 
                                 Tempname = max(self.counts,key=self.counts.get)
-                                print("tempName is "+str(Tempname))
+                                # print("tempName is "+str(Tempname))
                                 self.CheckFlag[Tempname]=self.CheckFlag.get(Tempname,0)+1
 
                             except:
                                 pass
-                    print(self.CheckFlag)
+                    # print(self.CheckFlag)
                 
                 if frameCount==0 and (FaceDetectionFlag):
                     
