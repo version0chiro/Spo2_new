@@ -449,7 +449,7 @@ def grab_images(cam_num, queue,self):
                     try:
                         process.run()
                     except Exception as e:
-                        print(e)
+                        # print(e)
                         process.bpm=self.bpmLast
                     bpm=process.bpm
                     self.bpmLast=bpm
@@ -478,8 +478,10 @@ def grab_images(cam_num, queue,self):
                             HRavg = 0                    
                         hrSet = []
                         result=SPooEsitmate(final_sig,totalFrame,totalFrame,duration) # the final signal list is sent to SPooEsitmate function with length of the video
-                        name = max(self.CheckFlag,key=self.CheckFlag.get)
-
+                        try:
+                            name = max(self.CheckFlag,key=self.CheckFlag.get)
+                        except:
+                            name="Unknown"
                         # print(name)
                         self.label_5.setText("Face ID:"+name)
                         name_final=name
