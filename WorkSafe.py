@@ -491,7 +491,7 @@ def grab_images(cam_num, queue,self):
                         except:
                             self.label_1.setText("Heart-Rate:"+"NA")
                             self.label_2.setText("SPO2 Level:"+"NA")
-                        tempFlag=checkPing(self.AI_CAN_IP)
+                        tempFlag=1#checkPing(self.AI_CAN_IP)
                         
                         if tempFlag==1:
                             sensorValue=get_value(self.AI_CAN_IP)
@@ -862,7 +862,7 @@ class MyWindow(QMainWindow):
         else:
             self.autoFlag = False
     def updateV(self):
-        tempFlag=checkPing(self.AI_CAN_IP)
+        tempFlag=1
         print(tempFlag)
         if tempFlag==1:
 
