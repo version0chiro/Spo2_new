@@ -4,6 +4,7 @@ import json
 ports = [80, 20, 21, 22, 23, 25, 111, 135, 137, 138, 139, 445, 443, 445, 548, 631, 993, 995]
 
 def get_value(IP):
+    print(IP)
     while 1:
         try:
             with urlopen(IP) as serverResponse:
