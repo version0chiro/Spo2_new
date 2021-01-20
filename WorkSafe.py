@@ -568,9 +568,9 @@ def grab_images(cam_num, queue,self):
                     frontalFlag = True
                     
                 if globalCount%500==0:
-                    tempFlag=checkPing(self.AI_CAN_IP)
-                    
-                    print(tempFlag)
+                    # tempFlag=checkPing(self.AI_CAN_IP)
+                    tempFlag =1;
+                    # print(tempFlag)
                     if (tempFlag==1 and Spo2Flag==0):                       
                         sensorValue=get_value(self.AI_CAN_IP)
                         Ambient = stringGetValue(sensorValue,1) 
