@@ -624,6 +624,8 @@ def check_url(url):
         camera=0
     elif url == "1":
         camera =1
+    elif url == "-1":
+        camera=-1
     else:
         camera = "http://"+str(url)+"/mjpeg/1"
     return camera
