@@ -268,7 +268,11 @@ def grab_images(cam_num, queue,self):
     # fps = cap.get(cv2.CAP_PROP_FPS)
     # cap.set(cv2.CAP_PROP_FPS, fps)
     while 1:
-        cap = cv2.VideoCapture(cam_num)
+        if cap:
+            pass
+        else:
+            cap.release()
+            cap = cv2.VideoCapture(cam_num)
         time.sleep(2)
         if cap.grab():
             self.captureFlag = True
@@ -604,6 +608,7 @@ def grab_images(cam_num, queue,self):
             self.captureFlag = False
             time.sleep(2)
             while 1:
+                cap.release()
                 cap = cv2.VideoCapture(cam_num)
                 if cap.grab():
                     break
