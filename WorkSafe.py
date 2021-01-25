@@ -1163,7 +1163,7 @@ class ListWindow(QMainWindow):
         self.setWindowTitle("Selection Window") 
   
         # setting geometry 
-        self.setGeometry(100, 100, 350, 450) 
+        self.setGeometry(100, 100, 350, 250) 
   
         # calling method 
         self.UiComponents() 
