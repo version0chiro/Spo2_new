@@ -1163,7 +1163,7 @@ class ListWindow(QMainWindow):
         self.setWindowTitle("Selection Window") 
   
         # setting geometry 
-        self.setGeometry(100, 100, 350, 250) 
+        self.setGeometry(100, 100, 350, 450) 
   
         # calling method 
         self.UiComponents() 
@@ -1178,7 +1178,7 @@ class ListWindow(QMainWindow):
     def UiComponents(self): 
   
         self.l1 =QLabel('Please select your camera from the list below', self)
-        self.l1.move(50,50)
+        self.l1.move(50,100)
         self.l1.adjustSize()
         self.l1.setAlignment(QtCore.Qt.AlignCenter) 
         # creating a combo box widget 
@@ -1189,7 +1189,7 @@ class ListWindow(QMainWindow):
                 self.combo_box.addItem(file.split('.')[0])
         
         
-        self.combo_box.move(115,150)
+        self.combo_box.move(115,200)
         
         
         self.button = QPushButton('Select Cam', self)
