@@ -4,6 +4,7 @@ VERSION = "Main Window"
 from os import path
 
 from datetime import date
+import webbrowser 
 from attendance import checkName
 from request import getRequest,sendRequest,url_ok,upload
 import imutils
@@ -1019,7 +1020,14 @@ class Window(QDialog):
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel) 
 
         # self.ScanButton = QPushButton('Scan')
-        
+        self.button2 = QPushButton("Register", self)
+  
+        # setting geometry of button 
+        self.button2.setGeometry(200, 150, 100, 30) 
+        # layout.addWidget(self.button2, 1, 1)
+
+        # adding action to a button 
+        self.button2.clicked.connect(self.openWebsite) 
         # self.CancelButton = QPushButton('Cancel')
         
         # self.trainModel = QPushButton('Face Recog.')
@@ -1049,10 +1057,18 @@ class Window(QDialog):
         mainLayout.addLayout(self.hbox) 
 
         mainLayout.addWidget(self.NoScanButton) 
+        
+        mainLayout.addWidget(self.button2)
+        
   
         # setting lay out 
         self.setLayout(mainLayout) 
     
+    def openWebsite(self):
+        webbrowser.open('http://www.python.org') 
+        QMessageBox.information(self, "Alert", "Check your browser for registration! ")
+
+
     # def startTraining(self):
         
     #     self.statusLabel.setText("Please wait...")
@@ -1281,14 +1297,19 @@ class SetupWindow(QWidget):
         
         layout.addWidget(self.radiobuttonRun, 0, 1)
 
-        button = QPushButton("Proceed", self) 
+        button = QPushButton("Proceed", self)
   
         # setting geometry of button 
         button.setGeometry(200, 150, 100, 30) 
         layout.addWidget(button, 1, 0)
+
         # adding action to a button 
         button.clicked.connect(self.onClicked) 
+
         
+
+    def openWebsite(self):
+        print("hello")
     def onClicked(self):
         global setupFlag
         if self.radiobuttonRun.isChecked():
