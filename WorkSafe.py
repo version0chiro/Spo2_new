@@ -1065,7 +1065,7 @@ class Window(QDialog):
         self.setLayout(mainLayout) 
     
     def openWebsite(self):
-        webbrowser.open('http://www.python.org') 
+        webbrowser.open('https://spo2-registration.herokuapp.com/') 
         QMessageBox.information(self, "Alert", "Check your browser for registration! ")
 
 
