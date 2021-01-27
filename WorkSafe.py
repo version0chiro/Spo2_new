@@ -523,7 +523,7 @@ def grab_images(cam_num, queue,self):
                             Ambient = "NA"
                             Compensated = "NA"
                             self.label_3.setText("Ambient:"+Ambient+" "+str(self.tempFormatDict[self.tempCounter]))
-                            self.label_4.setText("Body-Temperature:"+Compensated+" "+str(self.tempFormatDict[self.tempCounter]))
+                            self.label_4.setText("B.Temp:"+Compensated+" "+str(self.tempFormatDict[self.tempCounter]))
                             if(int(HRavg)>100 or int(np.ceil(result)<90)):
                                 # save pic here and save
                                 # cv2.imwrite("email_content/"+str(name)+'.jpg',faceFrame) 
@@ -586,7 +586,7 @@ def grab_images(cam_num, queue,self):
 
                         self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
                         if Compensated>0:
-                            self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
+                            self.label_4.setText("B.Temp:"+str((format(float(Compensated),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
                         # if((float(Compensated))>37.7):
                         #     send_mail()
                         
@@ -595,7 +595,7 @@ def grab_images(cam_num, queue,self):
                         Ambient = "NA"
                         Compensated = "NA"
                         self.label_3.setText("Ambient:"+Ambient+" "+str(self.tempFormatDict[self.tempCounter]))
-                        self.label_4.setText("Body-Temperature:"+Compensated+" "+str(self.tempFormatDict[self.tempCounter]))
+                        self.label_4.setText("B.Temp:"+Compensated+" "+str(self.tempFormatDict[self.tempCounter]))
                     
                     if globalCount>100000:
                         globalCount=0
@@ -755,7 +755,7 @@ class MyWindow(QMainWindow):
         self.label_3.resize(300*size_ratio[0], 60*size_ratio[1])
         self.label_3.setStyleSheet("background-color: white; border: 1px solid black;")
 
-        self.label_4 = QLabel('Body-Temperature:',self)
+        self.label_4 = QLabel('B.Temp:',self)
         self.label_4.move(1550*size_ratio[0],250*size_ratio[1])
         self.label_4.setFont(QFont('Arial', 13,weight=QtGui.QFont.Bold))
         self.label_4.resize(300*size_ratio[0], 60*size_ratio[1])
@@ -881,7 +881,7 @@ class MyWindow(QMainWindow):
             Compensated = changeTemp(Compensated,self.tempFormatDict,self.tempCounter) 
             self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f')))+str(self.tempFormatDict[self.tempCounter]))
             if Compensated>0:
-                self.label_4.setText("Body-Temperature:"+str((format(float(Compensated),'.2f')))+str(self.tempFormatDict[self.tempCounter]))
+                self.label_4.setText("B.Temp:"+str((format(float(Compensated),'.2f')))+str(self.tempFormatDict[self.tempCounter]))
             # if(int(float(Compensated))>37):
             #     send_mail()
         # if globalCount>100000:
@@ -894,7 +894,7 @@ class MyWindow(QMainWindow):
             Ambient = "NA"
             Compensated = "NA"
             self.label_3.setText("Ambient:"+Ambient+" "+str(self.tempFormatDict[self.tempCounter]))
-            self.label_4.setText("Body-Temperature:"+Compensated+" "+str(self.tempFormatDict[self.tempCounter]))
+            self.label_4.setText("B.Temp:"+Compensated+" "+str(self.tempFormatDict[self.tempCounter]))
 
     def record(self):
         if self.button3.isChecked():
@@ -917,7 +917,7 @@ class MyWindow(QMainWindow):
         self.label_2.setText("SPO2:" + " ")
         self.label_1.setText("Heart-Rate:" + " ")
         self.label_3.setText("Ambient:" + " ")
-        self.label_4.setText("Body-Temperature:" + " ")
+        self.label_4.setText("B.Temp:" + " ")
         self.label_5.setText("Face-ID:" + " ")
         # printing pressed
         print("pressed")
