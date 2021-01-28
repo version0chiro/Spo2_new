@@ -107,8 +107,11 @@ def checkName(name,spo2,hr,Compensated,Ambient):
         workbook = xlsxwriter.Workbook('excel_sheets/attendance.xlsx')
         workbook.close()
         atte=pd.read_excel('excel_sheets/attendance.xlsx',engine="openpyxl",index_col=0)
-        
+        print(name)
+    name = name.lower()
+    print(name)
     if details['Name'].str.contains(name).any():
+        print('testSuccess')
         try:
             atte = add_to_list(name,atte,details,spo2,hr,Compensated,Ambient)
             xl = pd.ExcelFile('excel_sheets/attendance.xlsx',engine="openpyxl")
@@ -121,7 +124,9 @@ def checkName(name,spo2,hr,Compensated,Ambient):
         except Exception as e:
             print(e)
             pass
-                        
+
+    
+                            
     elif name != 'Unknown':
         pass
         
