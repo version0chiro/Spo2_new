@@ -124,9 +124,22 @@ def checkName(name,spo2,hr,Compensated,Ambient):
         except Exception as e:
             print(e)
             pass
-
+    elif name == 'unknown':
+        print('testSuccess')
+        try:
+            atte = unknown_to_list(name,atte,details,spo2,hr,Compensated,Ambient)
+            xl = pd.ExcelFile('excel_sheets/attendance.xlsx',engine="openpyxl")
+            today = date.today()
+            if str(today) in xl.sheet_names:
+                append_df_to_excel('excel_sheets/attendance.xlsx',atte,sheet_name=str(today))
+            else:
+                with pd.ExcelWriter('excel_sheets/attendance.xlsx',engine="openpyxl",mode='a') as writer:
+                    atte.to_excel(writer,sheet_name=str(today))
+        except Exception as e:
+            print(e)
+            pass
     
                             
-    elif name != 'Unknown':
+    elif name != 'unknown':
         pass
         
