@@ -499,25 +499,32 @@ def grab_images(cam_num, queue,self):
                         tempFlag=1#checkPing(self.AI_CAN_IP)
                         
                         if tempFlag==1:
-                            sensorValue=get_value(self.AI_CAN_IP)
-                            # print(sensorValue)
-                            Ambient = stringGetValue(sensorValue,1)
-                            Ambient = changeTemp(Ambient,self.tempFormatDict,self.tempCounter) 
+                            try:
+                                sensorValue=get_value(self.AI_CAN_IP)
+                                # print(sensorValue)
+                                Ambient = stringGetValue(sensorValue,1)
+                                Ambient = changeTemp(Ambient,self.tempFormatDict,self.tempCounter) 
 
-                            Compensated = stringGetValue(sensorValue,2) 
-                            Compensated = changeTemp(Compensated,self.tempFormatDict,self.tempCounter) 
+                                Compensated = stringGetValue(sensorValue,2) 
+                                Compensated = changeTemp(Compensated,self.tempFormatDict,self.tempCounter) 
 
-                            self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
-                            if Compensated>0:
-                                self.label_4.setText("Temp:"+str((format(float(Compensated),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
-                            Ambient = format(float(Ambient),'.2f')
-                            Compensated = format(float(Compensated),'.2f')
-                            if( int(float(Compensated))>37 or int(HRavg)>100 or int(np.ceil(result)<90)):
-                                # save pic here and save
-                                # cv2.imwrite("email_content/"+str(name)+'.jpg',faceFrame) 
-                                send_mail(self.email,str(name),str(np.ceil(result)),str(HRavg),str(format(float(Compensated),'.2f')))
-                                print("email alert sent")
-                                # os.remove("email_content/"+str(name)+'.jpg')
+                                self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
+                                if Compensated>0:
+                                    self.label_4.setText("Temp:"+str((format(float(Compensated),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
+                                Ambient = format(float(Ambient),'.2f')
+                                Compensated = format(float(Compensated),'.2f')
+                                if( int(float(Compensated))>37 or int(HRavg)>100 or int(np.ceil(result)<90)):
+                                    # save pic here and save
+                                    # cv2.imwrite("email_content/"+str(name)+'.jpg',faceFrame) 
+                                    send_mail(self.email,str(name),str(np.ceil(result)),str(HRavg),str(format(float(Compensated),'.2f')))
+                                    print("email alert sent")
+                                    # os.remove("email_content/"+str(name)+'.jpg')
+                            except:
+                                Ambient = "NA"
+                                Compensated = "NA"
+                                self.label_3.setText("Ambient:"+Ambient+" "+str(self.tempFormatDict[self.tempCounter]))
+                                self.label_4.setText("B.Temp:"+Compensated+" "+str(self.tempFormatDict[self.tempCounter]))
+                                
                                 
                         else:
                             Ambient = "NA"
@@ -576,19 +583,27 @@ def grab_images(cam_num, queue,self):
                     # tempFlag=checkPing(self.AI_CAN_IP)
                     tempFlag =1;
                     # print(tempFlag)
-                    if (tempFlag==1 and Spo2Flag==0):                       
-                        sensorValue=get_value(self.AI_CAN_IP)
-                        Ambient = stringGetValue(sensorValue,1) 
-                        Ambient = changeTemp(Ambient,self.tempFormatDict,self.tempCounter) 
+                    if (tempFlag==1 and Spo2Flag==0):     
+                        try:                  
+                            sensorValue=get_value(self.AI_CAN_IP)
+                            Ambient = stringGetValue(sensorValue,1) 
+                            Ambient = changeTemp(Ambient,self.tempFormatDict,self.tempCounter) 
 
-                        Compensated = stringGetValue(sensorValue,2) 
-                        Compensated = changeTemp(Compensated,self.tempFormatDict,self.tempCounter) 
+                            Compensated = stringGetValue(sensorValue,2) 
+                            Compensated = changeTemp(Compensated,self.tempFormatDict,self.tempCounter) 
 
-                        self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
-                        if Compensated>0:
-                            self.label_4.setText("B.Temp:"+str((format(float(Compensated),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
-                        # if((float(Compensated))>37.7):
-                        #     send_mail()
+                            self.label_3.setText("Ambient:"+str((format(float(Ambient),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
+                            if Compensated>0:
+                                self.label_4.setText("B.Temp:"+str((format(float(Compensated),'.2f')))+" "+str(self.tempFormatDict[self.tempCounter]))
+                            # if((float(Compensated))>37.7):
+                            #     send_mail()
+                        except:
+                            Ambient = "NA"
+                            Compensated = "NA"
+                            self.label_3.setText("Ambient:"+Ambient+" "+str(self.tempFormatDict[self.tempCounter]))
+                            self.label_4.setText("B.Temp:"+Compensated+" "+str(self.tempFormatDict[self.tempCounter]))
+                    
+                            
                         
                     
                     elif Spo2Flag==0:
@@ -872,8 +887,8 @@ class MyWindow(QMainWindow):
     def updateV(self):
         tempFlag=1
         print(tempFlag)
-        if tempFlag==1:
-
+        try:
+            
             sensorValue=get_value(self.AI_CAN_IP)
             Ambient = stringGetValue(sensorValue,1)
             Ambient = changeTemp(Ambient,self.tempFormatDict,self.tempCounter) 
@@ -890,7 +905,7 @@ class MyWindow(QMainWindow):
             # if(int(float(Compensated))>37):
             #     send_mail()
         
-        else:
+        except:
             Ambient = "NA"
             Compensated = "NA"
             self.label_3.setText("Ambient:"+Ambient+" "+str(self.tempFormatDict[self.tempCounter]))
