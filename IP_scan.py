@@ -13,7 +13,7 @@ def get_value(IP):
                 break
         except Exception as e:
             print(e)
-            pass
+            break
     sensorValues = html.decode()
     return sensorValues
 
