@@ -124,7 +124,7 @@ def checkName(name,spo2,hr,Compensated,Ambient):
         except Exception as e:
             print(e)
             pass
-    elif name == 'unknown':
+    else:
         print('testSuccess')
         try:
             atte = unknown_to_list(name,atte,details,spo2,hr,Compensated,Ambient)
@@ -140,6 +140,3 @@ def checkName(name,spo2,hr,Compensated,Ambient):
             pass
     
                             
-    elif name != 'unknown':
-        pass
-        
