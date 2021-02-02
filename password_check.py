@@ -24,7 +24,7 @@ def check_Password(password,userEmail):
     # mongodb://worksafe:<password>@cluster0-shard-00-00.cb0y2.mongodb.net:27017,cluster0-shard-00-01.cb0y2.mongodb.net:27017,cluster0-shard-00-02.cb0y2.mongodb.net:27017/<dbname>?ssl=true&replicaSet=atlas-evo15g-shard-0&authSource=admin&retryWrites=true&w=majority
     # mongodb+srv://worksafe:safe123@cluster0.cb0y2.mongodb.net/spo2?retryWrites=true&w=majority
     # "mongodb://admin-sachin:Sachin123@cluster0-shard-00-00.pf7ee.mongodb.net:27017,cluster0-shard-00-01.pf7ee.mongodb.net:27017,cluster0-shard-00-02.pf7ee.mongodb.net:27017/spo2?ssl=true&replicaSet=atlas-x3z4ou-shard-0&authSource=admin&retryWrites=true&w=majority"
-    myclient = pymongo.MongoClient("mongodb://worksafe:test123@cluster0-shard-00-00.cb0y2.mongodb.net:27017,cluster0-shard-00-01.cb0y2.mongodb.net:27017,cluster0-shard-00-02.cb0y2.mongodb.net:27017/spo2?ssl=true&replicaSet=atlas-evo15g-shard-0&authSource=admin&retryWrites=true&w=majority")
+    myclient = pymongo.MongoClient("mongodb://worksafe:safe123@cluster0-shard-00-00.cb0y2.mongodb.net:27017,cluster0-shard-00-01.cb0y2.mongodb.net:27017,cluster0-shard-00-02.cb0y2.mongodb.net:27017/spo2?ssl=true&replicaSet=atlas-evo15g-shard-0&authSource=admin&retryWrites=true&w=majority")
     mydb = myclient["spo2"]
     mycol = mydb["identities"]
     MAC = str(':'.join(re.findall('..', '%012x' % uuid.getnode())))
