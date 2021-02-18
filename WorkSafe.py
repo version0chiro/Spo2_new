@@ -538,7 +538,7 @@ def grab_images(cam_num, queue,self):
                                 print('email sent')
                                 # os.remove("email_content/"+str(name)+'.jpg')
                                 
-                        checkName(name_final,result,hr,Compensated,Ambient)
+                        checkName(name_final,result,HRavg,Compensated,Ambient)
                     
                         Spo2Flag=0
                         FaceDetectionFlag=0
