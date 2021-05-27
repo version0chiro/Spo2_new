@@ -29,7 +29,7 @@ def check_Password(password,userEmail):
     mycol = mydb["identities"]
     MAC = str(':'.join(re.findall('..', '%012x' % uuid.getnode())))
     # MAC = str(gma())
-    
+    dataFromServer=None
     query = {"MAC": MAC}
     try:
         search = mycol.find_one(query)
@@ -49,8 +49,11 @@ def check_Password(password,userEmail):
         x=x.json()['currentDateTime'] [:10]
         today =dt.strptime(x, '%Y-%m-%d')
         today = today.date()
+        print(today)
+        # print(dateFromServer.days)
         difftime =  abs(today-dateFromServer) 
         difftime = difftime.days
+        print(difftime)
         difftime = 30 - difftime
         print(difftime)
         if difftime > 0:
