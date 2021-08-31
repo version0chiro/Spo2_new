@@ -106,6 +106,8 @@ spo2_set = []
 
 size_ratio = []
 
+no_of_retries = 5
+
 data = pickle.loads(open("models/Trainedpickels/updated.pickle", "rb").read())
 
 process = Process()
@@ -114,6 +116,8 @@ bpm = 0
 heartRate = 0
 
 hrSet = []
+
+cam_ip_temp_holder = 0
 
 
 def face_detect_and_thresh(frame):
@@ -250,6 +254,7 @@ def grab_images(cam_num, queue, self):
     global Spo2Flag
     global bpm
     global hr
+    global no_of_retries
     # global recordFlag
     global hrSet
     global frontalFlag
@@ -263,6 +268,8 @@ def grab_images(cam_num, queue, self):
     hr = 0
 
     # cap = cv2.VideoCapture(cam_num-1 + CAP_API)
+    print(type(cam_num))
+    if(cam_num=="0" or cam_num=="1"): cam_num = int(cam_num)
     cap = cv2.VideoCapture(cam_num)
     # fps = cap.get(cv2.CAP_PROP_FPS)
     # cap.set(cv2.CAP_PROP_FPS, fps)
@@ -277,7 +284,13 @@ def grab_images(cam_num, queue, self):
             self.captureFlag = True
             break
         else:
-            print("waiting for capture")
+            # if(no_of_retries > 0):
+            #     no_of_retries = no_of_retries - 1
+            # else:
+            #     QMessageBox.information(
+            #         self, "Alert", "End of Video File Reached, The program will exit now.")
+            # print("waiting for capture")
+            
             self.captureFlag = False
 
     frame_width = int(cap.get(3))
@@ -338,11 +351,14 @@ def grab_images(cam_num, queue, self):
 
             try:
                 image, faceFrame, boxes = fix_box(image)
-            except:
+            except Exception as e:
+                print("error",e)
                 faceFrame = boxFrame[int(
                     100*0.9):int(200*1.1), int(150*0.9):int(250*1.1)]
                 boxes = [(int(100*0.9), int(250*0.9),
                           int(200*0.9), int(150*0.9))]
+                
+                                          
             height, width, channels = faceFrame.shape
 
             if height > 0 and width > 0:
@@ -353,7 +369,7 @@ def grab_images(cam_num, queue, self):
 
             # print(height, width)
 
-            # cv2.imshow("faceFrame",faceFrame)
+            cv2.imshow("faceFrame",faceFrame)
             # print(self.autoFlag)
             if self.autoFlag:
 
@@ -411,6 +427,7 @@ def grab_images(cam_num, queue, self):
 
                     process = Process()
                     height = image.shape[0]
+                    
                     cv2.putText(image, 'SPO2 Estimation Underway', (20, height-50),
                                 cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 1, cv2.LINE_AA)
                     # encodings = face_recognition.face_encodings(image, boxes)
@@ -433,7 +450,7 @@ def grab_images(cam_num, queue, self):
                     # self.label_5.setText("Face ID:"+name)
                     # name_final=name
                     # FaceDetectionFlag=0
-
+                    
                     thresh, mask = face_detect_and_thresh(faceFrame)
 
                     temp, min_value, max_value = spartialAverage(
@@ -1334,6 +1351,29 @@ class ListWindow(QMainWindow):
                     continue
 
 
+class ConfirmIP(QWidget):
+    def __init__(self):
+       
+        QWidget.__init__(self)
+        layout = QGridLayout()
+        self.layout = layout
+        self.setLayout(layout)
+        self.setWindowTitle("Confirm IP or Video")
+        self.setGeometry(100, 100, 400, 400)
+        self.enterIp = QLineEdit()
+        layout.addWidget(self.enterIp)
+        self.submitButton = QPushButton("Submit")
+        layout.addWidget(self.submitButton)
+        self.submitButton.clicked.connect(self.onClicked)
+        self.show()
+
+    def onClicked(self):
+        global cam_ip_temp_holder
+        cam_ip_temp_holder = self.enterIp.text()
+        self.close()
+        return 0
+
+
 class SetupWindow(QWidget):
     def __init__(self):
         QWidget.__init__(self)
@@ -1438,10 +1478,18 @@ if __name__ == '__main__':
             # global pickelName
             print(pickelName)
             with open('saved_devices/'+str(pickelName)+'.pickle', 'rb') as f:
-
+# ./recordings/2021-08-31/183911.avi
                 userDetails = pickle.load(f)
-                IP = userDetails.get('IP')
-
+                # Check IP for cam or video
+                confirmApp = QApplication(sys.argv)
+                # create the instance of our Window
+                window = ConfirmIP()
+                # start the app
+                confirmApp.exec()
+                
+                IP = cam_ip_temp_holder # userDetails.get('IP')
+                print("IP is ",IP)
+                
                 Email = userDetails.get('Email')
                 Identifier = userDetails.get("Identifier")
                 AI_CAN_IP = userDetails.get("AI_CAN_IP")
@@ -1469,6 +1517,3 @@ if __name__ == '__main__':
         sys.exit()
 
 # EOF
-
-# TODO C,F and K
-# TODO Resolution

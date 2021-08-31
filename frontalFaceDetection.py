@@ -34,7 +34,7 @@ def fix_box(frame):
             raise Exception('Face out of bounds')
         cv2.rectangle(frame, (startX2, startY2), (endX2, endY2),(0, 0, 255), 2)
         
-    box=[(startY2,endX2,endY2,start)]
+    box=[(startY2,endX2,endY2,startX2)]
     
     return frame,frameOG[startY2:endY2,startX2:endX2],box
     
